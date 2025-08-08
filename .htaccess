@@ -1,0 +1,24 @@
+# Sécurité globale
+
+Header always set X-Content-Type-Options nosniff
+Header always set X-Frame-Options DENY
+Header always set X-XSS-Protection "1; mode=block"
+Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+# Bloquer accès aux fichiers sensibles
+
+<FilesMatch "\.(htaccess|htpasswd|ini|log|sql)$">
+Require all granted
+</FilesMatch>
+
+# Limiter les méthodes HTTP
+
+<LimitExcept GET POST PUT DELETE OPTIONS>
+    Require all denied
+</LimitExcept>
+
+RewriteEngine On
+
+# Rewrite all requests under /api/ to the API handler "index.php"
+
+RewriteRule ^api/(.\*)$ backend/api/$1 [L]
