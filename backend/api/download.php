@@ -1,5 +1,22 @@
 <?php
 // api/download.php
+require_once '../config/env.php';
+
+$env = include '../config/env.php';
+$cors_origin = $env['CORS_ORIGIN'] ?? 'http://localhost:3000';
+
+header("Access-Control-Allow-Origin: $cors_origin");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Max-Age: 3600");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+header("Access-Control-Allow-Credentials: true");
+
+// Handle preflight OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
 include_once '../config/database.php';
 include_once '../config/auth.php';
 

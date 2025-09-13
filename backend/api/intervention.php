@@ -1,17 +1,38 @@
 <?php
 // api/interventions.php
-header("Access-Control-Allow-Origin: *");
+require_once '../config/env.php';
+
+$env = include '../config/env.php';
+$cors_origin = $env['CORS_ORIGIN'] ?? 'http://localhost:3000';
+
+header("Access-Control-Allow-Origin: $cors_origin");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Max-Age: 3600");
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+header("Access-Control-Allow-Credentials: true");
+
+// Handle preflight OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 include_once '../config/database.php';
+include_once '../config/auth.php';
 include_once '../models/Intervention.php';
+include_once '../utils/Validator.php';
+include_once '../utils/ErrorHandler.php';
 
 $database = new Database();
 $db = $database->getConnection();
+$auth = new Auth($db);
 $intervention = new Intervention($db);
+
+// Check authentication for all endpoints
+if (!$auth->isAuthenticated()) {
+    ErrorHandler::handleAuthError();
+}
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -77,26 +98,43 @@ switch($method) {
     case 'POST':
         $data = json_decode(file_get_contents("php://input"));
 
-        if(!empty($data->titre) && !empty($data->client)) {
-            $intervention->titre = $data->titre;
-            $intervention->description = $data->description;
-            $intervention->client = $data->client;
-            $intervention->technicien = $data->technicien;
+        if (!$data) {
+            ErrorHandler::handleError(400, "Format JSON invalide");
+        }
+
+        // Validate input data
+        $validationErrors = Validator::validateInterventionData($data);
+        if (!empty($validationErrors)) {
+            ErrorHandler::handleValidationErrors($validationErrors);
+        }
+
+        try {
+            $current_user = $auth->getCurrentUser();
+
+            $intervention->titre = Validator::sanitizeString($data->titre);
+            $intervention->description = Validator::sanitizeString($data->description ?? '');
+            $intervention->client_id = $data->client_id ?? null;
+            $intervention->client_nom = Validator::sanitizeString($data->client_nom ?? '');
+            $intervention->technicien_id = $data->technicien_id ?? null;
+            $intervention->technicien_nom = Validator::sanitizeString($data->technicien_nom ?? '');
+            $intervention->createur_id = $current_user['id'];
             $intervention->statut = $data->statut ?? 'En attente';
             $intervention->priorite = $data->priorite ?? 'Normale';
+            $intervention->type_intervention = $data->type_intervention ?? 'Réparation';
+            $intervention->temps_estime = $data->temps_estime ?? null;
+            $intervention->cout_prevu = $data->cout_prevu ?? null;
             $intervention->date_creation = date('Y-m-d H:i:s');
-            $intervention->date_intervention = $data->date_intervention;
+            $intervention->date_intervention = $data->date_intervention ?? null;
+            $intervention->date_limite = $data->date_limite ?? null;
 
             if($intervention->create()) {
-                http_response_code(201);
-                echo json_encode(array("message" => "Intervention créée avec succès."));
+                ErrorHandler::handleSuccess("Intervention créée avec succès", ['id' => $intervention->id], 201);
             } else {
-                http_response_code(503);
-                echo json_encode(array("message" => "Impossible de créer l'intervention."));
+                ErrorHandler::handleServerError("Impossible de créer l'intervention");
             }
-        } else {
-            http_response_code(400);
-            echo json_encode(array("message" => "Données incomplètes."));
+        } catch (Exception $e) {
+            ErrorHandler::logError($e->getMessage(), ['data' => $data]);
+            ErrorHandler::handleServerError("Erreur lors de la création de l'intervention");
         }
         break;
 

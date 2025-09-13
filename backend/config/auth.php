@@ -15,7 +15,7 @@ class Auth {
 
     public function login($username, $password) {
         $user = new User($this->conn);
-        
+
         if($user->login($username, $password)) {
             $this->startSession();
             $_SESSION['user_id'] = $user->id;
@@ -24,12 +24,17 @@ class Auth {
             $_SESSION['role'] = $user->role;
             $_SESSION['email'] = $user->email;
             $_SESSION['avatar'] = $user->avatar;
-            
+
+            // Generate a session token for frontend
+            $token = bin2hex(random_bytes(32));
+            $_SESSION['token'] = $token;
+
             // Enregistrer la session en base
-            $this->saveSession($user->id);
-            
+            $this->saveSession($user->id, $token);
+
             return [
                 'success' => true,
+                'token' => $token, // Add token for frontend compatibility
                 'user' => [
                     'id' => $user->id,
                     'username' => $user->username,
@@ -40,7 +45,7 @@ class Auth {
                 ]
             ];
         }
-        
+
         return ['success' => false, 'message' => 'Identifiants invalides'];
     }
 
@@ -86,15 +91,15 @@ class Auth {
         return $roles_hierarchy[$user_role] >= $roles_hierarchy[$required_role];
     }
 
-    private function saveSession($user_id) {
-        $session_id = session_id();
+    private function saveSession($user_id, $token = null) {
+        $session_id = $token ?? session_id();
         $ip_address = $_SERVER['REMOTE_ADDR'] ?? '';
         $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
         $expires_at = date('Y-m-d H:i:s', time() + 86400); // 24 heures
 
-        $query = "INSERT INTO user_sessions (id, user_id, ip_address, user_agent, expires_at) 
+        $query = "INSERT INTO user_sessions (id, user_id, ip_address, user_agent, expires_at)
                   VALUES (:session_id, :user_id, :ip_address, :user_agent, :expires_at)
-                  ON DUPLICATE KEY UPDATE 
+                  ON DUPLICATE KEY UPDATE
                   ip_address = :ip_address, user_agent = :user_agent, expires_at = :expires_at";
 
         $stmt = $this->conn->prepare($query);
