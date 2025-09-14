@@ -1,28 +1,24 @@
 <?php
 // api/auth.php
+// Gérer CORS en premier
+include_once 'cors.php';
+
 require_once '../config/env.php';
 
-$env = include '../config/env.php';
-$cors_origin = $env['CORS_ORIGIN'] ?? 'http://localhost:3000';
-
-header("Access-Control-Allow-Origin: $cors_origin");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-header("Access-Control-Max-Age: 3600");
-header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
-header("Access-Control-Allow-Credentials: true");
-
-// Handle preflight OPTIONS request
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
 
 include_once '../config/database.php';
 include_once '../config/auth.php';
 
 $database = new Database();
 $db = $database->getConnection();
+
+if ($db === null) {
+    http_response_code(500);
+    echo json_encode(array("success" => false, "message" => "Erreur de connexion à la base de données"));
+    exit;
+}
+
 $auth = new Auth($db);
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -65,9 +61,23 @@ switch($method . '_' . $endpoint) {
         }
         break;
 
+    case 'GET_test':
+        echo json_encode([
+            "message" => "API Auth fonctionne",
+            "method" => $method,
+            "endpoint" => $endpoint,
+            "switch_case" => $method . '_' . $endpoint
+        ]);
+        break;
+
     default:
         http_response_code(404);
-        echo json_encode(array("message" => "Endpoint non trouvé"));
+        echo json_encode(array(
+            "message" => "Endpoint non trouvé",
+            "method" => $method,
+            "endpoint" => $endpoint,
+            "expected" => $method . '_' . $endpoint
+        ));
         break;
 }
 ?>

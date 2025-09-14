@@ -1,22 +1,9 @@
 <?php
 // api/users.php
+include_once 'cors.php';
+
 require_once '../config/env.php';
-
-$env = include '../config/env.php';
-$cors_origin = $env['CORS_ORIGIN'] ?? 'http://localhost:3000';
-
-header("Access-Control-Allow-Origin: $cors_origin");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-header("Access-Control-Max-Age: 3600");
-header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
-header("Access-Control-Allow-Credentials: true");
-
-// Handle preflight OPTIONS request
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
 
 include_once '../config/database.php';
 include_once '../config/auth.php';
@@ -72,6 +59,7 @@ switch($method) {
                     "id" => $row['id'],
                     "nom_complet" => $row['prenom'] . ' ' . $row['nom'],
                     "specialite" => $row['specialite'],
+                    "type_technicien" => $row['type_technicien'] ?? 'autre',
                     "telephone" => $row['telephone'],
                     "email" => $row['email']
                 );
@@ -99,6 +87,7 @@ switch($method) {
                     "role" => $row['role'],
                     "telephone" => $row['telephone'],
                     "specialite" => $row['specialite'],
+                    "type_technicien" => $row['type_technicien'] ?? null,
                     "is_active" => $row['is_active'],
                     "last_login" => $row['last_login'],
                     "created_at" => $row['created_at']
@@ -146,6 +135,18 @@ switch($method) {
     case 'PUT':
         $data = json_decode(file_get_contents("php://input"));
 
+        if (!$data) {
+            http_response_code(400);
+            echo json_encode(array("message" => "Format JSON invalide"));
+            exit;
+        }
+
+        if (!isset($data->id) || empty($data->id)) {
+            http_response_code(400);
+            echo json_encode(array("message" => "ID utilisateur requis"));
+            exit;
+        }
+
         // Vérifier les permissions
         if($current_user['role'] !== 'admin' && $current_user['id'] != $data->id) {
             http_response_code(403);
@@ -153,27 +154,47 @@ switch($method) {
             exit;
         }
 
+        // Validate email format
+        if(isset($data->email) && !filter_var($data->email, FILTER_VALIDATE_EMAIL)) {
+            http_response_code(400);
+            echo json_encode(array("message" => "Format d'email invalide"));
+            exit;
+        }
+
         $user->id = $data->id;
-        $user->email = $data->email;
-        $user->nom = $data->nom;
-        $user->prenom = $data->prenom;
-        $user->telephone = $data->telephone ?? '';
-        $user->specialite = $data->specialite ?? '';
-        
+
+        // Check if user exists
+        if (!$user->readOne()) {
+            http_response_code(404);
+            echo json_encode(array("message" => "Utilisateur non trouvé"));
+            exit;
+        }
+
+        // Update fields with sanitization
+        $user->email = htmlspecialchars(strip_tags($data->email ?? $user->email), ENT_QUOTES, 'UTF-8');
+        $user->nom = htmlspecialchars(strip_tags($data->nom ?? $user->nom), ENT_QUOTES, 'UTF-8');
+        $user->prenom = htmlspecialchars(strip_tags($data->prenom ?? $user->prenom), ENT_QUOTES, 'UTF-8');
+        $user->telephone = htmlspecialchars(strip_tags($data->telephone ?? $user->telephone), ENT_QUOTES, 'UTF-8');
+        $user->specialite = htmlspecialchars(strip_tags($data->specialite ?? $user->specialite), ENT_QUOTES, 'UTF-8');
+
         // Seul l'admin peut modifier le rôle et le statut
         if($current_user['role'] === 'admin') {
-            $user->role = $data->role;
-            $user->is_active = $data->is_active ?? true;
-        } else {
-            // Récupérer les valeurs actuelles
-            if($user->readOne()) {
-                // Les valeurs sont déjà définies par readOne()
+            // Validate role if provided
+            if(isset($data->role)) {
+                $allowed_roles = ['admin', 'technicien', 'manager', 'client'];
+                if(!in_array($data->role, $allowed_roles)) {
+                    http_response_code(400);
+                    echo json_encode(array("message" => "Rôle invalide"));
+                    exit;
+                }
+                $user->role = $data->role;
             }
+            $user->is_active = $data->is_active ?? $user->is_active;
         }
 
         if($user->update()) {
             http_response_code(200);
-            echo json_encode(array("message" => "Utilisateur mis à jour"));
+            echo json_encode(array("message" => "Utilisateur mis à jour avec succès"));
         } else {
             http_response_code(503);
             echo json_encode(array("message" => "Impossible de mettre à jour l'utilisateur"));

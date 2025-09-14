@@ -64,6 +64,9 @@
 </template>
 
 <script setup>
+import InterventionCard from '~/components/Interventions/InterventionCard.vue'
+import InterventionFilters from '~/components/Interventions/InterventionFilters.vue'
+
 definePageMeta({
   middleware: 'auth'
 })

@@ -82,7 +82,7 @@
             >
           </div>
           <button
-            @click="removeFile(index)"
+            @click="removeSelectedFile(index)"
             class="text-red-600 hover:text-red-800"
           >
             <svg
@@ -239,7 +239,7 @@ const addFiles = (files) => {
   selectedFiles.value.push(...validFiles);
 };
 
-const removeFile = (index) => {
+const removeSelectedFile = (index) => {
   selectedFiles.value.splice(index, 1);
 };
 

@@ -648,7 +648,7 @@ const _inlineRuntimeConfig = {
     }
   },
   "public": {
-    "apiBaseUrl": "http://suivie-interventions/api"
+    "apiBaseUrl": "http://localhost/suivie-interventions/backend/api"
   }
 };
 const envOptions = {
@@ -1113,7 +1113,22 @@ const plugins = [
 _GVRxFl8jKFsmAuN3Zxj7Jn0c1Z7u3UR5X7WxaXGZi8M
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"123c5-aBu7JrgmHjXT+YlNZ5QFrtXKPNM\"",
+    "mtime": "2025-09-14T04:12:45.735Z",
+    "size": 74693,
+    "path": "index.mjs"
+  },
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"44e7b-V5tiJrXcnjWh4Sw0603mgSOnPhM\"",
+    "mtime": "2025-09-14T04:12:45.735Z",
+    "size": 282235,
+    "path": "index.mjs.map"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));

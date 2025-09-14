@@ -103,6 +103,8 @@ declare global {
   const useAttrs: typeof import('../../node_modules/vue')['useAttrs']
   const useAuth: typeof import('../../composables/useAuth')['useAuth']
   const useAuthStore: typeof import('../../stores/auth')['useAuthStore']
+  const useClients: typeof import('../../composables/useClients')['useClients']
+  const useClientsStore: typeof import('../../stores/clients')['useClientsStore']
   const useCookie: typeof import('../../node_modules/nuxt/dist/app/composables/cookie')['useCookie']
   const useCssModule: typeof import('../../node_modules/vue')['useCssModule']
   const useCssVars: typeof import('../../node_modules/vue')['useCssVars']
@@ -172,6 +174,7 @@ declare global {
   const useTemplateRef: typeof import('../../node_modules/vue')['useTemplateRef']
   const useTransitionState: typeof import('../../node_modules/vue')['useTransitionState']
   const useUpload: typeof import('../../composables/useUpload')['useUpload']
+  const useUsers: typeof import('../../composables/useUsers')['useUsers']
   const useUsersStore: typeof import('../../stores/users')['useUsersStore']
   const watch: typeof import('../../node_modules/vue')['watch']
   const watchEffect: typeof import('../../node_modules/vue')['watchEffect']
@@ -296,6 +299,8 @@ declare module 'vue' {
     readonly useAttrs: UnwrapRef<typeof import('../../node_modules/vue')['useAttrs']>
     readonly useAuth: UnwrapRef<typeof import('../../composables/useAuth')['useAuth']>
     readonly useAuthStore: UnwrapRef<typeof import('../../stores/auth')['useAuthStore']>
+    readonly useClients: UnwrapRef<typeof import('../../composables/useClients')['useClients']>
+    readonly useClientsStore: UnwrapRef<typeof import('../../stores/clients')['useClientsStore']>
     readonly useCookie: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/cookie')['useCookie']>
     readonly useCssModule: UnwrapRef<typeof import('../../node_modules/vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('../../node_modules/vue')['useCssVars']>
@@ -365,6 +370,7 @@ declare module 'vue' {
     readonly useTemplateRef: UnwrapRef<typeof import('../../node_modules/vue')['useTemplateRef']>
     readonly useTransitionState: UnwrapRef<typeof import('../../node_modules/vue')['useTransitionState']>
     readonly useUpload: UnwrapRef<typeof import('../../composables/useUpload')['useUpload']>
+    readonly useUsers: UnwrapRef<typeof import('../../composables/useUsers')['useUsers']>
     readonly useUsersStore: UnwrapRef<typeof import('../../stores/users')['useUsersStore']>
     readonly watch: UnwrapRef<typeof import('../../node_modules/vue')['watch']>
     readonly watchEffect: UnwrapRef<typeof import('../../node_modules/vue')['watchEffect']>

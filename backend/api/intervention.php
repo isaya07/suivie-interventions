@@ -1,22 +1,9 @@
 <?php
 // api/interventions.php
+include_once 'cors.php';
+
 require_once '../config/env.php';
-
-$env = include '../config/env.php';
-$cors_origin = $env['CORS_ORIGIN'] ?? 'http://localhost:3000';
-
-header("Access-Control-Allow-Origin: $cors_origin");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-header("Access-Control-Max-Age: 3600");
-header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
-header("Access-Control-Allow-Credentials: true");
-
-// Handle preflight OPTIONS request
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
 
 include_once '../config/database.php';
 include_once '../config/auth.php';
@@ -46,8 +33,8 @@ switch($method) {
                     "id" => $intervention->id,
                     "titre" => $intervention->titre,
                     "description" => $intervention->description,
-                    "client" => $intervention->client,
-                    "technicien" => $intervention->technicien,
+                    "client_nom" => $intervention->client_nom,
+                    "technicien_nom" => $intervention->technicien_nom,
                     "statut" => $intervention->statut,
                     "priorite" => $intervention->priorite,
                     "date_creation" => $intervention->date_creation,
@@ -75,8 +62,8 @@ switch($method) {
                         "id" => $id,
                         "titre" => $titre,
                         "description" => $description,
-                        "client" => $client,
-                        "technicien" => $technicien,
+                        "client_nom" => $client_nom ?? '',
+                        "technicien_nom" => $technicien_nom ?? '',
                         "statut" => $statut,
                         "priorite" => $priorite,
                         "date_creation" => $date_creation,
@@ -141,22 +128,57 @@ switch($method) {
     case 'PUT':
         $data = json_decode(file_get_contents("php://input"));
 
-        $intervention->id = $data->id;
-        $intervention->titre = $data->titre;
-        $intervention->description = $data->description;
-        $intervention->client = $data->client;
-        $intervention->technicien = $data->technicien;
-        $intervention->statut = $data->statut;
-        $intervention->priorite = $data->priorite;
-        $intervention->date_intervention = $data->date_intervention;
-        $intervention->date_fin = $data->date_fin;
+        if (!$data) {
+            ErrorHandler::handleError(400, "Format JSON invalide");
+        }
 
-        if($intervention->update()) {
-            http_response_code(200);
-            echo json_encode(array("message" => "Intervention mise à jour."));
-        } else {
-            http_response_code(503);
-            echo json_encode(array("message" => "Impossible de mettre à jour l'intervention."));
+        if (!isset($data->id) || empty($data->id)) {
+            ErrorHandler::handleError(400, "ID de l'intervention requis");
+        }
+
+        // Validate input data for update
+        $validationErrors = Validator::validateInterventionData($data);
+        if (!empty($validationErrors)) {
+            ErrorHandler::handleValidationErrors($validationErrors);
+        }
+
+        try {
+            $current_user = $auth->getCurrentUser();
+
+            // Check if user has permission to update this intervention
+            $intervention->id = $data->id;
+            if (!$intervention->readOne()) {
+                ErrorHandler::handleNotFoundError("Intervention non trouvée");
+            }
+
+            // Update fields with proper sanitization
+            $intervention->titre = Validator::sanitizeString($data->titre);
+            $intervention->description = Validator::sanitizeString($data->description ?? '');
+            $intervention->client_id = $data->client_id ?? $intervention->client_id;
+            $intervention->client_nom = Validator::sanitizeString($data->client_nom ?? $intervention->client_nom);
+            $intervention->technicien_id = $data->technicien_id ?? $intervention->technicien_id;
+            $intervention->technicien_nom = Validator::sanitizeString($data->technicien_nom ?? $intervention->technicien_nom);
+            $intervention->statut = $data->statut ?? $intervention->statut;
+            $intervention->priorite = $data->priorite ?? $intervention->priorite;
+            $intervention->type_intervention = $data->type_intervention ?? $intervention->type_intervention;
+            $intervention->temps_estime = $data->temps_estime ?? $intervention->temps_estime;
+            $intervention->temps_reel = $data->temps_reel ?? $intervention->temps_reel;
+            $intervention->cout_prevu = $data->cout_prevu ?? $intervention->cout_prevu;
+            $intervention->cout_reel = $data->cout_reel ?? $intervention->cout_reel;
+            $intervention->date_intervention = $data->date_intervention ?? $intervention->date_intervention;
+            $intervention->date_fin = $data->date_fin ?? $intervention->date_fin;
+            $intervention->date_limite = $data->date_limite ?? $intervention->date_limite;
+            $intervention->notes_technicien = Validator::sanitizeString($data->notes_technicien ?? $intervention->notes_technicien);
+            $intervention->satisfaction_client = $data->satisfaction_client ?? $intervention->satisfaction_client;
+
+            if($intervention->update()) {
+                ErrorHandler::handleSuccess("Intervention mise à jour avec succès");
+            } else {
+                ErrorHandler::handleServerError("Impossible de mettre à jour l'intervention");
+            }
+        } catch (Exception $e) {
+            ErrorHandler::logError($e->getMessage(), ['data' => $data]);
+            ErrorHandler::handleServerError("Erreur lors de la mise à jour de l'intervention");
         }
         break;
 

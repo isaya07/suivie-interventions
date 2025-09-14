@@ -6,8 +6,9 @@ export const useInterventionsStore = defineStore("interventions", () => {
   const loading = ref(false);
   const filters = ref({
     technicien_id: null,
-    date: null,
-    status: null,
+    dateFrom: null,
+    dateTo: null,
+    status: [],
   });
 
   const { $api } = useNuxtApp();
@@ -20,9 +21,15 @@ export const useInterventionsStore = defineStore("interventions", () => {
         intervention.technicien_id !== filters.value.technicien_id
       )
         return false;
-      if (filters.value.date && intervention.date !== filters.value.date)
-        return false;
-      if (filters.value.status && intervention.status !== filters.value.status)
+      // Filtrage par plage de dates
+      if (filters.value.dateFrom || filters.value.dateTo) {
+        const interventionDate = new Date(intervention.date_intervention || intervention.date);
+        if (filters.value.dateFrom && interventionDate < new Date(filters.value.dateFrom))
+          return false;
+        if (filters.value.dateTo && interventionDate > new Date(filters.value.dateTo))
+          return false;
+      }
+      if (filters.value.status.length > 0 && !filters.value.status.includes(intervention.statut))
         return false;
       return true;
     });
@@ -30,8 +37,11 @@ export const useInterventionsStore = defineStore("interventions", () => {
 
   const interventionsByStatus = computed(() => {
     return {
-      enCours: interventions.value.filter((i) => i.status === 1).length,
-      terminees: interventions.value.filter((i) => i.status === 2).length,
+      enAttente: interventions.value.filter((i) => i.statut === 'En attente').length,
+      enCours: interventions.value.filter((i) => i.statut === 'En cours').length,
+      enPause: interventions.value.filter((i) => i.statut === 'En pause').length,
+      terminees: interventions.value.filter((i) => i.statut === 'Terminée').length,
+      annulees: interventions.value.filter((i) => i.statut === 'Annulée').length,
       total: interventions.value.length,
     };
   });
@@ -40,7 +50,7 @@ export const useInterventionsStore = defineStore("interventions", () => {
   const fetchInterventions = async (params = {}) => {
     loading.value = true;
     try {
-      let url = "/interventions.php";
+      let url = "/intervention.php";
       const searchParams = new URLSearchParams();
 
       Object.entries(params).forEach(([key, value]) => {
@@ -53,11 +63,23 @@ export const useInterventionsStore = defineStore("interventions", () => {
 
       const response = await $api(url);
 
-      if (response.success) {
-        interventions.value = response.data;
+      if (response.records) {
+        // Mapper les champs du backend vers le format attendu par le frontend
+        interventions.value = response.records.map(intervention => ({
+          ...intervention,
+          status: intervention.statut, // Mapper statut vers status
+          technicien: intervention.technicien_nom || intervention.technicien
+        }));
+      } else {
+        // Peut-être que les données sont directement dans response ?
+        if (Array.isArray(response)) {
+          interventions.value = response;
+        } else if (response.data) {
+          interventions.value = response.data;
+        }
       }
     } catch (error) {
-      console.error("Erreur lors de la récupération des interventions:", error);
+      console.error("❌ Erreur lors de la récupération des interventions:", error);
     } finally {
       loading.value = false;
     }
@@ -66,9 +88,9 @@ export const useInterventionsStore = defineStore("interventions", () => {
   const fetchIntervention = async (id) => {
     loading.value = true;
     try {
-      const response = await $api(`/interventions.php?id=${id}`);
-      if (response.success) {
-        currentIntervention.value = response.data;
+      const response = await $api(`/intervention.php?id=${id}`);
+      if (response.id) {
+        currentIntervention.value = response;
       }
     } catch (error) {
       console.error("Erreur lors de la récupération de l'intervention:", error);
@@ -79,7 +101,7 @@ export const useInterventionsStore = defineStore("interventions", () => {
 
   const createIntervention = async (interventionData) => {
     try {
-      const response = await $api("/interventions.php", {
+      const response = await $api("/intervention.php", {
         method: "POST",
         body: interventionData,
       });
@@ -97,7 +119,7 @@ export const useInterventionsStore = defineStore("interventions", () => {
 
   const updateIntervention = async (interventionData) => {
     try {
-      const response = await $api("/interventions.php", {
+      const response = await $api("/intervention.php", {
         method: "PUT",
         body: interventionData,
       });
@@ -128,8 +150,9 @@ export const useInterventionsStore = defineStore("interventions", () => {
   const clearFilters = () => {
     filters.value = {
       technicien_id: null,
-      date: null,
-      status: null,
+      dateFrom: null,
+      dateTo: null,
+      status: [],
     };
   };
 

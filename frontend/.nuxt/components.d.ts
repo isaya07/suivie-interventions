@@ -12,13 +12,15 @@ type HydrationStrategies = {
 }
 type LazyComponent<T> = (T & DefineComponent<HydrationStrategies, {}, {}, {}, {}, {}, {}, { hydrated: () => void }>)
 interface _GlobalComponents {
-      'AuthLoginForm': typeof import("../components/Auth/LoginForm.vue")['default']
-    'InterventionsInterventionCard': typeof import("../components/Interventions/InterventionCard.vue")['default']
-    'InterventionsInterventionFilters': typeof import("../components/Interventions/InterventionFilters.vue")['default']
-    'InterventionsInterventionForm': typeof import("../components/Interventions/InterventionForm.vue")['default']
-    'UIAppHeader': typeof import("../components/UI/AppHeader.vue")['default']
-    'UploadFileUpload': typeof import("../components/Upload/FileUpload.vue")['default']
-    'UsersUserForm': typeof import("../components/Users/UserForm.vue")['default']
+      'AppHeader': typeof import("../components/AppHeader.vue")['default']
+    'LoginForm': typeof import("../components/Auth/LoginForm.vue")['default']
+    'ClientForm': typeof import("../components/Clients/ClientForm.vue")['default']
+    'InterventionCard': typeof import("../components/Interventions/InterventionCard.vue")['default']
+    'InterventionFilters': typeof import("../components/Interventions/InterventionFilters.vue")['default']
+    'InterventionForm': typeof import("../components/Interventions/InterventionForm.vue")['default']
+    'MultiSelect': typeof import("../components/UI/MultiSelect.vue")['default']
+    'FileUpload': typeof import("../components/Upload/FileUpload.vue")['default']
+    'UserForm': typeof import("../components/Users/UserForm.vue")['default']
     'NuxtWelcome': typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']
     'NuxtLayout': typeof import("../node_modules/nuxt/dist/app/components/nuxt-layout")['default']
     'NuxtErrorBoundary': typeof import("../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']
@@ -43,13 +45,15 @@ interface _GlobalComponents {
     'Body': typeof import("../node_modules/nuxt/dist/head/runtime/components")['Body']
     'NuxtIsland': typeof import("../node_modules/nuxt/dist/app/components/nuxt-island")['default']
     'NuxtRouteAnnouncer': typeof import("../node_modules/nuxt/dist/app/components/server-placeholder")['default']
-      'LazyAuthLoginForm': LazyComponent<typeof import("../components/Auth/LoginForm.vue")['default']>
-    'LazyInterventionsInterventionCard': LazyComponent<typeof import("../components/Interventions/InterventionCard.vue")['default']>
-    'LazyInterventionsInterventionFilters': LazyComponent<typeof import("../components/Interventions/InterventionFilters.vue")['default']>
-    'LazyInterventionsInterventionForm': LazyComponent<typeof import("../components/Interventions/InterventionForm.vue")['default']>
-    'LazyUIAppHeader': LazyComponent<typeof import("../components/UI/AppHeader.vue")['default']>
-    'LazyUploadFileUpload': LazyComponent<typeof import("../components/Upload/FileUpload.vue")['default']>
-    'LazyUsersUserForm': LazyComponent<typeof import("../components/Users/UserForm.vue")['default']>
+      'LazyAppHeader': LazyComponent<typeof import("../components/AppHeader.vue")['default']>
+    'LazyLoginForm': LazyComponent<typeof import("../components/Auth/LoginForm.vue")['default']>
+    'LazyClientForm': LazyComponent<typeof import("../components/Clients/ClientForm.vue")['default']>
+    'LazyInterventionCard': LazyComponent<typeof import("../components/Interventions/InterventionCard.vue")['default']>
+    'LazyInterventionFilters': LazyComponent<typeof import("../components/Interventions/InterventionFilters.vue")['default']>
+    'LazyInterventionForm': LazyComponent<typeof import("../components/Interventions/InterventionForm.vue")['default']>
+    'LazyMultiSelect': LazyComponent<typeof import("../components/UI/MultiSelect.vue")['default']>
+    'LazyFileUpload': LazyComponent<typeof import("../components/Upload/FileUpload.vue")['default']>
+    'LazyUserForm': LazyComponent<typeof import("../components/Users/UserForm.vue")['default']>
     'LazyNuxtWelcome': LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']>
     'LazyNuxtLayout': LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-layout")['default']>
     'LazyNuxtErrorBoundary': LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']>
@@ -80,13 +84,15 @@ declare module 'vue' {
   export interface GlobalComponents extends _GlobalComponents { }
 }
 
-export const AuthLoginForm: typeof import("../components/Auth/LoginForm.vue")['default']
-export const InterventionsInterventionCard: typeof import("../components/Interventions/InterventionCard.vue")['default']
-export const InterventionsInterventionFilters: typeof import("../components/Interventions/InterventionFilters.vue")['default']
-export const InterventionsInterventionForm: typeof import("../components/Interventions/InterventionForm.vue")['default']
-export const UIAppHeader: typeof import("../components/UI/AppHeader.vue")['default']
-export const UploadFileUpload: typeof import("../components/Upload/FileUpload.vue")['default']
-export const UsersUserForm: typeof import("../components/Users/UserForm.vue")['default']
+export const AppHeader: typeof import("../components/AppHeader.vue")['default']
+export const LoginForm: typeof import("../components/Auth/LoginForm.vue")['default']
+export const ClientForm: typeof import("../components/Clients/ClientForm.vue")['default']
+export const InterventionCard: typeof import("../components/Interventions/InterventionCard.vue")['default']
+export const InterventionFilters: typeof import("../components/Interventions/InterventionFilters.vue")['default']
+export const InterventionForm: typeof import("../components/Interventions/InterventionForm.vue")['default']
+export const MultiSelect: typeof import("../components/UI/MultiSelect.vue")['default']
+export const FileUpload: typeof import("../components/Upload/FileUpload.vue")['default']
+export const UserForm: typeof import("../components/Users/UserForm.vue")['default']
 export const NuxtWelcome: typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']
 export const NuxtLayout: typeof import("../node_modules/nuxt/dist/app/components/nuxt-layout")['default']
 export const NuxtErrorBoundary: typeof import("../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']
@@ -111,13 +117,15 @@ export const Html: typeof import("../node_modules/nuxt/dist/head/runtime/compone
 export const Body: typeof import("../node_modules/nuxt/dist/head/runtime/components")['Body']
 export const NuxtIsland: typeof import("../node_modules/nuxt/dist/app/components/nuxt-island")['default']
 export const NuxtRouteAnnouncer: typeof import("../node_modules/nuxt/dist/app/components/server-placeholder")['default']
-export const LazyAuthLoginForm: LazyComponent<typeof import("../components/Auth/LoginForm.vue")['default']>
-export const LazyInterventionsInterventionCard: LazyComponent<typeof import("../components/Interventions/InterventionCard.vue")['default']>
-export const LazyInterventionsInterventionFilters: LazyComponent<typeof import("../components/Interventions/InterventionFilters.vue")['default']>
-export const LazyInterventionsInterventionForm: LazyComponent<typeof import("../components/Interventions/InterventionForm.vue")['default']>
-export const LazyUIAppHeader: LazyComponent<typeof import("../components/UI/AppHeader.vue")['default']>
-export const LazyUploadFileUpload: LazyComponent<typeof import("../components/Upload/FileUpload.vue")['default']>
-export const LazyUsersUserForm: LazyComponent<typeof import("../components/Users/UserForm.vue")['default']>
+export const LazyAppHeader: LazyComponent<typeof import("../components/AppHeader.vue")['default']>
+export const LazyLoginForm: LazyComponent<typeof import("../components/Auth/LoginForm.vue")['default']>
+export const LazyClientForm: LazyComponent<typeof import("../components/Clients/ClientForm.vue")['default']>
+export const LazyInterventionCard: LazyComponent<typeof import("../components/Interventions/InterventionCard.vue")['default']>
+export const LazyInterventionFilters: LazyComponent<typeof import("../components/Interventions/InterventionFilters.vue")['default']>
+export const LazyInterventionForm: LazyComponent<typeof import("../components/Interventions/InterventionForm.vue")['default']>
+export const LazyMultiSelect: LazyComponent<typeof import("../components/UI/MultiSelect.vue")['default']>
+export const LazyFileUpload: LazyComponent<typeof import("../components/Upload/FileUpload.vue")['default']>
+export const LazyUserForm: LazyComponent<typeof import("../components/Users/UserForm.vue")['default']>
 export const LazyNuxtWelcome: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']>
 export const LazyNuxtLayout: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-layout")['default']>
 export const LazyNuxtErrorBoundary: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']>

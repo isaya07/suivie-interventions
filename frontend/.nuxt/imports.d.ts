@@ -30,9 +30,12 @@ export { requestIdleCallback, cancelIdleCallback } from '#app/compat/idle-callba
 export { setInterval } from '#app/compat/interval';
 export { defineLazyHydrationComponent } from '#app/composables/lazy-hydration';
 export { useAuth } from '../composables/useAuth';
+export { useClients } from '../composables/useClients';
 export { useInterventions } from '../composables/useInterventions';
 export { useUpload } from '../composables/useUpload';
+export { useUsers } from '../composables/useUsers';
 export { useAuthStore } from '../stores/auth';
+export { useClientsStore } from '../stores/clients';
 export { useInterventionsStore } from '../stores/interventions';
 export { useUsersStore } from '../stores/users';
 export { defineStore, acceptHMRUpdate, usePinia, storeToRefs } from '../node_modules/@pinia/nuxt/dist/runtime/composables';

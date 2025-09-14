@@ -34,7 +34,7 @@
 
         <!-- Filtres -->
         <div class="card mb-6">
-          <div class="flex items-center space-x-4">
+          <div class="flex flex-wrap items-center gap-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">
                 Filtrer par rôle
@@ -48,6 +48,24 @@
                 <option value="admin">Administrateurs</option>
                 <option value="technicien">Techniciens</option>
                 <option value="manager">Managers</option>
+                <option value="client">Clients</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Type de technicien
+              </label>
+              <select
+                v-model="typeFilter"
+                class="form-input w-48"
+                @change="applyFilters"
+                :disabled="roleFilter !== 'technicien'"
+              >
+                <option value="">Tous les types</option>
+                <option value="cableur">Câbleurs</option>
+                <option value="terrassier">Terrassiers</option>
+                <option value="autre">Autres</option>
               </select>
             </div>
 
@@ -129,23 +147,32 @@
                     </div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <span
-                      :class="getRoleClasses(user.role)"
-                      class="px-2 py-1 text-xs font-medium rounded-full"
-                    >
-                      {{ getRoleText(user.role) }}
-                    </span>
+                    <div class="flex flex-col space-y-1">
+                      <span
+                        :class="getRoleClasses(user.role)"
+                        class="px-2 py-1 text-xs font-medium rounded-full inline-block w-fit"
+                      >
+                        {{ getRoleText(user.role) }}
+                      </span>
+                      <span
+                        v-if="user.role === 'technicien' && user.type_technicien"
+                        :class="getTypeClasses(user.type_technicien)"
+                        class="px-2 py-1 text-xs font-medium rounded-full inline-block w-fit"
+                      >
+                        {{ getTypeText(user.type_technicien) }}
+                      </span>
+                    </div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
                     <span
                       :class="
-                        user.actif
+                        user.is_active
                           ? 'bg-green-100 text-green-800'
                           : 'bg-red-100 text-red-800'
                       "
                       class="px-2 py-1 text-xs font-medium rounded-full"
                     >
-                      {{ user.actif ? "Actif" : "Inactif" }}
+                      {{ user.is_active ? "Actif" : "Inactif" }}
                     </span>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -170,12 +197,12 @@
                       v-if="user.id !== currentUser?.id"
                       @click="toggleUserStatus(user)"
                       :class="
-                        user.actif
+                        user.is_active
                           ? 'text-red-600 hover:text-red-800'
                           : 'text-green-600 hover:text-green-800'
                       "
                     >
-                      {{ user.actif ? "Désactiver" : "Activer" }}
+                      {{ user.is_active ? "Désactiver" : "Activer" }}
                     </button>
                   </td>
                 </tr>
@@ -260,6 +287,7 @@ const showCreateModal = ref(false);
 const showEditModal = ref(false);
 const selectedUser = ref(null);
 const roleFilter = ref("");
+const typeFilter = ref("");
 const searchTerm = ref("");
 
 const filteredUsers = computed(() => {
@@ -270,12 +298,17 @@ const filteredUsers = computed(() => {
     filtered = filtered.filter((user) => user.role === roleFilter.value);
   }
 
+  // Filtrer par type de technicien
+  if (typeFilter.value && roleFilter.value === 'technicien') {
+    filtered = filtered.filter((user) => user.type_technicien === typeFilter.value);
+  }
+
   // Filtrer par terme de recherche
   if (searchTerm.value) {
     const term = searchTerm.value.toLowerCase();
     filtered = filtered.filter(
       (user) =>
-        user.nom?.toLowerCase().includes(term) ||
+        user.nom_complet?.toLowerCase().includes(term) ||
         user.email?.toLowerCase().includes(term)
     );
   }
@@ -299,7 +332,28 @@ const getRoleText = (role) => {
       admin: "Administrateur",
       technicien: "Technicien",
       manager: "Manager",
+      client: "Client",
     }[role] || "Inconnu"
+  );
+};
+
+const getTypeClasses = (type) => {
+  return (
+    {
+      cableur: "bg-indigo-100 text-indigo-800",
+      terrassier: "bg-orange-100 text-orange-800",
+      autre: "bg-gray-100 text-gray-800",
+    }[type] || "bg-gray-100 text-gray-800"
+  );
+};
+
+const getTypeText = (type) => {
+  return (
+    {
+      cableur: "Câbleur",
+      terrassier: "Terrassier",
+      autre: "Autre",
+    }[type] || "Autre"
   );
 };
 
@@ -313,12 +367,12 @@ const editUser = (user) => {
 };
 
 const toggleUserStatus = async (user) => {
-  const action = user.actif ? "désactiver" : "activer";
+  const action = user.is_active ? "désactiver" : "activer";
 
   if (confirm(`Êtes-vous sûr de vouloir ${action} cet utilisateur ?`)) {
     await updateUser({
       id: user.id,
-      actif: !user.actif,
+      actif: !user.is_active,
     });
 
     await fetchUsers(); // Recharger la liste
@@ -343,6 +397,10 @@ const closeModals = () => {
 };
 
 const applyFilters = () => {
+  // Réinitialiser le filtre de type si on ne filtre plus sur les techniciens
+  if (roleFilter.value !== 'technicien') {
+    typeFilter.value = '';
+  }
   // Les filtres sont automatiquement appliqués via le computed
 };
 

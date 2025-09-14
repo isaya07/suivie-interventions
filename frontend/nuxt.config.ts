@@ -3,6 +3,14 @@ export default defineNuxtConfig({
 
   modules: ["@pinia/nuxt", "@nuxtjs/tailwindcss"],
 
+  // Configuration des composants
+  components: [
+    {
+      path: '~/components',
+      pathPrefix: false,
+    },
+  ],
+
   // Configuration Pinia
   pinia: {
     autoImports: ["defineStore", "storeToRefs"],
@@ -10,7 +18,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBaseUrl: process.env.API_BASE_URL || "http://localhost/api",
+      apiBaseUrl: process.env.API_BASE_URL || "http://localhost/suivie-interventions/backend/api",
     },
   },
 

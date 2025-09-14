@@ -92,8 +92,8 @@ class User {
     }
 
     public function read() {
-        $query = "SELECT id, username, email, nom, prenom, role, telephone, specialite, avatar, is_active, last_login, created_at 
-                  FROM " . $this->table_name . " 
+        $query = "SELECT id, username, email, nom, prenom, role, telephone, specialite, type_technicien, avatar, is_active, last_login, created_at
+                  FROM " . $this->table_name . "
                   ORDER BY nom, prenom";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
@@ -101,8 +101,8 @@ class User {
     }
 
     public function readTechniciens() {
-        $query = "SELECT id, username, email, nom, prenom, specialite, telephone 
-                  FROM " . $this->table_name . " 
+        $query = "SELECT id, username, email, nom, prenom, specialite, type_technicien, telephone
+                  FROM " . $this->table_name . "
                   WHERE role IN ('technicien', 'manager') AND is_active = 1
                   ORDER BY nom, prenom";
         $stmt = $this->conn->prepare($query);

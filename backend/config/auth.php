@@ -1,5 +1,7 @@
 <?php
 // config/auth.php
+require_once __DIR__ . '/../models/User.php';
+
 class Auth {
     private $conn;
 
@@ -9,7 +11,24 @@ class Auth {
 
     public function startSession() {
         if (session_status() == PHP_SESSION_NONE) {
+            // Security configurations
+            ini_set('session.cookie_httponly', 1);
+            ini_set('session.cookie_secure', isset($_SERVER['HTTPS']) ? 1 : 0);
+            ini_set('session.use_strict_mode', 1);
+            ini_set('session.cookie_samesite', 'Strict');
+
+            // Clean expired sessions before starting new one
+            $this->cleanExpiredSessions();
+
             session_start();
+
+            // Regenerate session ID periodically for security
+            if (!isset($_SESSION['last_regeneration'])) {
+                $_SESSION['last_regeneration'] = time();
+            } else if (time() - $_SESSION['last_regeneration'] > 300) { // 5 minutes
+                session_regenerate_id(true);
+                $_SESSION['last_regeneration'] = time();
+            }
         }
     }
 
@@ -24,6 +43,8 @@ class Auth {
             $_SESSION['role'] = $user->role;
             $_SESSION['email'] = $user->email;
             $_SESSION['avatar'] = $user->avatar;
+            $_SESSION['ip_address'] = $_SERVER['REMOTE_ADDR'] ?? '';
+            $_SESSION['user_agent'] = $_SERVER['HTTP_USER_AGENT'] ?? '';
 
             // Generate a session token for frontend
             $token = bin2hex(random_bytes(32));
@@ -61,11 +82,70 @@ class Auth {
     }
 
     public function isAuthenticated() {
+        // Vérifier d'abord si il y a un token dans les headers
+        $headers = getallheaders();
+        $authorization = $headers['Authorization'] ?? $headers['authorization'] ?? '';
+
+        if (preg_match('/Bearer\s+(.*)$/i', $authorization, $matches)) {
+            $token = $matches[1];
+            return $this->validateToken($token);
+        }
+
+        // Sinon vérifier les sessions PHP
         $this->startSession();
-        return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
+
+        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+            return false;
+        }
+
+        // Additional security checks
+        $current_ip = $_SERVER['REMOTE_ADDR'] ?? '';
+        $current_user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+
+        if (isset($_SESSION['ip_address']) && $_SESSION['ip_address'] !== $current_ip) {
+            // IP changed, destroy session for security
+            session_destroy();
+            return false;
+        }
+
+        if (isset($_SESSION['user_agent']) && $_SESSION['user_agent'] !== $current_user_agent) {
+            // User agent changed, destroy session for security
+            session_destroy();
+            return false;
+        }
+
+        // Check if session exists in database and is not expired
+        if (isset($_SESSION['token'])) {
+            $query = "SELECT expires_at FROM user_sessions WHERE id = :token AND user_id = :user_id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(":token", $_SESSION['token']);
+            $stmt->bindParam(":user_id", $_SESSION['user_id']);
+            $stmt->execute();
+
+            $session = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (!$session || strtotime($session['expires_at']) < time()) {
+                session_destroy();
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function getCurrentUser() {
+        // Vérifier d'abord les tokens Bearer
+        $headers = getallheaders();
+        $authorization = $headers['Authorization'] ?? $headers['authorization'] ?? '';
+
+        if (preg_match('/Bearer\s+(.*)$/i', $authorization, $matches)) {
+            $token = $matches[1];
+            $user = $this->getUserFromToken($token);
+            if ($user) {
+                return $user;
+            }
+        }
+
+        // Sinon vérifier les sessions PHP
         $this->startSession();
         if($this->isAuthenticated()) {
             return [
@@ -80,15 +160,60 @@ class Auth {
         return null;
     }
 
+    private function validateToken($token) {
+        $query = "SELECT user_id, expires_at FROM user_sessions WHERE id = :token";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":token", $token);
+        $stmt->execute();
+
+        $session = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($session && strtotime($session['expires_at']) > time()) {
+            return true;
+        }
+        return false;
+    }
+
+    private function getUserFromToken($token) {
+        $query = "SELECT s.user_id, u.username, u.nom, u.prenom, u.role, u.email, u.avatar
+                  FROM user_sessions s
+                  JOIN users u ON s.user_id = u.id
+                  WHERE s.id = :token AND s.expires_at > NOW()";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":token", $token);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($result) {
+            return [
+                'id' => $result['user_id'],
+                'username' => $result['username'],
+                'nom_complet' => $result['prenom'] . ' ' . $result['nom'],
+                'role' => $result['role'],
+                'email' => $result['email'],
+                'avatar' => $result['avatar']
+            ];
+        }
+        return null;
+    }
+
     public function hasPermission($required_role) {
         if(!$this->isAuthenticated()) {
             return false;
         }
 
-        $user_role = $_SESSION['role'];
+        // Récupérer l'utilisateur actuel (qui gère à la fois les tokens et les sessions)
+        $current_user = $this->getCurrentUser();
+        if (!$current_user || !isset($current_user['role'])) {
+            return false;
+        }
+
+        $user_role = $current_user['role'];
         $roles_hierarchy = ['client' => 1, 'technicien' => 2, 'manager' => 3, 'admin' => 4];
-        
-        return $roles_hierarchy[$user_role] >= $roles_hierarchy[$required_role];
+
+        return isset($roles_hierarchy[$user_role]) &&
+               isset($roles_hierarchy[$required_role]) &&
+               $roles_hierarchy[$user_role] >= $roles_hierarchy[$required_role];
     }
 
     private function saveSession($user_id, $token = null) {
