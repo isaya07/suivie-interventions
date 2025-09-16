@@ -1,0 +1,1 @@
+import{aX as t,aY as a}from"./DYlgVOq5.js";import{u as s}from"./DFhEUFyw.js";const u=t(()=>{const{user:e}=s();if(!e.value||e.value.role!=="admin")throw a({statusCode:403,statusMessage:"Accès interdit"})});export{u as default};

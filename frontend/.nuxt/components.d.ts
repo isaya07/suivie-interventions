@@ -15,9 +15,16 @@ interface _GlobalComponents {
       'AppHeader': typeof import("../components/AppHeader.vue")['default']
     'LoginForm': typeof import("../components/Auth/LoginForm.vue")['default']
     'ClientForm': typeof import("../components/Clients/ClientForm.vue")['default']
+    'BudgetComparison': typeof import("../components/Interventions/BudgetComparison.vue")['default']
     'InterventionCard': typeof import("../components/Interventions/InterventionCard.vue")['default']
+    'InterventionElectrique': typeof import("../components/Interventions/InterventionElectrique.vue")['default']
     'InterventionFilters': typeof import("../components/Interventions/InterventionFilters.vue")['default']
     'InterventionForm': typeof import("../components/Interventions/InterventionForm.vue")['default']
+    'InterventionSummary': typeof import("../components/Interventions/InterventionSummary.vue")['default']
+    'PhaseCard': typeof import("../components/Interventions/PhaseCard.vue")['default']
+    'PhaseDetailSummary': typeof import("../components/Interventions/PhaseDetailSummary.vue")['default']
+    'SessionHistory': typeof import("../components/Interventions/SessionHistory.vue")['default']
+    'TailwindTest': typeof import("../components/Test/TailwindTest.vue")['default']
     'MultiSelect': typeof import("../components/UI/MultiSelect.vue")['default']
     'FileUpload': typeof import("../components/Upload/FileUpload.vue")['default']
     'UserForm': typeof import("../components/Users/UserForm.vue")['default']
@@ -33,6 +40,26 @@ interface _GlobalComponents {
     'NuxtRouteAnnouncer': typeof import("../node_modules/nuxt/dist/app/components/nuxt-route-announcer")['default']
     'NuxtImg': typeof import("../node_modules/nuxt/dist/app/components/nuxt-stubs")['NuxtImg']
     'NuxtPicture': typeof import("../node_modules/nuxt/dist/app/components/nuxt-stubs")['NuxtPicture']
+    'DatePicker': typeof import("primevue/datepicker")['default']
+    'Dropdown': typeof import("primevue/dropdown")['default']
+    'InputText': typeof import("primevue/inputtext")['default']
+    'Password': typeof import("primevue/password")['default']
+    'Select': typeof import("primevue/select")['default']
+    'Textarea': typeof import("primevue/textarea")['default']
+    'Button': typeof import("primevue/button")['default']
+    'Column': typeof import("primevue/column")['default']
+    'DataTable': typeof import("primevue/datatable")['default']
+    'Card': typeof import("primevue/card")['default']
+    'ConfirmDialog': typeof import("primevue/confirmdialog")['default']
+    'Dialog': typeof import("primevue/dialog")['default']
+    'Breadcrumb': typeof import("primevue/breadcrumb")['default']
+    'MegaMenu': typeof import("primevue/megamenu")['default']
+    'Message': typeof import("primevue/message")['default']
+    'Toast': typeof import("primevue/toast")['default']
+    'Avatar': typeof import("primevue/avatar")['default']
+    'Badge': typeof import("primevue/badge")['default']
+    'ProgressBar': typeof import("primevue/progressbar")['default']
+    'ProgressSpinner': typeof import("primevue/progressspinner")['default']
     'NuxtPage': typeof import("../node_modules/nuxt/dist/pages/runtime/page")['default']
     'NoScript': typeof import("../node_modules/nuxt/dist/head/runtime/components")['NoScript']
     'Link': typeof import("../node_modules/nuxt/dist/head/runtime/components")['Link']
@@ -48,9 +75,16 @@ interface _GlobalComponents {
       'LazyAppHeader': LazyComponent<typeof import("../components/AppHeader.vue")['default']>
     'LazyLoginForm': LazyComponent<typeof import("../components/Auth/LoginForm.vue")['default']>
     'LazyClientForm': LazyComponent<typeof import("../components/Clients/ClientForm.vue")['default']>
+    'LazyBudgetComparison': LazyComponent<typeof import("../components/Interventions/BudgetComparison.vue")['default']>
     'LazyInterventionCard': LazyComponent<typeof import("../components/Interventions/InterventionCard.vue")['default']>
+    'LazyInterventionElectrique': LazyComponent<typeof import("../components/Interventions/InterventionElectrique.vue")['default']>
     'LazyInterventionFilters': LazyComponent<typeof import("../components/Interventions/InterventionFilters.vue")['default']>
     'LazyInterventionForm': LazyComponent<typeof import("../components/Interventions/InterventionForm.vue")['default']>
+    'LazyInterventionSummary': LazyComponent<typeof import("../components/Interventions/InterventionSummary.vue")['default']>
+    'LazyPhaseCard': LazyComponent<typeof import("../components/Interventions/PhaseCard.vue")['default']>
+    'LazyPhaseDetailSummary': LazyComponent<typeof import("../components/Interventions/PhaseDetailSummary.vue")['default']>
+    'LazySessionHistory': LazyComponent<typeof import("../components/Interventions/SessionHistory.vue")['default']>
+    'LazyTailwindTest': LazyComponent<typeof import("../components/Test/TailwindTest.vue")['default']>
     'LazyMultiSelect': LazyComponent<typeof import("../components/UI/MultiSelect.vue")['default']>
     'LazyFileUpload': LazyComponent<typeof import("../components/Upload/FileUpload.vue")['default']>
     'LazyUserForm': LazyComponent<typeof import("../components/Users/UserForm.vue")['default']>
@@ -66,6 +100,26 @@ interface _GlobalComponents {
     'LazyNuxtRouteAnnouncer': LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-route-announcer")['default']>
     'LazyNuxtImg': LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-stubs")['NuxtImg']>
     'LazyNuxtPicture': LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-stubs")['NuxtPicture']>
+    'LazyDatePicker': LazyComponent<typeof import("primevue/datepicker")['default']>
+    'LazyDropdown': LazyComponent<typeof import("primevue/dropdown")['default']>
+    'LazyInputText': LazyComponent<typeof import("primevue/inputtext")['default']>
+    'LazyPassword': LazyComponent<typeof import("primevue/password")['default']>
+    'LazySelect': LazyComponent<typeof import("primevue/select")['default']>
+    'LazyTextarea': LazyComponent<typeof import("primevue/textarea")['default']>
+    'LazyButton': LazyComponent<typeof import("primevue/button")['default']>
+    'LazyColumn': LazyComponent<typeof import("primevue/column")['default']>
+    'LazyDataTable': LazyComponent<typeof import("primevue/datatable")['default']>
+    'LazyCard': LazyComponent<typeof import("primevue/card")['default']>
+    'LazyConfirmDialog': LazyComponent<typeof import("primevue/confirmdialog")['default']>
+    'LazyDialog': LazyComponent<typeof import("primevue/dialog")['default']>
+    'LazyBreadcrumb': LazyComponent<typeof import("primevue/breadcrumb")['default']>
+    'LazyMegaMenu': LazyComponent<typeof import("primevue/megamenu")['default']>
+    'LazyMessage': LazyComponent<typeof import("primevue/message")['default']>
+    'LazyToast': LazyComponent<typeof import("primevue/toast")['default']>
+    'LazyAvatar': LazyComponent<typeof import("primevue/avatar")['default']>
+    'LazyBadge': LazyComponent<typeof import("primevue/badge")['default']>
+    'LazyProgressBar': LazyComponent<typeof import("primevue/progressbar")['default']>
+    'LazyProgressSpinner': LazyComponent<typeof import("primevue/progressspinner")['default']>
     'LazyNuxtPage': LazyComponent<typeof import("../node_modules/nuxt/dist/pages/runtime/page")['default']>
     'LazyNoScript': LazyComponent<typeof import("../node_modules/nuxt/dist/head/runtime/components")['NoScript']>
     'LazyLink': LazyComponent<typeof import("../node_modules/nuxt/dist/head/runtime/components")['Link']>
@@ -87,9 +141,16 @@ declare module 'vue' {
 export const AppHeader: typeof import("../components/AppHeader.vue")['default']
 export const LoginForm: typeof import("../components/Auth/LoginForm.vue")['default']
 export const ClientForm: typeof import("../components/Clients/ClientForm.vue")['default']
+export const BudgetComparison: typeof import("../components/Interventions/BudgetComparison.vue")['default']
 export const InterventionCard: typeof import("../components/Interventions/InterventionCard.vue")['default']
+export const InterventionElectrique: typeof import("../components/Interventions/InterventionElectrique.vue")['default']
 export const InterventionFilters: typeof import("../components/Interventions/InterventionFilters.vue")['default']
 export const InterventionForm: typeof import("../components/Interventions/InterventionForm.vue")['default']
+export const InterventionSummary: typeof import("../components/Interventions/InterventionSummary.vue")['default']
+export const PhaseCard: typeof import("../components/Interventions/PhaseCard.vue")['default']
+export const PhaseDetailSummary: typeof import("../components/Interventions/PhaseDetailSummary.vue")['default']
+export const SessionHistory: typeof import("../components/Interventions/SessionHistory.vue")['default']
+export const TailwindTest: typeof import("../components/Test/TailwindTest.vue")['default']
 export const MultiSelect: typeof import("../components/UI/MultiSelect.vue")['default']
 export const FileUpload: typeof import("../components/Upload/FileUpload.vue")['default']
 export const UserForm: typeof import("../components/Users/UserForm.vue")['default']
@@ -105,6 +166,26 @@ export const NuxtTime: typeof import("../node_modules/nuxt/dist/app/components/n
 export const NuxtRouteAnnouncer: typeof import("../node_modules/nuxt/dist/app/components/nuxt-route-announcer")['default']
 export const NuxtImg: typeof import("../node_modules/nuxt/dist/app/components/nuxt-stubs")['NuxtImg']
 export const NuxtPicture: typeof import("../node_modules/nuxt/dist/app/components/nuxt-stubs")['NuxtPicture']
+export const DatePicker: typeof import("primevue/datepicker")['default']
+export const Dropdown: typeof import("primevue/dropdown")['default']
+export const InputText: typeof import("primevue/inputtext")['default']
+export const Password: typeof import("primevue/password")['default']
+export const Select: typeof import("primevue/select")['default']
+export const Textarea: typeof import("primevue/textarea")['default']
+export const Button: typeof import("primevue/button")['default']
+export const Column: typeof import("primevue/column")['default']
+export const DataTable: typeof import("primevue/datatable")['default']
+export const Card: typeof import("primevue/card")['default']
+export const ConfirmDialog: typeof import("primevue/confirmdialog")['default']
+export const Dialog: typeof import("primevue/dialog")['default']
+export const Breadcrumb: typeof import("primevue/breadcrumb")['default']
+export const MegaMenu: typeof import("primevue/megamenu")['default']
+export const Message: typeof import("primevue/message")['default']
+export const Toast: typeof import("primevue/toast")['default']
+export const Avatar: typeof import("primevue/avatar")['default']
+export const Badge: typeof import("primevue/badge")['default']
+export const ProgressBar: typeof import("primevue/progressbar")['default']
+export const ProgressSpinner: typeof import("primevue/progressspinner")['default']
 export const NuxtPage: typeof import("../node_modules/nuxt/dist/pages/runtime/page")['default']
 export const NoScript: typeof import("../node_modules/nuxt/dist/head/runtime/components")['NoScript']
 export const Link: typeof import("../node_modules/nuxt/dist/head/runtime/components")['Link']
@@ -120,9 +201,16 @@ export const NuxtRouteAnnouncer: typeof import("../node_modules/nuxt/dist/app/co
 export const LazyAppHeader: LazyComponent<typeof import("../components/AppHeader.vue")['default']>
 export const LazyLoginForm: LazyComponent<typeof import("../components/Auth/LoginForm.vue")['default']>
 export const LazyClientForm: LazyComponent<typeof import("../components/Clients/ClientForm.vue")['default']>
+export const LazyBudgetComparison: LazyComponent<typeof import("../components/Interventions/BudgetComparison.vue")['default']>
 export const LazyInterventionCard: LazyComponent<typeof import("../components/Interventions/InterventionCard.vue")['default']>
+export const LazyInterventionElectrique: LazyComponent<typeof import("../components/Interventions/InterventionElectrique.vue")['default']>
 export const LazyInterventionFilters: LazyComponent<typeof import("../components/Interventions/InterventionFilters.vue")['default']>
 export const LazyInterventionForm: LazyComponent<typeof import("../components/Interventions/InterventionForm.vue")['default']>
+export const LazyInterventionSummary: LazyComponent<typeof import("../components/Interventions/InterventionSummary.vue")['default']>
+export const LazyPhaseCard: LazyComponent<typeof import("../components/Interventions/PhaseCard.vue")['default']>
+export const LazyPhaseDetailSummary: LazyComponent<typeof import("../components/Interventions/PhaseDetailSummary.vue")['default']>
+export const LazySessionHistory: LazyComponent<typeof import("../components/Interventions/SessionHistory.vue")['default']>
+export const LazyTailwindTest: LazyComponent<typeof import("../components/Test/TailwindTest.vue")['default']>
 export const LazyMultiSelect: LazyComponent<typeof import("../components/UI/MultiSelect.vue")['default']>
 export const LazyFileUpload: LazyComponent<typeof import("../components/Upload/FileUpload.vue")['default']>
 export const LazyUserForm: LazyComponent<typeof import("../components/Users/UserForm.vue")['default']>
@@ -138,6 +226,26 @@ export const LazyNuxtTime: LazyComponent<typeof import("../node_modules/nuxt/dis
 export const LazyNuxtRouteAnnouncer: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-route-announcer")['default']>
 export const LazyNuxtImg: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-stubs")['NuxtImg']>
 export const LazyNuxtPicture: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-stubs")['NuxtPicture']>
+export const LazyDatePicker: LazyComponent<typeof import("primevue/datepicker")['default']>
+export const LazyDropdown: LazyComponent<typeof import("primevue/dropdown")['default']>
+export const LazyInputText: LazyComponent<typeof import("primevue/inputtext")['default']>
+export const LazyPassword: LazyComponent<typeof import("primevue/password")['default']>
+export const LazySelect: LazyComponent<typeof import("primevue/select")['default']>
+export const LazyTextarea: LazyComponent<typeof import("primevue/textarea")['default']>
+export const LazyButton: LazyComponent<typeof import("primevue/button")['default']>
+export const LazyColumn: LazyComponent<typeof import("primevue/column")['default']>
+export const LazyDataTable: LazyComponent<typeof import("primevue/datatable")['default']>
+export const LazyCard: LazyComponent<typeof import("primevue/card")['default']>
+export const LazyConfirmDialog: LazyComponent<typeof import("primevue/confirmdialog")['default']>
+export const LazyDialog: LazyComponent<typeof import("primevue/dialog")['default']>
+export const LazyBreadcrumb: LazyComponent<typeof import("primevue/breadcrumb")['default']>
+export const LazyMegaMenu: LazyComponent<typeof import("primevue/megamenu")['default']>
+export const LazyMessage: LazyComponent<typeof import("primevue/message")['default']>
+export const LazyToast: LazyComponent<typeof import("primevue/toast")['default']>
+export const LazyAvatar: LazyComponent<typeof import("primevue/avatar")['default']>
+export const LazyBadge: LazyComponent<typeof import("primevue/badge")['default']>
+export const LazyProgressBar: LazyComponent<typeof import("primevue/progressbar")['default']>
+export const LazyProgressSpinner: LazyComponent<typeof import("primevue/progressspinner")['default']>
 export const LazyNuxtPage: LazyComponent<typeof import("../node_modules/nuxt/dist/pages/runtime/page")['default']>
 export const LazyNoScript: LazyComponent<typeof import("../node_modules/nuxt/dist/head/runtime/components")['NoScript']>
 export const LazyLink: LazyComponent<typeof import("../node_modules/nuxt/dist/head/runtime/components")['Link']>

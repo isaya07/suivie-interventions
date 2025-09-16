@@ -6,18 +6,19 @@
       <div class="px-4 py-6 sm:px-0">
         <!-- En-tête -->
         <div class="mb-8">
-          <h1 class="text-2xl font-bold text-gray-900">Mon Profil</h1>
-          <p class="text-gray-600">Gérer vos informations personnelles</p>
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Mon Profil</h1>
+          <p class="text-gray-600 dark:text-gray-400">Gérer vos informations personnelles</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <!-- Informations personnelles -->
           <div class="lg:col-span-2">
-            <div class="bg-white shadow rounded-lg">
-              <div class="p-6 border-b border-gray-200">
-                <h2 class="text-lg font-medium text-gray-900">Informations personnelles</h2>
-              </div>
-              <form @submit.prevent="updateProfile" class="p-6 space-y-6">
+            <Card>
+              <template #content>
+                <div class="p-6 border-b border-gray-200">
+                  <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">Informations personnelles</h2>
+                </div>
+                <form @submit.prevent="updateProfile" class="p-6 space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label class="block text-sm font-medium text-gray-700">Prénom</label>
@@ -78,17 +79,19 @@
                     <span v-else>Enregistrer les modifications</span>
                   </button>
                 </div>
-              </form>
-            </div>
+                </form>
+              </template>
+            </Card>
           </div>
 
           <!-- Informations du compte -->
           <div>
-            <div class="bg-white shadow rounded-lg">
-              <div class="p-6 border-b border-gray-200">
-                <h2 class="text-lg font-medium text-gray-900">Informations du compte</h2>
-              </div>
-              <div class="p-6 space-y-4">
+            <Card>
+              <template #content>
+                <div class="p-6 border-b border-gray-200">
+                  <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">Informations du compte</h2>
+                </div>
+                <div class="p-6 space-y-4">
                 <div>
                   <label class="block text-sm font-medium text-gray-700">Nom d'utilisateur</label>
                   <p class="mt-1 text-sm text-gray-900">{{ user?.username }}</p>
@@ -104,15 +107,17 @@
                   <label class="block text-sm font-medium text-gray-700">Dernière connexion</label>
                   <p class="mt-1 text-sm text-gray-900">{{ formatDate(user.last_login) }}</p>
                 </div>
-              </div>
-            </div>
+                </div>
+              </template>
+            </Card>
 
             <!-- Changer le mot de passe -->
-            <div class="bg-white shadow rounded-lg mt-6">
-              <div class="p-6 border-b border-gray-200">
-                <h2 class="text-lg font-medium text-gray-900">Sécurité</h2>
-              </div>
-              <form @submit.prevent="changePassword" class="p-6 space-y-4">
+            <Card class="mt-6">
+              <template #content>
+                <div class="p-6 border-b border-gray-200">
+                  <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">Sécurité</h2>
+                </div>
+                <form @submit.prevent="changePassword" class="p-6 space-y-4">
                 <div>
                   <label class="block text-sm font-medium text-gray-700">Nouveau mot de passe</label>
                   <input
@@ -141,8 +146,9 @@
                   <span v-if="passwordLoading">Changement...</span>
                   <span v-else>Changer le mot de passe</span>
                 </button>
-              </form>
-            </div>
+                </form>
+              </template>
+            </Card>
           </div>
         </div>
 

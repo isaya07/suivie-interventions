@@ -4,14 +4,14 @@
       <label for="nom" class="block text-sm font-medium text-gray-700">
         Nom complet *
       </label>
-      <input
+      <InputText
         id="nom"
         v-model="form.nom"
         type="text"
         required
-        class="form-input"
-        :class="{ 'border-red-500': errors.nom }"
+        :invalid="!!errors.nom"
         placeholder="Nom complet"
+        class="w-full"
       />
       <p v-if="errors.nom" class="mt-1 text-sm text-red-600">
         {{ errors.nom }}
@@ -22,14 +22,14 @@
       <label for="email" class="block text-sm font-medium text-gray-700">
         Email *
       </label>
-      <input
+      <InputText
         id="email"
         v-model="form.email"
         type="email"
         required
-        class="form-input"
-        :class="{ 'border-red-500': errors.email }"
+        :invalid="!!errors.email"
         placeholder="email@exemple.com"
+        class="w-full"
       />
       <p v-if="errors.email" class="mt-1 text-sm text-red-600">
         {{ errors.email }}
@@ -40,14 +40,14 @@
       <label for="password" class="block text-sm font-medium text-gray-700">
         Mot de passe *
       </label>
-      <input
+      <Password
         id="password"
         v-model="form.password"
-        type="password"
         :required="!isEditing"
-        class="form-input"
-        :class="{ 'border-red-500': errors.password }"
+        :invalid="!!errors.password"
         placeholder="••••••••"
+        :feedback="false"
+        class="w-full"
       />
       <p v-if="errors.password" class="mt-1 text-sm text-red-600">
         {{ errors.password }}
@@ -58,18 +58,21 @@
       <label for="role" class="block text-sm font-medium text-gray-700">
         Rôle *
       </label>
-      <select
+      <Select
         id="role"
         v-model="form.role"
+        :options="[
+          { label: 'Technicien', value: 'technicien' },
+          { label: 'Manager', value: 'manager' },
+          { label: 'Administrateur', value: 'admin' }
+        ]"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Sélectionner un rôle"
         required
-        class="form-input"
-        :class="{ 'border-red-500': errors.role }"
-      >
-        <option value="">Sélectionner un rôle</option>
-        <option value="technicien">Technicien</option>
-        <option value="manager">Manager</option>
-        <option value="admin">Administrateur</option>
-      </select>
+        :invalid="!!errors.role"
+        class="w-full"
+      />
       <p v-if="errors.role" class="mt-1 text-sm text-red-600">
         {{ errors.role }}
       </p>
@@ -79,21 +82,20 @@
       <label for="telephone" class="block text-sm font-medium text-gray-700">
         Téléphone
       </label>
-      <input
+      <InputText
         id="telephone"
         v-model="form.telephone"
         type="tel"
-        class="form-input"
         placeholder="06 12 34 56 78"
+        class="w-full"
       />
     </div>
 
     <div class="flex items-center">
-      <input
+      <Checkbox
         id="actif"
         v-model="form.actif"
-        type="checkbox"
-        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+        :binary="true"
       />
       <label for="actif" class="ml-2 block text-sm text-gray-900">
         Utilisateur actif
@@ -101,12 +103,19 @@
     </div>
 
     <div class="flex justify-end space-x-3 pt-4">
-      <button type="button" @click="$emit('cancel')" class="btn-secondary">
-        Annuler
-      </button>
-      <button type="submit" :disabled="loading" class="btn-primary">
-        {{ loading ? "Enregistrement..." : isEditing ? "Modifier" : "Créer" }}
-      </button>
+      <Button
+        type="button"
+        @click="$emit('cancel')"
+        label="Annuler"
+        severity="secondary"
+        outlined
+      />
+      <Button
+        type="submit"
+        :disabled="loading"
+        :loading="loading"
+        :label="loading ? 'Enregistrement...' : isEditing ? 'Modifier' : 'Créer'"
+      />
     </div>
   </form>
 </template>

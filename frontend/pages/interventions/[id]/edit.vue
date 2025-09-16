@@ -28,8 +28,9 @@
         </div>
 
         <!-- Formulaire -->
-        <div v-else-if="intervention" class="bg-white shadow rounded-lg">
-          <form @submit.prevent="handleSubmit" class="space-y-6 p-6">
+        <Card v-else-if="intervention">
+          <template #content>
+            <form @submit.prevent="handleSubmit" class="space-y-6 p-6">
             <!-- Informations générales -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -167,8 +168,9 @@
                 <span v-else>Sauvegarder</span>
               </button>
             </div>
-          </form>
-        </div>
+            </form>
+          </template>
+        </Card>
 
         <!-- Erreur -->
         <div v-else class="text-center py-8">

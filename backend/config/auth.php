@@ -1,28 +1,47 @@
 <?php
-// config/auth.php
+/**
+ * Classe d'authentification et gestion de session
+ *
+ * Fournit un système d'authentification complet avec :
+ * - Connexion par identifiants (email/nom + mot de passe)
+ * - Gestion de sessions sécurisées (PHP sessions + tokens Bearer)
+ * - Système de permissions basé sur les rôles hiérarchiques
+ * - Protection contre les attaques (session fixation, CSRF, hijacking)
+ * - Nettoyage automatique des sessions expirées
+ */
+
 require_once __DIR__ . '/../models/User.php';
 
 class Auth {
     private $conn;
 
+    /**
+     * Constructeur - Initialise avec la connexion base de données
+     * @param PDO $db Instance de connexion PDO
+     */
     public function __construct($db) {
         $this->conn = $db;
     }
 
+    /**
+     * Démarre une session PHP sécurisée
+     * Configure les paramètres de sécurité et nettoie les sessions expirées
+     * Régénère périodiquement l'ID de session pour éviter la fixation
+     */
     public function startSession() {
         if (session_status() == PHP_SESSION_NONE) {
-            // Security configurations
-            ini_set('session.cookie_httponly', 1);
-            ini_set('session.cookie_secure', isset($_SERVER['HTTPS']) ? 1 : 0);
-            ini_set('session.use_strict_mode', 1);
-            ini_set('session.cookie_samesite', 'Strict');
+            // Configurations de sécurité pour les cookies de session
+            ini_set('session.cookie_httponly', 1);  // Empêche l'accès JavaScript aux cookies
+            ini_set('session.cookie_secure', isset($_SERVER['HTTPS']) ? 1 : 0);  // HTTPS uniquement si disponible
+            ini_set('session.use_strict_mode', 1);  // Refuse les sessions non initialisées
+            ini_set('session.cookie_samesite', 'Strict');  // Protection CSRF
 
-            // Clean expired sessions before starting new one
+            // Nettoyage préventif des sessions expirées
             $this->cleanExpiredSessions();
 
             session_start();
 
-            // Regenerate session ID periodically for security
+            // Régénération périodique de l'ID de session (protection contre fixation)
             if (!isset($_SESSION['last_regeneration'])) {
                 $_SESSION['last_regeneration'] = time();
             } else if (time() - $_SESSION['last_regeneration'] > 300) { // 5 minutes
@@ -32,30 +51,43 @@ class Auth {
         }
     }
 
+    /**
+     * Authentifie un utilisateur avec ses identifiants
+     *
+     * @param string $username Email ou nom d'utilisateur
+     * @param string $password Mot de passe en clair
+     * @return array Résultat de l'authentification avec données utilisateur si succès
+     */
     public function login($username, $password) {
         $user = new User($this->conn);
 
+        // Vérification des identifiants via le modèle User
         if($user->login($username, $password)) {
             $this->startSession();
+
+            // Stockage des données utilisateur en session
             $_SESSION['user_id'] = $user->id;
             $_SESSION['username'] = $user->username;
             $_SESSION['nom_complet'] = $user->prenom . ' ' . $user->nom;
             $_SESSION['role'] = $user->role;
             $_SESSION['email'] = $user->email;
             $_SESSION['avatar'] = $user->avatar;
+
+            // Données de sécurité pour détection de hijacking
             $_SESSION['ip_address'] = $_SERVER['REMOTE_ADDR'] ?? '';
             $_SESSION['user_agent'] = $_SERVER['HTTP_USER_AGENT'] ?? '';
 
-            // Generate a session token for frontend
+            // Génération d'un token unique pour compatibilité frontend
             $token = bin2hex(random_bytes(32));
             $_SESSION['token'] = $token;
 
-            // Enregistrer la session en base
+            // Sauvegarde de la session en base de données
             $this->saveSession($user->id, $token);
 
+            // Réponse standardisée avec données utilisateur
             return [
                 'success' => true,
-                'token' => $token, // Add token for frontend compatibility
+                'token' => $token,
                 'user' => [
                     'id' => $user->id,
                     'username' => $user->username,

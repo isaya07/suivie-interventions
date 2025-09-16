@@ -30,9 +30,34 @@ export default defineNuxtPlugin(() => {
     },
   });
 
+  // Créer une fonction qui peut être appelée directement ET avoir des méthodes
+  const apiFunction = (url, options = {}) => {
+    return api(url, options);
+  };
+
+  // Ajouter les méthodes HTTP à la fonction
+  apiFunction.get = (url, options = {}) => {
+    return api(url, { method: 'GET', ...options });
+  };
+
+  apiFunction.post = (url, body = {}, options = {}) => {
+    return api(url, { method: 'POST', body, ...options });
+  };
+
+  apiFunction.put = (url, body = {}, options = {}) => {
+    return api(url, { method: 'PUT', body, ...options });
+  };
+
+  apiFunction.delete = (url, options = {}) => {
+    return api(url, { method: 'DELETE', ...options });
+  };
+
+  // Accès direct à $fetch pour compatibilité
+  apiFunction.raw = api;
+
   return {
     provide: {
-      api,
+      api: apiFunction,
     },
   };
 });

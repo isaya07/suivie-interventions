@@ -5,15 +5,15 @@
         <label for="titre" class="block text-sm font-medium text-gray-700">
           Titre *
         </label>
-        <input
+        <InputText
           id="titre"
           v-model="form.titre"
           type="text"
           required
-          class="form-input"
-          :class="{ 'border-red-500': errors.titre }"
+          :invalid="!!errors.titre"
           placeholder="Titre de l'intervention"
-        >
+          class="w-full"
+        />
         <p v-if="errors.titre" class="mt-1 text-sm text-red-600">
           {{ errors.titre }}
         </p>
@@ -23,15 +23,15 @@
         <label for="description" class="block text-sm font-medium text-gray-700">
           Description *
         </label>
-        <textarea
+        <Textarea
           id="description"
           v-model="form.description"
           required
           rows="4"
-          class="form-input"
-          :class="{ 'border-red-500': errors.description }"
+          :invalid="!!errors.description"
           placeholder="Description détaillée de l'intervention"
-        ></textarea>
+          class="w-full"
+        />
         <p v-if="errors.description" class="mt-1 text-sm text-red-600">
           {{ errors.description }}
         </p>
@@ -41,22 +41,16 @@
         <label for="technicien_id" class="block text-sm font-medium text-gray-700">
           Technicien assigné *
         </label>
-        <select
+        <Select
           id="technicien_id"
           v-model="form.technicien_id"
-          required
-          class="form-input"
-          :class="{ 'border-red-500': errors.technicien_id }"
-        >
-          <option value="">Sélectionner un technicien</option>
-          <option
-            v-for="technicien in techniciens"
-            :key="technicien.id"
-            :value="technicien.id"
-          >
-            {{ technicien.nom }}
-          </option>
-        </select>
+          :options="techniciens"
+          optionLabel="nom"
+          optionValue="id"
+          placeholder="Sélectionner un technicien"
+          :invalid="!!errors.technicien_id"
+          class="w-full"
+        />
         <p v-if="errors.technicien_id" class="mt-1 text-sm text-red-600">
           {{ errors.technicien_id }}
         </p>
@@ -66,59 +60,61 @@
         <label for="priorite" class="block text-sm font-medium text-gray-700">
           Priorité
         </label>
-        <select
+        <Select
           id="priorite"
           v-model="form.priorite"
-          class="form-input"
-        >
-          <option value="basse">Basse</option>
-          <option value="normale">Normale</option>
-          <option value="haute">Haute</option>
-          <option value="urgente">Urgente</option>
-        </select>
+          :options="[
+            { label: 'Basse', value: 'basse' },
+            { label: 'Normale', value: 'normale' },
+            { label: 'Haute', value: 'haute' },
+            { label: 'Urgente', value: 'urgente' }
+          ]"
+          optionLabel="label"
+          optionValue="value"
+          class="w-full"
+        />
       </div>
       
       <div>
         <label for="date_prevue" class="block text-sm font-medium text-gray-700">
           Date prévue
         </label>
-        <input
+        <DatePicker
           id="date_prevue"
           v-model="form.date_prevue"
-          type="date"
-          class="form-input"
-        >
+          dateFormat="dd/mm/yy"
+          class="w-full"
+        />
       </div>
       
       <div>
         <label for="lieu" class="block text-sm font-medium text-gray-700">
           Lieu
         </label>
-        <input
+        <InputText
           id="lieu"
           v-model="form.lieu"
           type="text"
-          class="form-input"
           placeholder="Lieu de l'intervention"
-        >
+          class="w-full"
+        />
       </div>
     </div>
     
     <div class="flex justify-end space-x-3">
-      <button
+      <Button
         type="button"
         @click="$emit('cancel')"
-        class="btn-secondary"
-      >
-        Annuler
-      </button>
-      <button
+        label="Annuler"
+        severity="secondary"
+        outlined
+      />
+      <Button
         type="submit"
         :disabled="loading"
-        class="btn-primary"
-      >
-        {{ loading ? 'Enregistrement...' : (isEditing ? 'Modifier' : 'Créer') }}
-      </button>
+        :loading="loading"
+        :label="loading ? 'Enregistrement...' : (isEditing ? 'Modifier' : 'Créer')"
+      />
     </div>
   </form>
 </template>

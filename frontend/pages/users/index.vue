@@ -7,271 +7,220 @@
         <!-- En-tête -->
         <div class="flex justify-between items-center mb-6">
           <div>
-            <h1 class="text-2xl font-bold text-gray-900">Utilisateurs</h1>
-            <p class="text-gray-600">Gérez les utilisateurs et techniciens</p>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Utilisateurs</h1>
+            <p class="text-gray-600 dark:text-gray-400">Gérez les utilisateurs et techniciens</p>
           </div>
 
-          <button
+          <Button
+            label="Nouvel utilisateur"
+            icon="pi pi-plus"
             @click="showCreateModal = true"
-            class="btn-primary flex items-center"
-          >
-            <svg
-              class="w-5 h-5 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-              ></path>
-            </svg>
-            Nouvel utilisateur
-          </button>
+            class="p-button-primary"
+          />
         </div>
 
-        <!-- Filtres -->
-        <div class="card mb-6">
-          <div class="flex flex-wrap items-center gap-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                Filtrer par rôle
-              </label>
-              <select
-                v-model="roleFilter"
-                class="form-input w-48"
-                @change="applyFilters"
-              >
-                <option value="">Tous les rôles</option>
-                <option value="admin">Administrateurs</option>
-                <option value="technicien">Techniciens</option>
-                <option value="manager">Managers</option>
-                <option value="client">Clients</option>
-              </select>
-            </div>
+        <!-- Filtres rapides -->
+        <Card class="mb-6">
+          <template #content>
+            <div class="flex flex-wrap items-end gap-4">
+              <div class="flex-1 min-w-64">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Recherche
+                </label>
+                <InputText
+                  v-model="searchTerm"
+                  placeholder="Nom, email..."
+                  class="w-full"
+                  icon="pi pi-search"
+                />
+              </div>
 
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                Type de technicien
-              </label>
-              <select
-                v-model="typeFilter"
-                class="form-input w-48"
-                @change="applyFilters"
-                :disabled="roleFilter !== 'technicien'"
-              >
-                <option value="">Tous les types</option>
-                <option value="cableur">Câbleurs</option>
-                <option value="terrassier">Terrassiers</option>
-                <option value="autre">Autres</option>
-              </select>
-            </div>
+              <div class="min-w-48">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Rôle
+                </label>
+                <Select
+                  v-model="roleFilter"
+                  :options="roleOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Tous les rôles"
+                  class="w-full"
+                  @change="applyFilters"
+                />
+              </div>
 
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                Recherche
-              </label>
-              <input
-                v-model="searchTerm"
-                type="text"
-                class="form-input w-64"
-                placeholder="Nom, email..."
-                @input="applyFilters"
-              />
+              <div class="min-w-48">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Type technicien
+                </label>
+                <Select
+                  v-model="typeFilter"
+                  :options="typeOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Tous les types"
+                  :disabled="roleFilter !== 'technicien'"
+                  class="w-full"
+                  @change="applyFilters"
+                />
+              </div>
             </div>
-          </div>
-        </div>
+          </template>
+        </Card>
 
         <!-- Liste des utilisateurs -->
-        <div v-if="loading" class="flex justify-center py-8">
-          <div
-            class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"
-          ></div>
-        </div>
+        <Card>
+          <template #content>
+            <div v-if="loading" class="flex justify-center py-8">
+              <ProgressSpinner style="width: 50px; height: 50px" strokeWidth="4" />
+            </div>
 
-        <div v-else class="card">
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Utilisateur
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Rôle
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Statut
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Créé le
-                  </th>
-                  <th
-                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr
-                  v-for="user in filteredUsers"
-                  :key="user.id"
-                  class="hover:bg-gray-50"
-                >
-                  <td class="px-6 py-4 whitespace-nowrap">
+            <div v-else>
+              <DataTable
+                :value="filteredUsers"
+                :paginator="true"
+                :rows="10"
+                :rowsPerPageOptions="[5, 10, 20, 50]"
+                :totalRecords="filteredUsers.length"
+                paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+                currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} utilisateurs"
+                class="p-datatable-sm"
+                sortField="nom"
+                :sortOrder="1"
+                :globalFilterFields="['nom', 'email']"
+              >
+                <Column field="nom" header="Utilisateur" :sortable="true">
+                  <template #body="{ data }">
                     <div class="flex items-center">
-                      <div
-                        class="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium"
-                      >
-                        {{ user.nom?.[0] || "U" }}
-                      </div>
-                      <div class="ml-4">
-                        <div class="text-sm font-medium text-gray-900">
-                          {{ user.nom }}
-                        </div>
-                        <div class="text-sm text-gray-500">
-                          {{ user.email }}
-                        </div>
+                      <Avatar
+                        :label="data.nom?.[0] || 'U'"
+                        class="mr-3"
+                        style="background-color: #3b82f6; color: white"
+                        shape="circle"
+                      />
+                      <div>
+                        <div class="text-sm font-medium text-gray-900">{{ data.nom }}</div>
+                        <div class="text-sm text-gray-500">{{ data.email }}</div>
                       </div>
                     </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex flex-col space-y-1">
-                      <span
-                        :class="getRoleClasses(user.role)"
-                        class="px-2 py-1 text-xs font-medium rounded-full inline-block w-fit"
-                      >
-                        {{ getRoleText(user.role) }}
-                      </span>
-                      <span
-                        v-if="user.role === 'technicien' && user.type_technicien"
-                        :class="getTypeClasses(user.type_technicien)"
-                        class="px-2 py-1 text-xs font-medium rounded-full inline-block w-fit"
-                      >
-                        {{ getTypeText(user.type_technicien) }}
-                      </span>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span
-                      :class="
-                        user.is_active
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
-                      "
-                      class="px-2 py-1 text-xs font-medium rounded-full"
-                    >
-                      {{ user.is_active ? "Actif" : "Inactif" }}
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ formatDate(user.date_creation) }}
-                  </td>
-                  <td
-                    class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2"
-                  >
-                    <NuxtLink
-                      :to="`/users/${user.id}`"
-                      class="text-blue-600 hover:text-blue-800"
-                    >
-                      Voir
-                    </NuxtLink>
-                    <button
-                      @click="editUser(user)"
-                      class="text-gray-600 hover:text-gray-800"
-                    >
-                      Modifier
-                    </button>
-                    <button
-                      v-if="user.id !== currentUser?.id"
-                      @click="toggleUserStatus(user)"
-                      :class="
-                        user.is_active
-                          ? 'text-red-600 hover:text-red-800'
-                          : 'text-green-600 hover:text-green-800'
-                      "
-                    >
-                      {{ user.is_active ? "Désactiver" : "Activer" }}
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                  </template>
+                </Column>
 
-          <div v-if="filteredUsers.length === 0" class="text-center py-8">
-            <svg
-              class="mx-auto h-12 w-12 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-              ></path>
-            </svg>
-            <h3 class="mt-2 text-sm font-medium text-gray-900">
-              Aucun utilisateur trouvé
-            </h3>
-            <p class="mt-1 text-sm text-gray-500">
-              Aucun utilisateur ne correspond à vos critères.
-            </p>
-          </div>
-        </div>
+                <Column header="Rôle" :sortable="true" sortField="role">
+                  <template #body="{ data }">
+                    <div class="flex flex-col space-y-1">
+                      <Badge
+                        :value="getRoleText(data.role)"
+                        :severity="getRoleSeverity(data.role)"
+                        size="small"
+                      />
+                      <Badge
+                        v-if="data.role === 'technicien' && data.type_technicien"
+                        :value="getTypeText(data.type_technicien)"
+                        :severity="getTypeSeverity(data.type_technicien)"
+                        size="small"
+                      />
+                    </div>
+                  </template>
+                </Column>
+
+                <Column header="Contact" :sortable="false">
+                  <template #body="{ data }">
+                    <div>
+                      <div class="text-sm text-gray-900">{{ data.telephone || '-' }}</div>
+                      <div class="text-sm text-gray-500">{{ formatDate(data.date_creation) }}</div>
+                    </div>
+                  </template>
+                </Column>
+
+                <Column header="Statut" :sortable="true" sortField="is_active">
+                  <template #body="{ data }">
+                    <Badge
+                      :value="data.is_active ? 'Actif' : 'Inactif'"
+                      :severity="data.is_active ? 'success' : 'danger'"
+                      size="small"
+                    />
+                  </template>
+                </Column>
+
+                <Column header="Actions" :sortable="false" style="width: 150px">
+                  <template #body="{ data }">
+                    <div class="flex space-x-1">
+                      <Button
+                        icon="pi pi-eye"
+                        outlined
+                        size="small"
+                        @click="$router.push(`/users/${data.id}`)"
+                        v-tooltip.top="'Voir les détails'"
+                      />
+                      <Button
+                        icon="pi pi-pencil"
+                        outlined
+                        size="small"
+                        @click="editUser(data)"
+                        v-tooltip.top="'Modifier'"
+                      />
+                      <Button
+                        v-if="data.id !== currentUser?.id"
+                        :icon="data.is_active ? 'pi pi-times' : 'pi pi-check'"
+                        outlined
+                        size="small"
+                        :severity="data.is_active ? 'danger' : 'success'"
+                        @click="toggleUserStatusConfirm(data)"
+                        :v-tooltip.top="data.is_active ? 'Désactiver' : 'Activer'"
+                      />
+                    </div>
+                  </template>
+                </Column>
+
+                <template #empty>
+                  <div class="text-center py-8">
+                    <i class="pi pi-users text-gray-400 text-4xl mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Aucun utilisateur trouvé</h3>
+                    <p class="text-sm text-gray-500">Aucun utilisateur ne correspond à vos critères.</p>
+                  </div>
+                </template>
+              </DataTable>
+            </div>
+          </template>
+        </Card>
       </div>
     </main>
 
     <!-- Modal de création/édition -->
-    <div
-      v-if="showCreateModal || showEditModal"
-      class="fixed inset-0 z-50 overflow-y-auto"
-      aria-labelledby="modal-title"
-      role="dialog"
-      aria-modal="true"
+    <Dialog
+      v-model:visible="showCreateModal"
+      :modal="true"
+      header="Nouvel utilisateur"
+      :style="{ width: '50rem' }"
+      :maximizable="true"
+      :closable="true"
     >
-      <div
-        class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
-      >
-        <div
-          class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-          @click="closeModals"
-        ></div>
+      <UserForm
+        :user="null"
+        @submit="handleUserSubmit"
+        @cancel="showCreateModal = false"
+      />
+    </Dialog>
 
-        <div
-          class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-        >
-          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
-              {{
-                showCreateModal
-                  ? "Nouvel utilisateur"
-                  : "Modifier l'utilisateur"
-              }}
-            </h3>
+    <Dialog
+      v-model:visible="showEditModal"
+      :modal="true"
+      header="Modifier l'utilisateur"
+      :style="{ width: '50rem' }"
+      :maximizable="true"
+      :closable="true"
+    >
+      <UserForm
+        :user="selectedUser"
+        @submit="handleUserSubmit"
+        @cancel="showEditModal = false"
+      />
+    </Dialog>
 
-            <UserForm
-              :user="selectedUser"
-              @submit="handleUserSubmit"
-              @cancel="closeModals"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- Confirmation de suppression -->
+    <ConfirmDialog />
   </div>
 </template>
 
@@ -280,8 +229,9 @@ definePageMeta({
   middleware: ["auth", "admin"],
 });
 
+const { $confirm, $toast } = useNuxtApp();
 const { user: currentUser } = useAuth();
-const { users, fetchUsers, updateUser, loading } = useUsers();
+const { users, fetchUsers, createUser, updateUser, loading } = useUsers();
 
 const showCreateModal = ref(false);
 const showEditModal = ref(false);
@@ -289,6 +239,19 @@ const selectedUser = ref(null);
 const roleFilter = ref("");
 const typeFilter = ref("");
 const searchTerm = ref("");
+
+const roleOptions = [
+  { label: 'Administrateurs', value: 'admin' },
+  { label: 'Techniciens', value: 'technicien' },
+  { label: 'Managers', value: 'manager' },
+  { label: 'Clients', value: 'client' }
+];
+
+const typeOptions = [
+  { label: 'Câbleurs', value: 'cableur' },
+  { label: 'Terrassiers', value: 'terrassier' },
+  { label: 'Autres', value: 'autre' }
+];
 
 const filteredUsers = computed(() => {
   let filtered = users.value;
@@ -308,23 +271,13 @@ const filteredUsers = computed(() => {
     const term = searchTerm.value.toLowerCase();
     filtered = filtered.filter(
       (user) =>
-        user.nom_complet?.toLowerCase().includes(term) ||
+        user.nom?.toLowerCase().includes(term) ||
         user.email?.toLowerCase().includes(term)
     );
   }
 
   return filtered;
 });
-
-const getRoleClasses = (role) => {
-  return (
-    {
-      admin: "bg-purple-100 text-purple-800",
-      technicien: "bg-blue-100 text-blue-800",
-      manager: "bg-green-100 text-green-800",
-    }[role] || "bg-gray-100 text-gray-800"
-  );
-};
 
 const getRoleText = (role) => {
   return (
@@ -337,13 +290,14 @@ const getRoleText = (role) => {
   );
 };
 
-const getTypeClasses = (type) => {
+const getRoleSeverity = (role) => {
   return (
     {
-      cableur: "bg-indigo-100 text-indigo-800",
-      terrassier: "bg-orange-100 text-orange-800",
-      autre: "bg-gray-100 text-gray-800",
-    }[type] || "bg-gray-100 text-gray-800"
+      admin: "danger",
+      technicien: "info",
+      manager: "success",
+      client: "secondary",
+    }[role] || "secondary"
   );
 };
 
@@ -357,7 +311,18 @@ const getTypeText = (type) => {
   );
 };
 
+const getTypeSeverity = (type) => {
+  return (
+    {
+      cableur: "info",
+      terrassier: "warning",
+      autre: "secondary",
+    }[type] || "secondary"
+  );
+};
+
 const formatDate = (dateString) => {
+  if (!dateString) return 'Non définie';
   return new Date(dateString).toLocaleDateString("fr-FR");
 };
 
@@ -366,28 +331,65 @@ const editUser = (user) => {
   showEditModal.value = true;
 };
 
-const toggleUserStatus = async (user) => {
+const toggleUserStatusConfirm = async (user) => {
   const action = user.is_active ? "désactiver" : "activer";
 
-  if (confirm(`Êtes-vous sûr de vouloir ${action} cet utilisateur ?`)) {
-    await updateUser({
-      id: user.id,
-      actif: !user.is_active,
-    });
+  $confirm.require({
+    message: `Êtes-vous sûr de vouloir ${action} l'utilisateur "${user.nom}" ?`,
+    header: 'Confirmation de modification',
+    icon: 'pi pi-exclamation-triangle',
+    accept: async () => {
+      const result = await updateUser({
+        id: user.id,
+        actif: !user.is_active,
+      });
 
-    await fetchUsers(); // Recharger la liste
-  }
+      if (result.success) {
+        $toast.add({
+          severity: 'success',
+          summary: 'Succès',
+          detail: `Utilisateur ${action} avec succès`,
+          life: 3000
+        });
+        await fetchUsers();
+      } else {
+        $toast.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: result.message,
+          life: 3000
+        });
+      }
+    }
+  });
 };
 
 const handleUserSubmit = async (userData) => {
+  let result;
+
   if (showCreateModal.value) {
-    // Logique de création (à implémenter dans le store)
+    result = await createUser(userData);
   } else {
-    await updateUser(userData);
+    result = await updateUser(userData);
   }
 
-  closeModals();
-  await fetchUsers();
+  if (result.success) {
+    closeModals();
+    $toast.add({
+      severity: 'success',
+      summary: 'Succès',
+      detail: showCreateModal.value ? 'Utilisateur créé avec succès' : 'Utilisateur modifié avec succès',
+      life: 3000
+    });
+    await fetchUsers();
+  } else {
+    $toast.add({
+      severity: 'error',
+      summary: 'Erreur',
+      detail: result.message,
+      life: 3000
+    });
+  }
 };
 
 const closeModals = () => {

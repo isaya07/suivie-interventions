@@ -30,18 +30,20 @@
         </div>
 
         <!-- Formulaire d'édition -->
-        <div v-else-if="client" class="bg-white shadow rounded-lg">
-          <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">Informations du client</h3>
-          </div>
-          <div class="px-6 py-6">
+        <Card v-else-if="client">
+          <template #content>
+            <div class="px-6 py-4 border-b border-gray-200">
+              <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Informations du client</h3>
+            </div>
+            <div class="px-6 py-6">
             <ClientForm
               :client="client"
               @submit="handleClientSubmit"
               @cancel="handleCancel"
             />
-          </div>
-        </div>
+            </div>
+          </template>
+        </Card>
 
         <!-- Erreur -->
         <div v-else class="text-center py-8">

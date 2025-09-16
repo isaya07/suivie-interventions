@@ -24,7 +24,7 @@
           
           <div v-if="intervention" class="flex justify-between items-start">
             <div>
-              <h1 class="text-2xl font-bold text-gray-900">{{ intervention.titre }}</h1>
+              <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ intervention.titre }}</h1>
               <div class="flex items-center mt-2 space-x-4">
                 <span
                   :class="statusClasses"
@@ -70,8 +70,9 @@
         <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <!-- Détails de l'intervention -->
           <div class="lg:col-span-2 space-y-6">
-            <div class="card">
-              <h2 class="text-lg font-medium text-gray-900 mb-4">Détails</h2>
+            <Card>
+              <template #content>
+                <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Détails</h2>
               
               <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -111,19 +112,23 @@
                   <dd class="mt-1 text-sm text-gray-900">{{ formatDate(intervention.date_fin) }}</dd>
                 </div>
               </dl>
-            </div>
+              </template>
+            </Card>
             
             <!-- Fichiers -->
-            <div class="card">
-              <h2 class="text-lg font-medium text-gray-900 mb-4">Fichiers</h2>
-              <FileUpload :intervention-id="intervention.id" />
-            </div>
+            <Card>
+              <template #content>
+                <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Fichiers</h2>
+                <FileUpload :intervention-id="intervention.id" />
+              </template>
+            </Card>
           </div>
           
           <!-- Sidebar -->
           <div class="space-y-6">
-            <div class="card">
-              <h3 class="text-lg font-medium text-gray-900 mb-4">Informations</h3>
+            <Card>
+              <template #content>
+                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Informations</h3>
               
               <dl class="space-y-3">
                 <div>
@@ -150,7 +155,8 @@
                   <dd class="text-sm text-gray-900">{{ formatDate(intervention.date_modification) }}</dd>
                 </div>
               </dl>
-            </div>
+              </template>
+            </Card>
           </div>
         </div>
       </div>

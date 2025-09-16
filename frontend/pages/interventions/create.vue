@@ -22,17 +22,19 @@
             </ol>
           </nav>
           
-          <h1 class="mt-4 text-2xl font-bold text-gray-900">Créer une intervention</h1>
-          <p class="text-gray-600">Remplissez les informations pour créer une nouvelle intervention.</p>
+          <h1 class="mt-4 text-2xl font-bold text-gray-900 dark:text-gray-100">Créer une intervention</h1>
+          <p class="text-gray-600 dark:text-gray-400">Remplissez les informations pour créer une nouvelle intervention.</p>
         </div>
         
         <!-- Formulaire -->
-        <div class="card">
-          <InterventionForm
-            @submit="handleSubmit"
-            @cancel="handleCancel"
-          />
-        </div>
+        <Card>
+          <template #content>
+            <InterventionForm
+              @submit="handleSubmit"
+              @cancel="handleCancel"
+            />
+          </template>
+        </Card>
       </div>
     </main>
   </div>

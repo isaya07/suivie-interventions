@@ -7,8 +7,8 @@
         <!-- En-tête -->
         <div class="flex items-center justify-between mb-8">
           <div>
-            <h1 class="text-2xl font-bold text-gray-900">Détails client</h1>
-            <p class="text-gray-600">Informations détaillées du client</p>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Détails client</h1>
+            <p class="text-gray-600 dark:text-gray-400">Informations détaillées du client</p>
           </div>
 
           <NuxtLink

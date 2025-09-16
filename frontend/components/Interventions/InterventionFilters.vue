@@ -1,26 +1,22 @@
 <template>
-  <div class="bg-white rounded-lg shadow p-6 mb-6">
-    <h3 class="text-lg font-medium text-gray-900 mb-4">Filtres</h3>
+  <Card class="mb-6">
+    <template #content>
+      <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Filtres</h3>
     
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">
           Technicien
         </label>
-        <select
+        <Select
           v-model="localFilters.technicien_id"
-          class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          :options="techniciens"
+          optionLabel="nom_complet"
+          optionValue="id"
+          placeholder="Tous les techniciens"
+          class="w-full"
           @change="applyFilters"
-        >
-          <option value="">Tous les techniciens</option>
-          <option
-            v-for="technicien in techniciens"
-            :key="technicien.id"
-            :value="technicien.id"
-          >
-            {{ technicien.nom_complet }}
-          </option>
-        </select>
+        />
       </div>
       
       <div class="space-y-3">
@@ -33,23 +29,23 @@
           <label class="block text-xs font-medium text-gray-600 mb-1">
             De
           </label>
-          <input
+          <DatePicker
             v-model="localFilters.dateFrom"
-            type="date"
-            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            @change="applyFilters"
-          >
+            dateFormat="dd/mm/yy"
+            class="w-full"
+            @date-select="applyFilters"
+          />
         </div>
         <div>
           <label class="block text-xs font-medium text-gray-600 mb-1">
             À
           </label>
-          <input
+          <DatePicker
             v-model="localFilters.dateTo"
-            type="date"
-            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            @change="applyFilters"
-          >
+            dateFormat="dd/mm/yy"
+            class="w-full"
+            @date-select="applyFilters"
+          />
         </div>
       </div>
       
@@ -64,12 +60,12 @@
       </div>
       
       <div class="flex items-end">
-        <button
+        <Button
           @click="clearAllFilters"
-          class="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-        >
-          Réinitialiser
-        </button>
+          label="Réinitialiser"
+          severity="secondary"
+          class="w-full"
+        />
       </div>
     </div>
     
@@ -80,51 +76,60 @@
         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
       >
         {{ getTechnicienName(localFilters.technicien_id) }}
-        <button
+        <Button
           @click="clearFilter('technicien_id')"
-          class="ml-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-600"
-        >
-          ×
-        </button>
+          icon="pi pi-times"
+          text
+          rounded
+          size="small"
+          class="ml-1.5 h-4 w-4"
+        />
       </span>
       <span
         v-if="localFilters.dateFrom"
         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
       >
         Depuis: {{ formatDate(localFilters.dateFrom) }}
-        <button
+        <Button
           @click="clearFilter('dateFrom')"
-          class="ml-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-600"
-        >
-          ×
-        </button>
+          icon="pi pi-times"
+          text
+          rounded
+          size="small"
+          class="ml-1.5 h-4 w-4"
+        />
       </span>
       <span
         v-if="localFilters.dateTo"
         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
       >
         Jusqu'au: {{ formatDate(localFilters.dateTo) }}
-        <button
+        <Button
           @click="clearFilter('dateTo')"
-          class="ml-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-600"
-        >
-          ×
-        </button>
+          icon="pi pi-times"
+          text
+          rounded
+          size="small"
+          class="ml-1.5 h-4 w-4"
+        />
       </span>
       <span
         v-if="localFilters.status && localFilters.status.length > 0"
         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
       >
         {{ getStatusText(localFilters.status) }}
-        <button
+        <Button
           @click="clearFilter('status')"
-          class="ml-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-600"
-        >
-          ×
-        </button>
+          icon="pi pi-times"
+          text
+          rounded
+          size="small"
+          class="ml-1.5 h-4 w-4"
+        />
       </span>
     </div>
-  </div>
+    </template>
+  </Card>
 </template>
 
 <script setup>

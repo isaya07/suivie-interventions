@@ -6,49 +6,49 @@
         <label class="block text-sm font-medium text-gray-700 mb-1">
           Nom du client *
         </label>
-        <input
+        <InputText
           v-model="form.nom"
           type="text"
           required
-          class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           placeholder="Nom de l'entreprise ou du particulier"
-        >
+          class="w-full"
+        />
       </div>
 
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">
           Contact principal
         </label>
-        <input
+        <InputText
           v-model="form.contact_principal"
           type="text"
-          class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           placeholder="Nom du contact"
-        >
+          class="w-full"
+        />
       </div>
 
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">
           Email
         </label>
-        <input
+        <InputText
           v-model="form.email"
           type="email"
-          class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           placeholder="contact@client.com"
-        >
+          class="w-full"
+        />
       </div>
 
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">
           Téléphone
         </label>
-        <input
+        <InputText
           v-model="form.telephone"
           type="tel"
-          class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           placeholder="01.23.45.67.89"
-        >
+          class="w-full"
+        />
       </div>
     </div>
 
@@ -60,12 +60,12 @@
         <label class="block text-sm font-medium text-gray-700 mb-1">
           Adresse complète
         </label>
-        <textarea
+        <Textarea
           v-model="form.adresse"
           rows="2"
-          class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           placeholder="Numéro, rue, bâtiment..."
-        ></textarea>
+          class="w-full"
+        />
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -73,25 +73,24 @@
           <label class="block text-sm font-medium text-gray-700 mb-1">
             Ville
           </label>
-          <input
+          <InputText
             v-model="form.ville"
             type="text"
-            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             placeholder="Nom de la ville"
-          >
+            class="w-full"
+          />
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">
             Code postal
           </label>
-          <input
+          <InputText
             v-model="form.code_postal"
             type="text"
-            pattern="[0-9]{5}"
-            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             placeholder="75001"
-          >
+            class="w-full"
+          />
         </div>
       </div>
     </div>
@@ -100,22 +99,17 @@
     <div class="space-y-4">
       <div class="flex items-center justify-between">
         <h3 class="text-lg font-medium text-gray-900">🌍 Coordonnées GPS</h3>
-        <button
+        <Button
           type="button"
           @click="getCurrentLocation"
           :disabled="loadingLocation"
-          class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-        >
-          <svg v-if="loadingLocation" class="animate-spin -ml-1 mr-2 h-4 w-4 text-blue-700" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          <svg v-else class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-          </svg>
-          Ma position
-        </button>
+          :loading="loadingLocation"
+          icon="pi pi-map-marker"
+          label="Ma position"
+          severity="info"
+          outlined
+          size="small"
+        />
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -123,30 +117,28 @@
           <label class="block text-sm font-medium text-gray-700 mb-1">
             Latitude
           </label>
-          <input
+          <InputNumber
             v-model="form.latitude"
-            type="number"
-            step="0.000001"
-            min="-90"
-            max="90"
-            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            :step="0.000001"
+            :min="-90"
+            :max="90"
             placeholder="48.856614"
-          >
+            class="w-full"
+          />
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">
             Longitude
           </label>
-          <input
+          <InputNumber
             v-model="form.longitude"
-            type="number"
-            step="0.000001"
-            min="-180"
-            max="180"
-            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            :step="0.000001"
+            :min="-180"
+            :max="180"
             placeholder="2.352222"
-          >
+            class="w-full"
+          />
         </div>
       </div>
 
@@ -166,34 +158,29 @@
       <label class="block text-sm font-medium text-gray-700 mb-1">
         Notes
       </label>
-      <textarea
+      <Textarea
         v-model="form.notes"
         rows="3"
-        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
         placeholder="Informations complémentaires, accès spécifique, etc."
-      ></textarea>
+        class="w-full"
+      />
     </div>
 
     <!-- Boutons d'action -->
     <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
-      <button
+      <Button
         type="button"
         @click="$emit('cancel')"
-        class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-      >
-        Annuler
-      </button>
-      <button
+        label="Annuler"
+        severity="secondary"
+        outlined
+      />
+      <Button
         type="submit"
         :disabled="loading"
-        class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        <svg v-if="loading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        {{ client?.id ? 'Mettre à jour' : 'Créer' }}
-      </button>
+        :loading="loading"
+        :label="client?.id ? 'Mettre à jour' : 'Créer'"
+      />
     </div>
   </form>
 </template>

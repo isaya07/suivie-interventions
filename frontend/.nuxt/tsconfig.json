@@ -106,6 +106,9 @@
       "pinia": [
         "../node_modules/pinia/dist/pinia"
       ],
+      "#primevue-style": [
+        "./primevue-style.mjs"
+      ],
       "#vue-router": [
         "../node_modules/vue-router"
       ],
@@ -171,7 +174,7 @@
     "../../node_modules",
     "../node_modules/nuxt/node_modules",
     "../node_modules/@pinia/nuxt/node_modules",
-    "../node_modules/@nuxtjs/tailwindcss/node_modules",
+    "../node_modules/@primevue/nuxt-module/node_modules",
     "../node_modules/@nuxt/devtools/node_modules",
     "../node_modules/@nuxt/telemetry/node_modules",
     "../node_modules/runtime/server",

@@ -1,52 +1,77 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50">
-    <div class="max-w-md w-full">
-      <form
-        @submit.prevent="handleLogin"
-        class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-      >
-        <h2 class="text-2xl font-bold text-center mb-6">Connexion</h2>
+  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <Card class="w-full max-w-md">
+      <template #header>
+        <div class="text-center pt-6 pb-2">
+          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100">
+            <i class="pi pi-cog text-blue-600 text-xl"></i>
+          </div>
+          <h2 class="mt-4 text-2xl font-bold text-gray-900 dark:text-gray-100">
+            Connexion
+          </h2>
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            Accédez à votre espace de gestion
+          </p>
+        </div>
+      </template>
 
-        <div class="mb-4">
-          <label class="block text-gray-700 text-sm font-bold mb-2">
-            Email ou nom d'utilisateur
-          </label>
-          <input
-            v-model="form.username"
-            type="text"
-            required
-            class="form-input"
-            placeholder="votre@email.com ou nom_utilisateur"
+      <template #content>
+        <form @submit.prevent="handleLogin" class="space-y-6 p-6">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Email ou nom d'utilisateur
+              </label>
+              <InputText
+                v-model="form.username"
+                type="text"
+                required
+                placeholder="votre@email.com ou nom_utilisateur"
+                class="w-full"
+                :class="{ 'p-invalid': error }"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Mot de passe
+              </label>
+              <Password
+                v-model="form.password"
+                required
+                placeholder="••••••••"
+                class="w-full"
+                :class="{ 'p-invalid': error }"
+                :feedback="false"
+                :toggleMask="true"
+              />
+            </div>
+          </div>
+
+          <Button
+            type="submit"
+            :loading="loading"
+            :label="loading ? 'Connexion...' : 'Se connecter'"
+            class="w-full p-button-lg"
+            :disabled="loading"
           />
-        </div>
 
-        <div class="mb-6">
-          <label class="block text-gray-700 text-sm font-bold mb-2">
-            Mot de passe
-          </label>
-          <input
-            v-model="form.password"
-            type="password"
-            required
-            class="form-input"
-            placeholder="••••••••"
-          />
-        </div>
+          <Message
+            v-if="error"
+            severity="error"
+            :closable="false"
+          >
+            {{ error }}
+          </Message>
+        </form>
+      </template>
 
-        <div class="flex items-center justify-between">
-          <button type="submit" :disabled="loading" class="btn-primary w-full">
-            {{ loading ? "Connexion..." : "Se connecter" }}
-          </button>
+      <template #footer>
+        <div class="text-center text-xs text-gray-500 pb-4">
+          © {{ new Date().getFullYear() }} Système de gestion des interventions
         </div>
-
-        <div
-          v-if="error"
-          class="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded"
-        >
-          {{ error }}
-        </div>
-      </form>
-    </div>
+      </template>
+    </Card>
   </div>
 </template>
 

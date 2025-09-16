@@ -110,6 +110,9 @@
       "pinia": [
         "../node_modules/pinia/dist/pinia"
       ],
+      "#primevue-style": [
+        "./primevue-style.mjs"
+      ],
       "#unhead/composables": [
         "../node_modules/nuxt/dist/head/runtime/composables/v3"
       ]
@@ -133,7 +136,7 @@
     "../../node_modules",
     "../node_modules/nuxt/node_modules",
     "../node_modules/@pinia/nuxt/node_modules",
-    "../node_modules/@nuxtjs/tailwindcss/node_modules",
+    "../node_modules/@primevue/nuxt-module/node_modules",
     "../node_modules/@nuxt/devtools/node_modules",
     "../node_modules/@nuxt/telemetry/node_modules",
     "../dist"

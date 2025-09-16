@@ -105,9 +105,12 @@ declare global {
   const useAuthStore: typeof import('../../stores/auth')['useAuthStore']
   const useClients: typeof import('../../composables/useClients')['useClients']
   const useClientsStore: typeof import('../../stores/clients')['useClientsStore']
+  const useConfirm: typeof import('primevue/useconfirm')['useConfirm']
   const useCookie: typeof import('../../node_modules/nuxt/dist/app/composables/cookie')['useCookie']
   const useCssModule: typeof import('../../node_modules/vue')['useCssModule']
   const useCssVars: typeof import('../../node_modules/vue')['useCssVars']
+  const useDarkMode: typeof import('../../composables/useDarkMode')['useDarkMode']
+  const useDialog: typeof import('primevue/usedialog')['useDialog']
   const useError: typeof import('../../node_modules/nuxt/dist/app/composables/error')['useError']
   const useFetch: typeof import('../../node_modules/nuxt/dist/app/composables/fetch')['useFetch']
   const useHead: typeof import('../../node_modules/nuxt/dist/app/composables/head')['useHead']
@@ -126,6 +129,7 @@ declare global {
   const useNuxtDevTools: typeof import('../../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools')['useNuxtDevTools']
   const usePinia: typeof import('../../node_modules/@pinia/nuxt/dist/runtime/composables')['usePinia']
   const usePreviewMode: typeof import('../../node_modules/nuxt/dist/app/composables/preview')['usePreviewMode']
+  const usePrimeVue: typeof import('primevue/config')['usePrimeVue']
   const useRequestEvent: typeof import('../../node_modules/nuxt/dist/app/composables/ssr')['useRequestEvent']
   const useRequestFetch: typeof import('../../node_modules/nuxt/dist/app/composables/ssr')['useRequestFetch']
   const useRequestHeader: typeof import('../../node_modules/nuxt/dist/app/composables/ssr')['useRequestHeader']
@@ -171,7 +175,10 @@ declare global {
   const useShadowRoot: typeof import('../../node_modules/vue')['useShadowRoot']
   const useSlots: typeof import('../../node_modules/vue')['useSlots']
   const useState: typeof import('../../node_modules/nuxt/dist/app/composables/state')['useState']
+  const useStyle: typeof import('primevue/usestyle')['useStyle']
   const useTemplateRef: typeof import('../../node_modules/vue')['useTemplateRef']
+  const useTimeTracking: typeof import('../../composables/useTimeTracking')['useTimeTracking']
+  const useToast: typeof import('primevue/usetoast')['useToast']
   const useTransitionState: typeof import('../../node_modules/vue')['useTransitionState']
   const useUpload: typeof import('../../composables/useUpload')['useUpload']
   const useUsers: typeof import('../../composables/useUsers')['useUsers']
@@ -301,9 +308,12 @@ declare module 'vue' {
     readonly useAuthStore: UnwrapRef<typeof import('../../stores/auth')['useAuthStore']>
     readonly useClients: UnwrapRef<typeof import('../../composables/useClients')['useClients']>
     readonly useClientsStore: UnwrapRef<typeof import('../../stores/clients')['useClientsStore']>
+    readonly useConfirm: UnwrapRef<typeof import('primevue/useconfirm')['useConfirm']>
     readonly useCookie: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/cookie')['useCookie']>
     readonly useCssModule: UnwrapRef<typeof import('../../node_modules/vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('../../node_modules/vue')['useCssVars']>
+    readonly useDarkMode: UnwrapRef<typeof import('../../composables/useDarkMode')['useDarkMode']>
+    readonly useDialog: UnwrapRef<typeof import('primevue/usedialog')['useDialog']>
     readonly useError: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/error')['useError']>
     readonly useFetch: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/fetch')['useFetch']>
     readonly useHead: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/head')['useHead']>
@@ -322,6 +332,7 @@ declare module 'vue' {
     readonly useNuxtDevTools: UnwrapRef<typeof import('../../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools')['useNuxtDevTools']>
     readonly usePinia: UnwrapRef<typeof import('../../node_modules/@pinia/nuxt/dist/runtime/composables')['usePinia']>
     readonly usePreviewMode: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/preview')['usePreviewMode']>
+    readonly usePrimeVue: UnwrapRef<typeof import('primevue/config')['usePrimeVue']>
     readonly useRequestEvent: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/ssr')['useRequestEvent']>
     readonly useRequestFetch: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/ssr')['useRequestFetch']>
     readonly useRequestHeader: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/ssr')['useRequestHeader']>
@@ -367,7 +378,10 @@ declare module 'vue' {
     readonly useShadowRoot: UnwrapRef<typeof import('../../node_modules/vue')['useShadowRoot']>
     readonly useSlots: UnwrapRef<typeof import('../../node_modules/vue')['useSlots']>
     readonly useState: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/state')['useState']>
+    readonly useStyle: UnwrapRef<typeof import('primevue/usestyle')['useStyle']>
     readonly useTemplateRef: UnwrapRef<typeof import('../../node_modules/vue')['useTemplateRef']>
+    readonly useTimeTracking: UnwrapRef<typeof import('../../composables/useTimeTracking')['useTimeTracking']>
+    readonly useToast: UnwrapRef<typeof import('primevue/usetoast')['useToast']>
     readonly useTransitionState: UnwrapRef<typeof import('../../node_modules/vue')['useTransitionState']>
     readonly useUpload: UnwrapRef<typeof import('../../composables/useUpload')['useUpload']>
     readonly useUsers: UnwrapRef<typeof import('../../composables/useUsers')['useUsers']>

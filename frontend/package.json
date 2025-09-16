@@ -9,14 +9,21 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
+    "@tailwindcss/vite": "^4.1.13",
     "nuxt": "^3.8.0"
   },
   "dependencies": {
-    "@pinia/nuxt": "^0.5.1",
-    "@nuxtjs/tailwindcss": "^6.8.4",
     "@headlessui/vue": "^1.7.16",
     "@heroicons/vue": "^2.0.18",
+    "@pinia/nuxt": "^0.5.1",
+    "@primevue/nuxt-module": "^4.3.9",
+    "@primevue/themes": "^4.3.9",
+    "chart.js": "^4.5.0",
     "pinia": "^2.1.7",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.3.9",
+    "tailwindcss": "^4.1.13",
+    "tailwindcss-primeui": "^0.6.1",
     "vue-toastification": "^2.0.0-rc.5"
   }
 }

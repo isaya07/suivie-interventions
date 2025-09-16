@@ -1,12 +1,13 @@
 <template>
-  <div class="bg-white rounded-lg shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow">
-    <!-- En-tête avec titre et statut -->
-    <div class="flex justify-between items-start mb-4">
+  <Card class="hover:shadow-lg transition-shadow">
+    <template #content>
+      <!-- En-tête avec titre et statut -->
+      <div class="flex justify-between items-start mb-4">
       <div class="flex-1">
-        <h3 class="text-lg font-semibold text-gray-900 mb-1">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
           {{ intervention.titre }}
         </h3>
-        <p class="text-gray-600 text-sm line-clamp-2">
+        <p class="text-gray-600 dark:text-gray-400 text-sm overflow-hidden" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
           {{ intervention.description }}
         </p>
       </div>
@@ -21,7 +22,7 @@
 
     <!-- Informations principales -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-      <div class="flex items-center text-sm text-gray-600">
+      <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
         <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"></path>
         </svg>
@@ -29,7 +30,7 @@
         <span class="ml-1">{{ intervention.client_nom || 'Non assigné' }}</span>
       </div>
 
-      <div class="flex items-center text-sm text-gray-600">
+      <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
         <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -41,7 +42,7 @@
 
     <!-- Dates et priorité -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 text-sm">
-      <div class="flex items-center text-gray-600">
+      <div class="flex items-center text-gray-600 dark:text-gray-400">
         <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
         </svg>
@@ -90,18 +91,16 @@
         </NuxtLink>
       </div>
 
-      <button
+      <Button
         v-if="canComplete"
         @click="$emit('complete', intervention.id)"
-        class="inline-flex items-center px-3 py-1.5 border border-transparent rounded-md text-sm font-medium text-white bg-green-600 hover:bg-green-700 transition-colors"
-      >
-        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-        Terminer
-      </button>
-    </div>
-  </div>
+        icon="pi pi-check"
+        label="Terminer"
+        severity="success"
+        size="small"
+      />
+    </template>
+  </Card>
 </template>
 
 <script setup>
@@ -151,11 +150,3 @@ const formatDate = (dateString) => {
 }
 </script>
 
-<style scoped>
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-</style>

@@ -30,103 +30,107 @@
         <!-- Contenu utilisateur -->
         <div v-else-if="user" class="space-y-6">
           <!-- Informations principales -->
-          <div class="bg-white shadow rounded-lg">
-            <div class="px-6 py-4 border-b border-gray-200">
-              <h3 class="text-lg font-medium text-gray-900">Informations générales</h3>
-            </div>
-            <div class="px-6 py-4">
-              <div class="flex items-center mb-6">
-                <div class="h-20 w-20 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-medium">
-                  {{ user.nom?.[0] || user.username?.[0] || "U" }}
+          <Card>
+            <template #content>
+              <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Informations générales</h3>
+              </div>
+              <div class="px-6 py-4">
+                <div class="flex items-center mb-6">
+                  <div class="h-20 w-20 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-medium">
+                    {{ user.nom?.[0] || user.username?.[0] || "U" }}
+                  </div>
+                  <div class="ml-6">
+                    <h2 class="text-xl font-semibold text-gray-900">{{ user.nom_complet }}</h2>
+                    <p class="text-gray-600">{{ user.email }}</p>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                      <span
+                        :class="getRoleClasses(user.role)"
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                      >
+                        {{ getRoleText(user.role) }}
+                      </span>
+                      <span
+                        v-if="user.role === 'technicien' && user.type_technicien"
+                        :class="getTypeClasses(user.type_technicien)"
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                      >
+                        {{ getTypeText(user.type_technicien) }}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div class="ml-6">
-                  <h2 class="text-xl font-semibold text-gray-900">{{ user.nom_complet }}</h2>
-                  <p class="text-gray-600">{{ user.email }}</p>
-                  <div class="flex flex-wrap gap-2 mt-2">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                      Nom d'utilisateur
+                    </label>
+                    <p class="text-sm text-gray-900">{{ user.username }}</p>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                      Téléphone
+                    </label>
+                    <p class="text-sm text-gray-900">{{ user.telephone || 'Non renseigné' }}</p>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                      Spécialité
+                    </label>
+                    <p class="text-sm text-gray-900">{{ user.specialite || 'Non renseignée' }}</p>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                      Statut
+                    </label>
                     <span
-                      :class="getRoleClasses(user.role)"
+                      :class="user.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
                       class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
                     >
-                      {{ getRoleText(user.role) }}
+                      {{ user.is_active ? 'Actif' : 'Inactif' }}
                     </span>
-                    <span
-                      v-if="user.role === 'technicien' && user.type_technicien"
-                      :class="getTypeClasses(user.type_technicien)"
-                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                    >
-                      {{ getTypeText(user.type_technicien) }}
-                    </span>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                      Créé le
+                    </label>
+                    <p class="text-sm text-gray-900">{{ formatDate(user.created_at) }}</p>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                      Dernière connexion
+                    </label>
+                    <p class="text-sm text-gray-900">
+                      {{ user.last_login ? formatDate(user.last_login) : 'Jamais connecté' }}
+                    </p>
                   </div>
                 </div>
               </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">
-                    Nom d'utilisateur
-                  </label>
-                  <p class="text-sm text-gray-900">{{ user.username }}</p>
-                </div>
-
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">
-                    Téléphone
-                  </label>
-                  <p class="text-sm text-gray-900">{{ user.telephone || 'Non renseigné' }}</p>
-                </div>
-
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">
-                    Spécialité
-                  </label>
-                  <p class="text-sm text-gray-900">{{ user.specialite || 'Non renseignée' }}</p>
-                </div>
-
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">
-                    Statut
-                  </label>
-                  <span
-                    :class="user.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
-                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                  >
-                    {{ user.is_active ? 'Actif' : 'Inactif' }}
-                  </span>
-                </div>
-
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">
-                    Créé le
-                  </label>
-                  <p class="text-sm text-gray-900">{{ formatDate(user.created_at) }}</p>
-                </div>
-
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">
-                    Dernière connexion
-                  </label>
-                  <p class="text-sm text-gray-900">
-                    {{ user.last_login ? formatDate(user.last_login) : 'Jamais connecté' }}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+            </template>
+          </Card>
 
           <!-- Interventions de l'utilisateur (si technicien) -->
-          <div v-if="user.role === 'technicien'" class="bg-white shadow rounded-lg">
-            <div class="px-6 py-4 border-b border-gray-200">
-              <h3 class="text-lg font-medium text-gray-900">Interventions récentes</h3>
-            </div>
-            <div class="px-6 py-4">
-              <div class="text-center py-8 text-gray-500">
-                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                </svg>
-                <p class="mt-2">Fonctionnalité à implémenter</p>
+          <Card v-if="user.role === 'technicien'">
+            <template #content>
+              <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Interventions récentes</h3>
               </div>
-            </div>
-          </div>
+              <div class="px-6 py-4">
+                <div class="text-center py-8 text-gray-500">
+                  <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                  </svg>
+                  <p class="mt-2">Fonctionnalité à implémenter</p>
+                </div>
+              </div>
+            </template>
+          </Card>
 
           <!-- Actions -->
           <div class="flex justify-end space-x-4">

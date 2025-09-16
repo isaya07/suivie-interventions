@@ -1,34 +1,59 @@
 <?php
-// api/interventions.php
-include_once 'cors.php';
+/**
+ * API de gestion des interventions techniques
+ *
+ * Endpoints disponibles :
+ * - GET /intervention.php : Liste de toutes les interventions
+ * - GET /intervention.php?id=X : Détails d'une intervention spécifique
+ * - POST /intervention.php : Création d'une nouvelle intervention
+ * - PUT /intervention.php : Mise à jour d'une intervention existante
+ * - DELETE /intervention.php : Suppression d'une intervention
+ *
+ * Tous les endpoints nécessitent une authentification valide
+ */
 
+// Configuration CORS et en-têtes
+include_once 'cors.php';
 require_once '../config/env.php';
 header("Content-Type: application/json; charset=UTF-8");
 
+// Import des dépendances
 include_once '../config/database.php';
 include_once '../config/auth.php';
 include_once '../models/Intervention.php';
 include_once '../utils/Validator.php';
 include_once '../utils/ErrorHandler.php';
 
+// Initialisation des services
 $database = new Database();
 $db = $database->getConnection();
 $auth = new Auth($db);
 $intervention = new Intervention($db);
 
-// Check authentication for all endpoints
+// Vérification de l'authentification pour tous les endpoints
 if (!$auth->isAuthenticated()) {
     ErrorHandler::handleAuthError();
 }
 
 $method = $_SERVER['REQUEST_METHOD'];
 
+// Routage REST basé sur la méthode HTTP
 switch($method) {
+    /**
+     * METHOD: GET
+     * Récupération d'interventions (liste complète ou intervention spécifique)
+     */
     case 'GET':
         if(isset($_GET['id'])) {
-            // Lire une intervention spécifique
+            /**
+             * GET /intervention.php?id=X
+             * Récupère les détails d'une intervention spécifique
+             * Paramètres : id (integer) - ID de l'intervention
+             * Retour : Objet intervention avec tous ses détails
+             */
             $intervention->id = $_GET['id'];
             if($intervention->readOne()) {
+                // Construction de l'objet de réponse avec les données principales
                 $intervention_arr = array(
                     "id" => $intervention->id,
                     "titre" => $intervention->titre,
@@ -44,18 +69,25 @@ switch($method) {
                 http_response_code(200);
                 echo json_encode($intervention_arr);
             } else {
+                // Intervention non trouvée
                 http_response_code(404);
                 echo json_encode(array("message" => "Intervention non trouvée."));
             }
         } else {
-            // Lire toutes les interventions
+            /**
+             * GET /intervention.php
+             * Récupère la liste complète des interventions
+             * Retour : Array d'objets interventions dans un wrapper "records"
+             */
             $stmt = $intervention->read();
             $num = $stmt->rowCount();
 
             if($num > 0) {
+                // Initialisation du tableau de réponse
                 $interventions_arr = array();
                 $interventions_arr["records"] = array();
 
+                // Construction de la liste des interventions
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     extract($row);
                     $intervention_item = array(
@@ -76,50 +108,66 @@ switch($method) {
                 http_response_code(200);
                 echo json_encode($interventions_arr);
             } else {
+                // Aucune intervention trouvée - retourner tableau vide
                 http_response_code(200);
                 echo json_encode(array("records" => array()));
             }
         }
         break;
 
+    /**
+     * METHOD: POST
+     * Création d'une nouvelle intervention
+     * Body JSON requis avec les champs obligatoires : titre, description
+     * Champs optionnels : client_id, technicien_id, statut, priorité, etc.
+     */
     case 'POST':
         $data = json_decode(file_get_contents("php://input"));
 
+        // Validation du format JSON
         if (!$data) {
             ErrorHandler::handleError(400, "Format JSON invalide");
         }
 
-        // Validate input data
+        // Validation des données métier avec le validateur
         $validationErrors = Validator::validateInterventionData($data);
         if (!empty($validationErrors)) {
             ErrorHandler::handleValidationErrors($validationErrors);
         }
 
         try {
+            // Récupération de l'utilisateur connecté pour traçabilité
             $current_user = $auth->getCurrentUser();
 
+            // Assignation des données avec sanitisation
             $intervention->titre = Validator::sanitizeString($data->titre);
             $intervention->description = Validator::sanitizeString($data->description ?? '');
             $intervention->client_id = $data->client_id ?? null;
             $intervention->client_nom = Validator::sanitizeString($data->client_nom ?? '');
             $intervention->technicien_id = $data->technicien_id ?? null;
             $intervention->technicien_nom = Validator::sanitizeString($data->technicien_nom ?? '');
-            $intervention->createur_id = $current_user['id'];
+            $intervention->createur_id = $current_user['id']; // Traçabilité de la création
+
+            // Valeurs par défaut si non spécifiées
             $intervention->statut = $data->statut ?? 'En attente';
             $intervention->priorite = $data->priorite ?? 'Normale';
             $intervention->type_intervention = $data->type_intervention ?? 'Réparation';
             $intervention->temps_estime = $data->temps_estime ?? null;
             $intervention->cout_prevu = $data->cout_prevu ?? null;
+
+            // Timestamps automatiques
             $intervention->date_creation = date('Y-m-d H:i:s');
             $intervention->date_intervention = $data->date_intervention ?? null;
             $intervention->date_limite = $data->date_limite ?? null;
 
+            // Tentative de création en base
             if($intervention->create()) {
                 ErrorHandler::handleSuccess("Intervention créée avec succès", ['id' => $intervention->id], 201);
             } else {
                 ErrorHandler::handleServerError("Impossible de créer l'intervention");
             }
         } catch (Exception $e) {
+            // Logging de l'erreur pour debug
             ErrorHandler::logError($e->getMessage(), ['data' => $data]);
             ErrorHandler::handleServerError("Erreur lors de la création de l'intervention");
         }
