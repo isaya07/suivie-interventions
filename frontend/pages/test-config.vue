@@ -20,15 +20,12 @@
     </div>
   </div>
 </template>
-
 <script setup>
 const config = useRuntimeConfig()
 const { $api } = useNuxtApp()
-
 const apiUrl = config.public.apiBaseUrl
 const fullAuthUrl = apiUrl + '/auth.php?action=test'
 const testResult = ref(null)
-
 const testApi = async () => {
   try {
     testResult.value = await $api('/auth.php?action=test')

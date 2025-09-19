@@ -7,7 +7,20 @@
       "Bash(npm uninstall:*)",
       "WebSearch",
       "WebFetch(domain:github.com)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(mysql:*)",
+      "Bash(find:*)",
+      "Bash(sed:*)",
+      "Bash(while read file)",
+      "Bash(do echo \"Fixing $file\")",
+      "Bash(done)",
+      "Bash(copy fix_create.vue pages\\interventions\\create.vue)",
+      "Read(//c/wamp64/logs/**)",
+      "Bash(move TODO.md TODO_OLD.md)",
+      "Bash(move TODO_FINAL.md TODO.md)",
+      "Bash(grep:*)",
+      "Bash(php:*)",
+      "Bash(\"C:\\wamp64\\bin\\mysql\\mysql8.0.31\\bin\\mysql.exe\" -u root -e \"DESCRIBE suivi_interventions.interventions;\")"
     ],
     "deny": [],
     "ask": []

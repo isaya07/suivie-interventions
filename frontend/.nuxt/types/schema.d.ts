@@ -8509,11 +8509,11 @@ declare module 'nuxt/schema' {
 
       }>,
 
-      config: Array<{
+      services: Array<{
 
       }>,
 
-      services: Array<{
+      config: Array<{
 
       }>,
 

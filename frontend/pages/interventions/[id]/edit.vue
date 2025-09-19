@@ -1,16 +1,13 @@
 <template>
   <div>
-    <AppHeader />
-
-    <main class="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
-      <div class="px-4 py-6 sm:px-0">
-        <!-- En-tête -->
+    <div>
+    <div>
+      <!-- En-tête -->
         <div class="flex items-center justify-between mb-8">
           <div>
             <h1 class="text-2xl font-bold text-gray-900">Modifier l'intervention</h1>
             <p class="text-gray-600">Modifiez les détails de l'intervention</p>
           </div>
-
           <NuxtLink
             to="/interventions"
             class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
@@ -21,12 +18,10 @@
             Retour à la liste
           </NuxtLink>
         </div>
-
         <!-- Loading -->
         <div v-if="loading" class="flex justify-center py-8">
           <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
         </div>
-
         <!-- Formulaire -->
         <Card v-else-if="intervention">
           <template #content>
@@ -46,7 +41,6 @@
                   placeholder="Titre de l'intervention"
                 />
               </div>
-
               <div>
                 <label for="statut" class="block text-sm font-medium text-gray-700 mb-2">
                   Statut
@@ -64,7 +58,6 @@
                 </select>
               </div>
             </div>
-
             <div>
               <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
                 Description
@@ -77,7 +70,6 @@
                 placeholder="Description détaillée de l'intervention"
               ></textarea>
             </div>
-
             <!-- Client et Technicien -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -92,7 +84,6 @@
                   placeholder="Nom du client"
                 />
               </div>
-
               <div>
                 <label for="technicien_nom" class="block text-sm font-medium text-gray-700 mb-2">
                   Technicien
@@ -106,7 +97,6 @@
                 />
               </div>
             </div>
-
             <!-- Priorité et Dates -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
@@ -124,7 +114,6 @@
                   <option value="Urgente">Urgente</option>
                 </select>
               </div>
-
               <div>
                 <label for="date_intervention" class="block text-sm font-medium text-gray-700 mb-2">
                   Date d'intervention
@@ -136,7 +125,6 @@
                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
-
               <div>
                 <label for="date_fin" class="block text-sm font-medium text-gray-700 mb-2">
                   Date de fin
@@ -149,7 +137,6 @@
                 />
               </div>
             </div>
-
             <!-- Actions -->
             <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
               <NuxtLink
@@ -158,7 +145,6 @@
               >
                 Annuler
               </NuxtLink>
-
               <button
                 type="submit"
                 :disabled="saving"
@@ -171,7 +157,6 @@
             </form>
           </template>
         </Card>
-
         <!-- Erreur -->
         <div v-else class="text-center py-8">
           <div class="text-red-600 mb-4">
@@ -186,24 +171,20 @@
           </NuxtLink>
         </div>
       </div>
-    </main>
+    </div>
   </div>
 </template>
-
 <script setup>
 definePageMeta({
   middleware: 'auth'
 })
-
 const route = useRoute()
 const router = useRouter()
 const { fetchIntervention, updateIntervention } = useInterventions()
-
 const interventionId = route.params.id
 const loading = ref(true)
 const saving = ref(false)
 const intervention = ref(null)
-
 const form = ref({
   titre: '',
   description: '',
@@ -214,17 +195,14 @@ const form = ref({
   date_intervention: '',
   date_fin: ''
 })
-
 const handleSubmit = async () => {
   if (saving.value) return
-
   saving.value = true
   try {
     const result = await updateIntervention({
       id: interventionId,
       ...form.value
     })
-
     if (result.success) {
       await router.push('/interventions')
     } else {
@@ -237,7 +215,6 @@ const handleSubmit = async () => {
     saving.value = false
   }
 }
-
 const formatDateTimeLocal = (dateString) => {
   if (!dateString) return ''
   const date = new Date(dateString)
@@ -248,13 +225,11 @@ const formatDateTimeLocal = (dateString) => {
   const minutes = String(date.getMinutes()).padStart(2, '0')
   return `${year}-${month}-${day}T${hours}:${minutes}`
 }
-
 onMounted(async () => {
   try {
     const result = await fetchIntervention(interventionId)
     if (result) {
       intervention.value = result
-
       // Pré-remplir le formulaire
       form.value = {
         titre: result.titre || '',

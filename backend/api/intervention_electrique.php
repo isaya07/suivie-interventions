@@ -11,6 +11,7 @@
  * - POST /intervention_electrique.php?action=arreter_phase : Arrêter une phase (pause)
  * - POST /intervention_electrique.php?action=terminer_phase : Terminer définitivement une phase
  * - GET /intervention_electrique.php?action=sessions&id=X : Sessions de travail détaillées
+ * - GET /intervention_electrique.php?action=get_active_session&intervention_id=X : Vérifier session active
  * - GET /intervention_electrique.php?action=statistiques&id=X : Statistiques d'intervention
  *
  * Ordre des phases : 1) Terrassement (si applicable), 2) Branchement électrique
@@ -27,6 +28,7 @@ include_once '../config/auth.php';
 include_once '../models/InterventionElectrique.php';
 include_once '../utils/Validator.php';
 include_once '../utils/ErrorHandler.php';
+include_once '../utils/AuditTrail.php';
 
 // Initialisation des services
 $database = new Database();
@@ -38,6 +40,7 @@ if ($db === null) {
 
 $auth = new Auth($db);
 $intervention = new InterventionElectrique($db);
+$auditTrail = AuditTrail::getInstance($db);
 
 // Vérification de l'authentification
 if (!$auth->isAuthenticated()) {
@@ -58,7 +61,9 @@ switch($method . '_' . $action) {
         if($intervention_id) {
             // Récupération d'une intervention spécifique
             $intervention->id = $intervention_id;
-            if($intervention->readOne()) {
+
+            try {
+                if($intervention->readOne()) {
                 $response = [
                     'success' => true,
                     'data' => [
@@ -82,6 +87,25 @@ switch($method . '_' . $action) {
                             'has_terrassement' => $intervention->has_terrassement,
                             'duree_terrassement_estimee' => $intervention->duree_terrassement_estimee,
                             'duree_branchement_estimee' => $intervention->duree_branchement_estimee
+                        ],
+
+                        // Spécifications Enedis
+                        'specifications' => [
+                            'type_reglementaire' => $intervention->type_reglementaire,
+                            'mode_pose' => $intervention->mode_pose,
+                            'longueur_liaison_reseau' => $intervention->longueur_liaison_reseau,
+                            'longueur_derivation_individuelle' => $intervention->longueur_derivation_individuelle,
+                            'distance_raccordement' => $intervention->distance_raccordement
+                        ],
+
+                        // Suivi du processus
+                        'suivi_processus' => [
+                            'date_reception_dossier' => $intervention->date_reception_dossier,
+                            'date_etude_technique' => $intervention->date_etude_technique,
+                            'date_validation_devis' => $intervention->date_validation_devis,
+                            'date_realisation_terrassement' => $intervention->date_realisation_terrassement,
+                            'date_realisation_cablage' => $intervention->date_realisation_cablage,
+                            'date_mise_en_service' => $intervention->date_mise_en_service
                         ],
 
                         // Phase 1: Terrassement (si applicable)
@@ -131,10 +155,14 @@ switch($method . '_' . $action) {
                     ]
                 ];
 
-                http_response_code(200);
-                echo json_encode($response);
-            } else {
-                ErrorHandler::handleNotFoundError("Intervention non trouvée");
+                    http_response_code(200);
+                    echo json_encode($response);
+                } else {
+                    ErrorHandler::handleNotFoundError("Intervention non trouvée");
+                }
+            } catch (Exception $e) {
+                error_log("Erreur readOne intervention: " . $e->getMessage());
+                ErrorHandler::handleServerError("Erreur lors du chargement de l'intervention");
             }
         } else {
             // Liste de toutes les interventions
@@ -162,13 +190,13 @@ switch($method . '_' . $action) {
                     'technicien_branchement' => $row['technicien_branchement_complet'],
 
                     // Planification
-                    'date_terrassement_prevue' => $row['date_terrassement_prevue'],
-                    'date_branchement_prevue' => $row['date_branchement_prevue'],
+                    'date_terrassement_prevue' => $row['date_terrassement_prevue'] ?? null,
+                    'date_branchement_prevue' => $row['date_branchement_prevue'] ?? null,
 
                     // Totaux
-                    'duree_totale_heures' => $row['duree_totale_heures'],
-                    'cout_total_reel' => $row['cout_total_reel'],
-                    'cout_total_estime' => $row['cout_total_estime'],
+                    'duree_totale_heures' => $row['duree_totale_heures'] ?? null,
+                    'cout_total_reel' => $row['cout_total_reel'] ?? null,
+                    'cout_total_estime' => $row['cout_total_estime'] ?? null,
 
                     'date_creation' => $row['date_creation']
                 ];
@@ -196,9 +224,26 @@ switch($method . '_' . $action) {
             ErrorHandler::handleError(400, "Format JSON invalide");
         }
 
-        // Validation des données requises
-        if (empty($data->titre) || empty($data->type_prestation_id)) {
-            ErrorHandler::handleError(400, "Titre et type de prestation requis");
+        // Validation stricte des données métier Enedis
+        $validationData = [
+            'titre' => $data->titre ?? '',
+            'client_nom' => $data->client_nom ?? '',
+            'type_prestation_id' => $data->type_prestation_id ?? null,
+            'type_reglementaire' => $data->type_reglementaire ?? '',
+            'mode_pose' => $data->mode_pose ?? '',
+            'longueur_liaison_reseau' => $data->longueur_liaison_reseau ?? 0,
+            'longueur_derivation_individuelle' => $data->longueur_derivation_individuelle ?? 0,
+            'distance_raccordement' => $data->distance_raccordement ?? 0,
+            'puissance_souscrite' => $data->puissance_souscrite ?? null,
+            'has_terrassement' => $data->has_terrassement ?? false,
+            'cout_total_estime' => $data->cout_total_estime ?? 0,
+            'taux_horaire' => $data->taux_horaire ?? 0
+        ];
+
+        $validationErrors = Validator::validateInterventionElectrique($validationData);
+
+        if (!empty($validationErrors)) {
+            ErrorHandler::handleError(400, "Erreurs de validation: " . implode(', ', $validationErrors));
         }
 
         try {
@@ -244,15 +289,33 @@ switch($method . '_' . $action) {
             }
             $cout_estime += $prestation['duree_branchement_heures'] * $taux_branchement;
 
-            // Configuration de l'intervention
-            $intervention->titre = $data->titre;
-            $intervention->description = $data->description ?? '';
+            // Configuration de l'intervention avec données sécurisées
+            $intervention->titre = Validator::sanitizeString($data->titre);
+            $intervention->description = isset($data->description) ? Validator::validateSensitiveData($data->description, 'description') : '';
             $intervention->client_id = $data->client_id ?? null;
-            $intervention->client_nom = $data->client_nom ?? '';
+            $intervention->client_nom = isset($data->client_nom) ? Validator::sanitizeString($data->client_nom) : '';
             $intervention->createur_id = $current_user['id'];
             $intervention->priorite = $data->priorite ?? 'normale';
             $intervention->type_prestation_id = $data->type_prestation_id;
             $intervention->has_terrassement = $prestation['has_terrassement'];
+
+            // Nouveaux champs Enedis
+            $intervention->type_reglementaire = isset($data->type_reglementaire) ? $data->type_reglementaire : ($prestation['type_reglementaire'] ?? 'type_1');
+            $intervention->mode_pose = isset($data->mode_pose) ? $data->mode_pose : ($prestation['mode_pose'] ?? 'souterrain');
+            $intervention->longueur_liaison_reseau = isset($data->longueur_liaison_reseau) ? $data->longueur_liaison_reseau : 0;
+            $intervention->longueur_derivation_individuelle = isset($data->longueur_derivation_individuelle) ? $data->longueur_derivation_individuelle : 0;
+
+            // Calculer distance si pas fournie
+            if (isset($data->distance_raccordement)) {
+                $intervention->distance_raccordement = $data->distance_raccordement;
+            } else {
+                $intervention->distance_raccordement = $intervention->longueur_liaison_reseau + $intervention->longueur_derivation_individuelle;
+            }
+
+            // Dates de suivi du processus
+            $intervention->date_reception_dossier = isset($data->date_reception_dossier) ? $data->date_reception_dossier : date('Y-m-d H:i:s');
+            $intervention->date_etude_technique = isset($data->date_etude_technique) ? $data->date_etude_technique : null;
+            $intervention->date_validation_devis = isset($data->date_validation_devis) ? $data->date_validation_devis : null;
 
             // Configuration phase terrassement
             $intervention->phase_terrassement_technicien_id = $data->technicien_terrassement_id ?? null;
@@ -270,6 +333,25 @@ switch($method . '_' . $action) {
             $intervention->cout_total_estime = $cout_estime;
 
             if($intervention->create()) {
+                // Audit trail : enregistrer la création
+                $newData = [
+                    'titre' => $intervention->titre,
+                    'client_nom' => $intervention->client_nom,
+                    'type_reglementaire' => $intervention->type_reglementaire,
+                    'mode_pose' => $intervention->mode_pose,
+                    'cout_total_estime' => $intervention->cout_total_estime,
+                    'statut' => 'nouvelle'
+                ];
+
+                $auditTrail->logInterventionChange(
+                    $intervention->id,
+                    $current_user['id'],
+                    'creation_intervention_electrique',
+                    null,
+                    $newData,
+                    "Création d'une nouvelle intervention électrique: {$intervention->titre}"
+                );
+
                 http_response_code(201);
                 echo json_encode([
                     'success' => true,
@@ -310,6 +392,17 @@ switch($method . '_' . $action) {
         $intervention->id = $data->intervention_id;
 
         if($intervention->demarrerPhase($data->phase, $data->technicien_id)) {
+            // Audit trail : démarrage de phase
+            $current_user = $auth->getCurrentUser();
+            $auditTrail->logInterventionChange(
+                $data->intervention_id,
+                $current_user['id'],
+                "demarrage_phase_{$data->phase}",
+                null,
+                ['phase' => $data->phase, 'technicien_id' => $data->technicien_id, 'statut' => 'en_cours'],
+                "Démarrage de la phase {$data->phase} par technicien ID: {$data->technicien_id}"
+            );
+
             http_response_code(200);
             echo json_encode([
                 'success' => true,
@@ -339,9 +432,20 @@ switch($method . '_' . $action) {
         }
 
         $intervention->id = $data->intervention_id;
-        $notes = $data->notes ?? null;
+        $notes = isset($data->notes) ? Validator::validateSensitiveData($data->notes, 'notes') : null;
 
         if($intervention->arreterPhase($data->phase, $notes)) {
+            // Audit trail : arrêt de phase
+            $current_user = $auth->getCurrentUser();
+            $auditTrail->logInterventionChange(
+                $data->intervention_id,
+                $current_user['id'],
+                "arret_phase_{$data->phase}",
+                ['statut' => 'en_cours'],
+                ['phase' => $data->phase, 'statut' => 'en_pause', 'notes' => $notes],
+                "Arrêt de la phase {$data->phase}" . ($notes ? " - Notes: {$notes}" : "")
+            );
+
             http_response_code(200);
             echo json_encode([
                 'success' => true,
@@ -370,11 +474,28 @@ switch($method . '_' . $action) {
         }
 
         $intervention->id = $data->intervention_id;
-        $notes = $data->notes ?? null;
+        $notes = isset($data->notes) ? Validator::validateSensitiveData($data->notes, 'notes') : null;
 
         if($intervention->terminerPhase($data->phase, $notes)) {
             // Récupérer les statistiques mises à jour
             $stats = $intervention->getStatistiques();
+
+            // Audit trail : fin de phase (critique)
+            $current_user = $auth->getCurrentUser();
+            $auditTrail->logInterventionChange(
+                $data->intervention_id,
+                $current_user['id'],
+                "fin_phase_{$data->phase}",
+                ['statut' => 'en_cours'],
+                [
+                    'phase' => $data->phase,
+                    'statut' => 'terminee',
+                    'duree_totale_heures' => $stats['duree_totale_heures'],
+                    'cout_total_reel' => $stats['cout_total_reel'],
+                    'notes' => $notes
+                ],
+                "Fin de la phase {$data->phase}" . ($notes ? " - Notes: {$notes}" : "")
+            );
 
             http_response_code(200);
             echo json_encode([
@@ -399,14 +520,41 @@ switch($method . '_' . $action) {
      * Paramètres optionnels: &phase=terrassement|branchement
      */
     case 'GET_sessions':
-        if (!$intervention_id) {
+        $intervention_id_param = $intervention_id ?? $_GET['intervention_id'] ?? null;
+
+        if (!$intervention_id_param) {
             ErrorHandler::handleError(400, "ID d'intervention requis");
         }
 
-        $intervention->id = $intervention_id;
-        $phase_filter = $_GET['phase'] ?? null;
+        try {
+            // Vérifier si l'intervention existe
+            $check_query = "SELECT id FROM interventions WHERE id = :intervention_id";
+            $check_stmt = $db->prepare($check_query);
+            $check_stmt->bindParam(":intervention_id", $intervention_id_param);
+            $check_stmt->execute();
 
-        $sessions = $intervention->getSessionsTravail($phase_filter);
+            if (!$check_stmt->fetch(PDO::FETCH_ASSOC)) {
+                ErrorHandler::handleNotFoundError("Intervention non trouvée");
+            }
+
+            $intervention->id = $intervention_id_param;
+            $phase_filter = $_GET['phase'] ?? null;
+
+            // Vérifier si la table des sessions existe
+            $table_exists_query = "SHOW TABLES LIKE 'intervention_sessions_travail'";
+            $table_exists_stmt = $db->prepare($table_exists_query);
+            $table_exists_stmt->execute();
+
+            if (!$table_exists_stmt->fetch(PDO::FETCH_ASSOC)) {
+                // Table n'existe pas, retourner un tableau vide
+                $sessions = [];
+            } else {
+                $sessions = $intervention->getSessionsTravail($phase_filter);
+            }
+        } catch (Exception $e) {
+            error_log("Erreur sessions: " . $e->getMessage());
+            $sessions = [];
+        }
 
         http_response_code(200);
         echo json_encode([
@@ -440,6 +588,30 @@ switch($method . '_' . $action) {
         break;
 
     /**
+     * GET /intervention_electrique.php?action=delais&id=X
+     * Calcule et récupère les délais et indicateurs de performance d'une intervention
+     */
+    case 'GET_delais':
+        if (!$intervention_id) {
+            ErrorHandler::handleError(400, "ID d'intervention requis");
+        }
+
+        $intervention->id = $intervention_id;
+        $delais = $intervention->calculerDelais();
+
+        if ($delais) {
+            http_response_code(200);
+            echo json_encode([
+                'success' => true,
+                'data' => $delais,
+                'message' => 'Délais calculés avec succès'
+            ]);
+        } else {
+            ErrorHandler::handleNotFoundError("Intervention non trouvée pour le calcul des délais");
+        }
+        break;
+
+    /**
      * PUT /intervention_electrique.php
      * Mise à jour d'une intervention électrique existante
      */
@@ -451,6 +623,27 @@ switch($method . '_' . $action) {
         }
 
         try {
+            // Validation stricte des données de mise à jour
+            if (isset($data->titre) || isset($data->description) || isset($data->client_nom) ||
+                isset($data->type_reglementaire) || isset($data->mode_pose) ||
+                isset($data->longueur_liaison_reseau) || isset($data->longueur_derivation_individuelle)) {
+
+                $updateValidationData = [
+                    'titre' => $data->titre ?? '',
+                    'client_nom' => $data->client_nom ?? '',
+                    'type_reglementaire' => $data->type_reglementaire ?? '',
+                    'mode_pose' => $data->mode_pose ?? '',
+                    'longueur_liaison_reseau' => $data->longueur_liaison_reseau ?? 0,
+                    'longueur_derivation_individuelle' => $data->longueur_derivation_individuelle ?? 0,
+                    'distance_raccordement' => $data->distance_raccordement ?? 0
+                ];
+
+                $updateValidationErrors = Validator::validateInterventionElectrique($updateValidationData);
+                if (!empty($updateValidationErrors)) {
+                    ErrorHandler::handleError(400, "Erreurs de validation: " . implode(', ', $updateValidationErrors));
+                }
+            }
+
             // Récupération et mise à jour des données
             $intervention->id = $data->id;
 
@@ -458,12 +651,43 @@ switch($method . '_' . $action) {
                 ErrorHandler::handleNotFoundError("Intervention non trouvée");
             }
 
-            // Mise à jour des champs modifiables
-            if (isset($data->titre)) $intervention->titre = $data->titre;
-            if (isset($data->description)) $intervention->description = $data->description;
+            // Capture des données avant modification pour audit trail
+            $oldData = [
+                'titre' => $intervention->titre,
+                'description' => $intervention->description,
+                'client_nom' => $intervention->client_nom,
+                'type_reglementaire' => $intervention->type_reglementaire,
+                'mode_pose' => $intervention->mode_pose,
+                'longueur_liaison_reseau' => $intervention->longueur_liaison_reseau,
+                'longueur_derivation_individuelle' => $intervention->longueur_derivation_individuelle,
+                'distance_raccordement' => $intervention->distance_raccordement,
+                'cout_total_estime' => $intervention->cout_total_estime,
+                'phase_terrassement_technicien_id' => $intervention->phase_terrassement_technicien_id,
+                'phase_branchement_technicien_id' => $intervention->phase_branchement_technicien_id,
+                'statut' => $intervention->statut ?? 'en_cours'
+            ];
+
+            // Mise à jour des champs modifiables avec sécurisation
+            if (isset($data->titre)) $intervention->titre = Validator::sanitizeString($data->titre);
+            if (isset($data->description)) $intervention->description = Validator::validateSensitiveData($data->description, 'description');
             if (isset($data->priorite)) $intervention->priorite = $data->priorite;
             if (isset($data->client_id)) $intervention->client_id = $data->client_id;
-            if (isset($data->client_nom)) $intervention->client_nom = $data->client_nom;
+            if (isset($data->client_nom)) $intervention->client_nom = Validator::sanitizeString($data->client_nom);
+
+            // Mise à jour des nouveaux champs Enedis
+            if (isset($data->type_reglementaire)) $intervention->type_reglementaire = $data->type_reglementaire;
+            if (isset($data->mode_pose)) $intervention->mode_pose = $data->mode_pose;
+            if (isset($data->longueur_liaison_reseau)) $intervention->longueur_liaison_reseau = $data->longueur_liaison_reseau;
+            if (isset($data->longueur_derivation_individuelle)) $intervention->longueur_derivation_individuelle = $data->longueur_derivation_individuelle;
+            if (isset($data->distance_raccordement)) $intervention->distance_raccordement = $data->distance_raccordement;
+
+            // Mise à jour des dates de suivi
+            if (isset($data->date_reception_dossier)) $intervention->date_reception_dossier = $data->date_reception_dossier;
+            if (isset($data->date_etude_technique)) $intervention->date_etude_technique = $data->date_etude_technique;
+            if (isset($data->date_validation_devis)) $intervention->date_validation_devis = $data->date_validation_devis;
+            if (isset($data->date_realisation_terrassement)) $intervention->date_realisation_terrassement = $data->date_realisation_terrassement;
+            if (isset($data->date_realisation_cablage)) $intervention->date_realisation_cablage = $data->date_realisation_cablage;
+            if (isset($data->date_mise_en_service)) $intervention->date_mise_en_service = $data->date_mise_en_service;
 
             // Mise à jour des assignations techniciens avec recalcul des taux
             if (isset($data->technicien_terrassement_id)) {
@@ -501,6 +725,33 @@ switch($method . '_' . $action) {
             }
 
             if($intervention->update()) {
+                // Capture des nouvelles données pour audit trail
+                $newData = [
+                    'titre' => $intervention->titre,
+                    'description' => $intervention->description,
+                    'client_nom' => $intervention->client_nom,
+                    'type_reglementaire' => $intervention->type_reglementaire,
+                    'mode_pose' => $intervention->mode_pose,
+                    'longueur_liaison_reseau' => $intervention->longueur_liaison_reseau,
+                    'longueur_derivation_individuelle' => $intervention->longueur_derivation_individuelle,
+                    'distance_raccordement' => $intervention->distance_raccordement,
+                    'cout_total_estime' => $intervention->cout_total_estime,
+                    'phase_terrassement_technicien_id' => $intervention->phase_terrassement_technicien_id,
+                    'phase_branchement_technicien_id' => $intervention->phase_branchement_technicien_id,
+                    'statut' => $intervention->statut ?? 'en_cours'
+                ];
+
+                // Audit trail : enregistrer la modification
+                $current_user = $auth->getCurrentUser();
+                $auditTrail->logInterventionChange(
+                    $intervention->id,
+                    $current_user['id'],
+                    'modification_intervention_electrique',
+                    $oldData,
+                    $newData,
+                    "Modification de l'intervention électrique: {$intervention->titre}"
+                );
+
                 http_response_code(200);
                 echo json_encode([
                     'success' => true,
@@ -513,6 +764,164 @@ switch($method . '_' . $action) {
         } catch (Exception $e) {
             error_log("Erreur mise à jour intervention: " . $e->getMessage());
             ErrorHandler::handleServerError("Erreur lors de la mise à jour");
+        }
+        break;
+
+    /**
+     * GET /intervention_electrique.php?action=audit&id=X
+     * Récupère l'historique d'audit d'une intervention
+     */
+    case 'GET_audit':
+        if (!$intervention_id) {
+            ErrorHandler::handleError(400, "ID d'intervention requis");
+        }
+
+        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 50;
+        $auditHistory = $auditTrail->getInterventionHistory($intervention_id, $limit);
+
+        http_response_code(200);
+        echo json_encode([
+            'success' => true,
+            'data' => $auditHistory,
+            'total' => count($auditHistory),
+            'intervention_id' => $intervention_id
+        ]);
+        break;
+
+    /**
+     * GET /intervention_electrique.php?action=audit_critical
+     * Récupère les actions critiques récentes
+     */
+    case 'GET_audit_critical':
+        $days = isset($_GET['days']) ? (int)$_GET['days'] : 7;
+        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 100;
+
+        $criticalActions = $auditTrail->getCriticalActions($days, $limit);
+
+        http_response_code(200);
+        echo json_encode([
+            'success' => true,
+            'data' => $criticalActions,
+            'total' => count($criticalActions),
+            'period_days' => $days
+        ]);
+        break;
+
+    /**
+     * GET /intervention_electrique.php?action=audit_stats
+     * Récupère les statistiques d'audit
+     */
+    case 'GET_audit_stats':
+        $days = isset($_GET['days']) ? (int)$_GET['days'] : 30;
+        $auditStats = $auditTrail->getAuditStats($days);
+
+        http_response_code(200);
+        echo json_encode([
+            'success' => true,
+            'data' => $auditStats,
+            'period_days' => $days
+        ]);
+        break;
+
+    /**
+     * GET /intervention_electrique.php?action=get_active_session&intervention_id=X
+     * Vérifie s'il y a une session en cours pour une intervention
+     */
+    case 'GET_get_active_session':
+        $intervention_id_param = $_GET['intervention_id'] ?? null;
+
+        if (!$intervention_id_param) {
+            ErrorHandler::handleError(400, "ID d'intervention requis");
+        }
+
+        try {
+            // D'abord vérifier si l'intervention existe
+            $check_query = "SELECT id FROM interventions WHERE id = :intervention_id";
+            $check_stmt = $db->prepare($check_query);
+            $check_stmt->bindParam(":intervention_id", $intervention_id_param);
+            $check_stmt->execute();
+
+            if (!$check_stmt->fetch(PDO::FETCH_ASSOC)) {
+                ErrorHandler::handleNotFoundError("Intervention non trouvée");
+            }
+
+            // Vérifier si les colonnes de phases existent
+            $columns_query = "SHOW COLUMNS FROM interventions LIKE 'phase_%'";
+            $columns_stmt = $db->prepare($columns_query);
+            $columns_stmt->execute();
+            $phase_columns = $columns_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Si les colonnes de phases n'existent pas encore, retourner aucune session active
+            if (empty($phase_columns)) {
+                http_response_code(200);
+                echo json_encode([
+                    'success' => true,
+                    'session' => null,
+                    'message' => 'Aucune session active (schema non migré)'
+                ]);
+                return;
+            }
+
+            // Rechercher une session active dans la base de données
+            $query = "SELECT
+                        ie.id,
+                        ie.phase_terrassement_statut,
+                        ie.phase_branchement_statut,
+                        ie.phase_terrassement_date_debut,
+                        ie.phase_branchement_date_debut,
+                        ie.phase_terrassement_technicien_id,
+                        ie.phase_branchement_technicien_id
+                      FROM interventions ie
+                      WHERE ie.id = :intervention_id";
+
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(":intervention_id", $intervention_id_param);
+            $stmt->execute();
+            $intervention_data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$intervention_data) {
+                ErrorHandler::handleNotFoundError("Intervention non trouvée");
+            }
+
+            $activeSession = null;
+
+            // Vérifier s'il y a une phase terrassement en cours
+            if (isset($intervention_data['phase_terrassement_statut']) &&
+                $intervention_data['phase_terrassement_statut'] === 'en_cours' &&
+                $intervention_data['phase_terrassement_date_debut'] &&
+                $intervention_data['phase_terrassement_technicien_id']) {
+
+                $activeSession = [
+                    'id' => $intervention_id_param . '_terrassement',
+                    'phase' => 'terrassement',
+                    'debut' => $intervention_data['phase_terrassement_date_debut'],
+                    'technicien_id' => $intervention_data['phase_terrassement_technicien_id']
+                ];
+            }
+            // Sinon vérifier s'il y a une phase branchement en cours
+            elseif (isset($intervention_data['phase_branchement_statut']) &&
+                    $intervention_data['phase_branchement_statut'] === 'en_cours' &&
+                    $intervention_data['phase_branchement_date_debut'] &&
+                    $intervention_data['phase_branchement_technicien_id']) {
+
+                $activeSession = [
+                    'id' => $intervention_id_param . '_branchement',
+                    'phase' => 'branchement',
+                    'debut' => $intervention_data['phase_branchement_date_debut'],
+                    'technicien_id' => $intervention_data['phase_branchement_technicien_id']
+                ];
+            }
+
+            http_response_code(200);
+            echo json_encode([
+                'success' => true,
+                'session' => $activeSession,
+                'message' => $activeSession ? 'Session active trouvée' : 'Aucune session active'
+            ]);
+
+        } catch (Exception $e) {
+            error_log("Erreur get_active_session: " . $e->getMessage());
+            ErrorHandler::handleServerError("Erreur lors de la vérification de session active");
         }
         break;
 
@@ -533,7 +942,12 @@ switch($method . '_' . $action) {
                 'POST /?action=arreter_phase' => 'Arrêter une phase',
                 'POST /?action=terminer_phase' => 'Terminer une phase',
                 'GET /?action=sessions&id=X' => 'Sessions de travail',
-                'GET /?action=statistiques&id=X' => 'Statistiques'
+                'GET /?action=get_active_session&intervention_id=X' => 'Vérifier session active',
+                'GET /?action=statistiques&id=X' => 'Statistiques',
+                'GET /?action=delais&id=X' => 'Calculs des délais et indicateurs',
+                'GET /?action=audit&id=X' => 'Historique d\'audit d\'une intervention',
+                'GET /?action=audit_critical' => 'Actions critiques récentes',
+                'GET /?action=audit_stats' => 'Statistiques d\'audit'
             ]
         ]);
         break;

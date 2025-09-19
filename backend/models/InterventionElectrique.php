@@ -32,7 +32,23 @@ class InterventionElectrique {
     // ===== TYPE DE PRESTATION =====
     public $type_prestation_id;
     public $type_prestation_nom;
+    public $type_prestation_code;
     public $has_terrassement;
+
+    // ===== NOUVEAUX CHAMPS ENEDIS =====
+    public $type_reglementaire; // type_1, type_2
+    public $mode_pose; // aerien, souterrain, aerosouterrain, souterrain_boite, di_seule
+    public $longueur_liaison_reseau; // LR en mètres
+    public $longueur_derivation_individuelle; // DI en mètres
+    public $distance_raccordement; // Distance totale en mètres
+
+    // ===== DATES DE SUIVI DU PROCESSUS =====
+    public $date_reception_dossier;
+    public $date_etude_technique;
+    public $date_validation_devis;
+    public $date_realisation_terrassement;
+    public $date_realisation_cablage;
+    public $date_mise_en_service;
 
     // ===== PHASE BRANCHEMENT =====
     public $phase_branchement_statut;
@@ -92,25 +108,23 @@ class InterventionElectrique {
                     priorite = :priorite,
                     type_prestation_id = :type_prestation_id,
 
-                    -- Configuration phase branchement
-                    phase_branchement_statut = 'en_attente',
-                    phase_branchement_technicien_id = :technicien_branchement_id,
-                    phase_branchement_taux_horaire = :taux_branchement,
+                    -- Nouveaux champs Enedis
+                    type_reglementaire = :type_reglementaire,
+                    mode_pose = :mode_pose,
+                    longueur_liaison_reseau = :longueur_liaison_reseau,
+                    longueur_derivation_individuelle = :longueur_derivation_individuelle,
+                    distance_raccordement = :distance_raccordement,
 
-                    -- Configuration phase terrassement (si applicable)
-                    phase_terrassement_statut = CASE WHEN :has_terrassement = 1 THEN 'en_attente' ELSE 'non_applicable' END,
-                    phase_terrassement_technicien_id = :technicien_terrassement_id,
-                    phase_terrassement_taux_horaire = :taux_terrassement,
+                    -- Dates de suivi du processus
+                    date_reception_dossier = :date_reception_dossier,
+                    date_etude_technique = :date_etude_technique,
+                    date_validation_devis = :date_validation_devis,
 
-                    -- Planification
-                    date_branchement_prevue = :date_branchement_prevue,
-                    date_terrassement_prevue = :date_terrassement_prevue,
+                    -- Champs de base pour compatibilité
+                    statut = 'En attente',
+                    type_intervention = 'Installation',
 
-                    -- Estimation budgétaire
-                    cout_total_estime = :cout_total_estime,
-
-                    date_creation = NOW(),
-                    date_modification = NOW()";
+                    date_creation = NOW()";
 
         $stmt = $this->conn->prepare($query);
 
@@ -121,21 +135,25 @@ class InterventionElectrique {
         $this->priorite = htmlspecialchars(strip_tags($this->priorite ?? 'normale'));
 
         // Binding des paramètres
-        $stmt->bindParam(":titre", $this->titre);
-        $stmt->bindParam(":description", $this->description);
-        $stmt->bindParam(":client_id", $this->client_id);
-        $stmt->bindParam(":client_nom", $this->client_nom);
-        $stmt->bindParam(":createur_id", $this->createur_id);
-        $stmt->bindParam(":priorite", $this->priorite);
-        $stmt->bindParam(":type_prestation_id", $this->type_prestation_id);
-        $stmt->bindParam(":technicien_branchement_id", $this->phase_branchement_technicien_id);
-        $stmt->bindParam(":taux_branchement", $this->phase_branchement_taux_horaire);
-        $stmt->bindParam(":has_terrassement", $this->has_terrassement);
-        $stmt->bindParam(":technicien_terrassement_id", $this->phase_terrassement_technicien_id);
-        $stmt->bindParam(":taux_terrassement", $this->phase_terrassement_taux_horaire);
-        $stmt->bindParam(":date_branchement_prevue", $this->date_branchement_prevue);
-        $stmt->bindParam(":date_terrassement_prevue", $this->date_terrassement_prevue);
-        $stmt->bindParam(":cout_total_estime", $this->cout_total_estime);
+        $stmt->bindValue(":titre", $this->titre);
+        $stmt->bindValue(":description", $this->description);
+        $stmt->bindValue(":client_id", $this->client_id);
+        $stmt->bindValue(":client_nom", $this->client_nom);
+        $stmt->bindValue(":createur_id", $this->createur_id);
+        $stmt->bindValue(":priorite", $this->priorite);
+        $stmt->bindValue(":type_prestation_id", $this->type_prestation_id);
+
+        // Nouveaux champs Enedis
+        $stmt->bindValue(":type_reglementaire", $this->type_reglementaire);
+        $stmt->bindValue(":mode_pose", $this->mode_pose);
+        $stmt->bindValue(":longueur_liaison_reseau", $this->longueur_liaison_reseau);
+        $stmt->bindValue(":longueur_derivation_individuelle", $this->longueur_derivation_individuelle);
+        $stmt->bindValue(":distance_raccordement", $this->distance_raccordement);
+
+        // Dates de suivi
+        $stmt->bindValue(":date_reception_dossier", $this->date_reception_dossier);
+        $stmt->bindValue(":date_etude_technique", $this->date_etude_technique);
+        $stmt->bindValue(":date_validation_devis", $this->date_validation_devis);
 
         if($stmt->execute()) {
             $this->id = $this->conn->lastInsertId();
@@ -207,16 +225,8 @@ class InterventionElectrique {
                     tp.has_terrassement,
                     tp.duree_branchement_heures as duree_branchement_estimee,
                     tp.duree_terrassement_heures as duree_terrassement_estimee,
-
-                    -- Infos technicien branchement
-                    ub.nom as technicien_branchement_nom,
-                    ub.prenom as technicien_branchement_prenom,
-                    ub.taux_horaire as technicien_branchement_taux_defaut,
-
-                    -- Infos technicien terrassement
-                    ut.nom as technicien_terrassement_nom,
-                    ut.prenom as technicien_terrassement_prenom,
-                    ut.taux_horaire as technicien_terrassement_taux_defaut,
+                    tp.type_reglementaire as type_prestation_reglementaire,
+                    tp.mode_pose as type_prestation_mode_pose,
 
                     -- Infos client
                     c.nom as client_nom_complet,
@@ -226,8 +236,6 @@ class InterventionElectrique {
 
                   FROM " . $this->table_name . " i
                   LEFT JOIN " . $this->prestations_table . " tp ON i.type_prestation_id = tp.id
-                  LEFT JOIN users ub ON i.phase_branchement_technicien_id = ub.id
-                  LEFT JOIN users ut ON i.phase_terrassement_technicien_id = ut.id
                   LEFT JOIN clients c ON i.client_id = c.id
                   WHERE i.id = :id
                   LIMIT 1";
@@ -475,6 +483,21 @@ class InterventionElectrique {
                     priorite = :priorite,
                     type_prestation_id = :type_prestation_id,
 
+                    -- Mise à jour nouveaux champs Enedis
+                    type_reglementaire = COALESCE(:type_reglementaire, type_reglementaire),
+                    mode_pose = COALESCE(:mode_pose, mode_pose),
+                    longueur_liaison_reseau = COALESCE(:longueur_liaison_reseau, longueur_liaison_reseau),
+                    longueur_derivation_individuelle = COALESCE(:longueur_derivation_individuelle, longueur_derivation_individuelle),
+                    distance_raccordement = COALESCE(:distance_raccordement, distance_raccordement),
+
+                    -- Mise à jour dates de suivi
+                    date_reception_dossier = COALESCE(:date_reception_dossier, date_reception_dossier),
+                    date_etude_technique = COALESCE(:date_etude_technique, date_etude_technique),
+                    date_validation_devis = COALESCE(:date_validation_devis, date_validation_devis),
+                    date_realisation_terrassement = COALESCE(:date_realisation_terrassement, date_realisation_terrassement),
+                    date_realisation_cablage = COALESCE(:date_realisation_cablage, date_realisation_cablage),
+                    date_mise_en_service = COALESCE(:date_mise_en_service, date_mise_en_service),
+
                     -- Mise à jour assignations techniciens
                     phase_branchement_technicien_id = :technicien_branchement_id,
                     phase_branchement_taux_horaire = :taux_branchement,
@@ -507,6 +530,23 @@ class InterventionElectrique {
         $stmt->bindParam(":client_nom", $this->client_nom);
         $stmt->bindParam(":priorite", $this->priorite);
         $stmt->bindParam(":type_prestation_id", $this->type_prestation_id);
+
+        // Nouveaux champs Enedis
+        $stmt->bindParam(":type_reglementaire", $this->type_reglementaire);
+        $stmt->bindParam(":mode_pose", $this->mode_pose);
+        $stmt->bindParam(":longueur_liaison_reseau", $this->longueur_liaison_reseau);
+        $stmt->bindParam(":longueur_derivation_individuelle", $this->longueur_derivation_individuelle);
+        $stmt->bindParam(":distance_raccordement", $this->distance_raccordement);
+
+        // Dates de suivi
+        $stmt->bindParam(":date_reception_dossier", $this->date_reception_dossier);
+        $stmt->bindParam(":date_etude_technique", $this->date_etude_technique);
+        $stmt->bindParam(":date_validation_devis", $this->date_validation_devis);
+        $stmt->bindParam(":date_realisation_terrassement", $this->date_realisation_terrassement);
+        $stmt->bindParam(":date_realisation_cablage", $this->date_realisation_cablage);
+        $stmt->bindParam(":date_mise_en_service", $this->date_mise_en_service);
+
+        // Phases
         $stmt->bindParam(":technicien_branchement_id", $this->phase_branchement_technicien_id);
         $stmt->bindParam(":taux_branchement", $this->phase_branchement_taux_horaire);
         $stmt->bindParam(":technicien_terrassement_id", $this->phase_terrassement_technicien_id);
@@ -584,6 +624,149 @@ class InterventionElectrique {
         $stmt->execute();
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Calcule les délais et indicateurs de performance d'une intervention
+     * @return array Délais calculés et indicateurs KPI
+     */
+    public function calculerDelais() {
+        $query = "SELECT
+                    i.*,
+                    tp.nom as type_prestation_nom,
+
+                    -- Calculs de délais (en jours)
+                    CASE
+                        WHEN i.date_reception_dossier IS NOT NULL AND i.date_etude_technique IS NOT NULL
+                        THEN DATEDIFF(i.date_etude_technique, i.date_reception_dossier)
+                        ELSE NULL
+                    END as delai_reception_etude,
+
+                    CASE
+                        WHEN i.date_etude_technique IS NOT NULL AND i.date_validation_devis IS NOT NULL
+                        THEN DATEDIFF(i.date_validation_devis, i.date_etude_technique)
+                        ELSE NULL
+                    END as delai_etude_validation,
+
+                    CASE
+                        WHEN i.date_validation_devis IS NOT NULL AND i.date_realisation_terrassement IS NOT NULL
+                        THEN DATEDIFF(i.date_realisation_terrassement, i.date_validation_devis)
+                        ELSE NULL
+                    END as delai_validation_terrassement,
+
+                    CASE
+                        WHEN i.date_realisation_terrassement IS NOT NULL AND i.date_realisation_cablage IS NOT NULL
+                        THEN DATEDIFF(i.date_realisation_cablage, i.date_realisation_terrassement)
+                        WHEN i.date_validation_devis IS NOT NULL AND i.date_realisation_cablage IS NOT NULL AND i.date_realisation_terrassement IS NULL
+                        THEN DATEDIFF(i.date_realisation_cablage, i.date_validation_devis)
+                        ELSE NULL
+                    END as delai_terrassement_cablage,
+
+                    CASE
+                        WHEN i.date_realisation_cablage IS NOT NULL AND i.date_mise_en_service IS NOT NULL
+                        THEN DATEDIFF(i.date_mise_en_service, i.date_realisation_cablage)
+                        ELSE NULL
+                    END as delai_cablage_service,
+
+                    -- Délai total
+                    CASE
+                        WHEN i.date_reception_dossier IS NOT NULL AND i.date_mise_en_service IS NOT NULL
+                        THEN DATEDIFF(i.date_mise_en_service, i.date_reception_dossier)
+                        ELSE NULL
+                    END as delai_total,
+
+                    -- Indicateurs de respect des délais (basés sur des standards)
+                    CASE
+                        WHEN DATEDIFF(i.date_etude_technique, i.date_reception_dossier) <= 5 THEN 'OK'
+                        WHEN DATEDIFF(i.date_etude_technique, i.date_reception_dossier) <= 10 THEN 'ALERTE'
+                        ELSE 'DEPASSEMENT'
+                    END as respect_delai_etude,
+
+                    CASE
+                        WHEN DATEDIFF(i.date_mise_en_service, i.date_reception_dossier) <= 30 THEN 'OK'
+                        WHEN DATEDIFF(i.date_mise_en_service, i.date_reception_dossier) <= 45 THEN 'ALERTE'
+                        ELSE 'DEPASSEMENT'
+                    END as respect_delai_global
+
+                  FROM " . $this->table_name . " i
+                  LEFT JOIN " . $this->prestations_table . " tp ON i.type_prestation_id = tp.id
+                  WHERE i.id = :id";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":id", $this->id);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$result) {
+            return null;
+        }
+
+        // Structurer les résultats
+        return [
+            'delais_processus' => [
+                'reception_vers_etude' => $result['delai_reception_etude'],
+                'etude_vers_validation' => $result['delai_etude_validation'],
+                'validation_vers_terrassement' => $result['delai_validation_terrassement'],
+                'terrassement_vers_cablage' => $result['delai_terrassement_cablage'],
+                'cablage_vers_service' => $result['delai_cablage_service'],
+                'delai_total' => $result['delai_total']
+            ],
+            'indicateurs_performance' => [
+                'respect_delai_etude' => $result['respect_delai_etude'],
+                'respect_delai_global' => $result['respect_delai_global'],
+                'phase_actuelle' => $this->determinerPhaseActuelle($result),
+                'pourcentage_avancement' => $this->calculerPourcentageAvancement($result)
+            ],
+            'dates' => [
+                'reception_dossier' => $result['date_reception_dossier'],
+                'etude_technique' => $result['date_etude_technique'],
+                'validation_devis' => $result['date_validation_devis'],
+                'realisation_terrassement' => $result['date_realisation_terrassement'],
+                'realisation_cablage' => $result['date_realisation_cablage'],
+                'mise_en_service' => $result['date_mise_en_service']
+            ]
+        ];
+    }
+
+    /**
+     * Détermine la phase actuelle d'une intervention
+     * @param array $data Données de l'intervention
+     * @return string Phase actuelle
+     */
+    private function determinerPhaseActuelle($data) {
+        if ($data['date_mise_en_service']) return 'TERMINEE';
+        if ($data['date_realisation_cablage']) return 'MISE_EN_SERVICE';
+        if ($data['date_realisation_terrassement']) return 'CABLAGE';
+        if ($data['date_validation_devis']) return 'TERRASSEMENT';
+        if ($data['date_etude_technique']) return 'VALIDATION_DEVIS';
+        if ($data['date_reception_dossier']) return 'ETUDE_TECHNIQUE';
+        return 'RECEPTION';
+    }
+
+    /**
+     * Calcule le pourcentage d'avancement d'une intervention
+     * @param array $data Données de l'intervention
+     * @return int Pourcentage d'avancement (0-100)
+     */
+    private function calculerPourcentageAvancement($data) {
+        $etapes = [
+            'date_reception_dossier' => 10,
+            'date_etude_technique' => 25,
+            'date_validation_devis' => 40,
+            'date_realisation_terrassement' => 65,
+            'date_realisation_cablage' => 85,
+            'date_mise_en_service' => 100
+        ];
+
+        $avancement = 0;
+        foreach ($etapes as $etape => $pourcentage) {
+            if ($data[$etape]) {
+                $avancement = $pourcentage;
+            }
+        }
+
+        return $avancement;
     }
 }
 ?>

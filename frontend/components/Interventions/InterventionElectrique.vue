@@ -13,35 +13,37 @@
     <!-- En-tête avec informations de base -->
     <Card class="mb-6">
       <template #header>
-        <div class="flex justify-between items-center p-4 border-b border-surface-200 dark:border-surface-700">
-          <div>
-            <h2 class="text-2xl font-bold text-surface-900 dark:text-surface-50">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 sm:p-4 border-b border-surface-200 dark:border-surface-700 gap-3 sm:gap-0">
+          <div class="flex-1 min-w-0">
+            <h2 class="text-xl sm:text-2xl font-bold text-surface-900 dark:text-surface-50 truncate">
               Branchement Électrique #{{ intervention?.numero }}
             </h2>
-            <p class="text-surface-600 dark:text-surface-400 mt-1">
+            <p class="text-surface-600 dark:text-surface-400 mt-1 text-sm sm:text-base truncate">
               {{ intervention?.type_prestation_nom }}
             </p>
           </div>
-          <Badge
-            :value="getStatutGlobal()"
-            :severity="getStatutSeverity(getStatutGlobal())"
-            class="text-sm font-medium"
-          />
+          <div class="flex-shrink-0 self-start sm:self-center">
+            <Badge
+              :value="getStatutGlobal()"
+              :severity="getStatutSeverity(getStatutGlobal())"
+              class="text-sm font-medium"
+            />
+          </div>
         </div>
       </template>
 
       <template #content>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <!-- Informations client -->
           <div class="space-y-2">
             <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Client</label>
-            <p class="text-surface-900 dark:text-surface-50">{{ intervention?.client_nom }}</p>
+            <p class="text-surface-900 dark:text-surface-50 text-sm sm:text-base break-words">{{ intervention?.client_nom }}</p>
           </div>
 
           <!-- Date d'intervention prévue -->
           <div class="space-y-2">
             <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Date prévue</label>
-            <p class="text-surface-900 dark:text-surface-50">
+            <p class="text-surface-900 dark:text-surface-50 text-sm sm:text-base">
               {{ formatDate(intervention?.date_intervention) }}
             </p>
           </div>
@@ -49,7 +51,7 @@
           <!-- Coût estimé -->
           <div class="space-y-2">
             <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Coût estimé</label>
-            <p class="text-surface-900 dark:text-surface-50 font-medium">
+            <p class="text-surface-900 dark:text-surface-50 font-medium text-sm sm:text-base">
               {{ formatCurrency(intervention?.cout_total_estime) }}
             </p>
           </div>
@@ -57,15 +59,120 @@
           <!-- Coût réel -->
           <div class="space-y-2">
             <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Coût réel</label>
-            <p class="text-surface-900 dark:text-surface-50 font-medium"
+            <p class="text-surface-900 dark:text-surface-50 font-medium text-sm sm:text-base"
                :class="getCoutClass(intervention?.ecart_pourcentage)">
               {{ formatCurrency(intervention?.cout_total_reel) }}
-              <span v-if="intervention?.ecart_pourcentage" class="text-sm ml-1">
+              <span v-if="intervention?.ecart_pourcentage" class="text-xs sm:text-sm ml-1 block sm:inline">
                 ({{ intervention.ecart_pourcentage > 0 ? '+' : '' }}{{ intervention.ecart_pourcentage }}%)
               </span>
             </p>
           </div>
         </div>
+      </template>
+    </Card>
+
+    <!-- Spécifications Enedis -->
+    <Card class="mb-6">
+      <template #header>
+        <div class="p-3 sm:p-4 border-b border-surface-200 dark:border-surface-700">
+          <h3 class="text-base sm:text-lg font-semibold text-surface-900 dark:text-surface-50">
+            Spécifications du branchement Enedis
+          </h3>
+        </div>
+      </template>
+
+      <template #content>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <!-- Type réglementaire -->
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Type réglementaire</label>
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+              <Badge
+                :value="getTypeReglementaireLabel(intervention?.specifications?.type_reglementaire)"
+                :severity="getTypeReglementaireSeverity(intervention?.specifications?.type_reglementaire)"
+                class="text-xs sm:text-sm"
+              />
+              <span class="text-xs sm:text-sm text-surface-600 dark:text-surface-400">
+                {{ getTypeReglementaireDescription(intervention?.specifications?.type_reglementaire) }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Mode de pose -->
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Mode de pose</label>
+            <div class="flex items-center gap-2">
+              <i :class="getModePoseIcon(intervention?.specifications?.mode_pose)"
+                 class="text-base sm:text-lg text-primary-500 flex-shrink-0"></i>
+              <span class="text-surface-900 dark:text-surface-50 text-sm sm:text-base">
+                {{ getModePoseLabel(intervention?.specifications?.mode_pose) }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Distance totale -->
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Distance raccordement</label>
+            <p class="text-surface-900 dark:text-surface-50 font-medium text-sm sm:text-base">
+              {{ intervention?.specifications?.distance_raccordement || 0 }} m
+            </p>
+          </div>
+
+          <!-- Liaison Réseau (LR) -->
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-surface-700 dark:text-surface-300">
+              Liaison Réseau (LR)
+              <i class="pi pi-info-circle text-xs ml-1 text-surface-400"
+                 v-tooltip="'Distance du réseau au CCPI'"></i>
+            </label>
+            <p class="text-surface-900 dark:text-surface-50 text-sm sm:text-base">
+              {{ intervention?.specifications?.longueur_liaison_reseau || 0 }} m
+            </p>
+          </div>
+
+          <!-- Dérivation Individuelle (DI) -->
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-surface-700 dark:text-surface-300">
+              Dérivation Individuelle (DI)
+              <i class="pi pi-info-circle text-xs ml-1 text-surface-400"
+                 v-tooltip="'Distance du CCPI au tableau électrique'"></i>
+            </label>
+            <p class="text-surface-900 dark:text-surface-50 text-sm sm:text-base">
+              {{ intervention?.specifications?.longueur_derivation_individuelle || 0 }} m
+              <span v-if="intervention?.specifications?.type_reglementaire === 'type_1' && intervention?.specifications?.longueur_derivation_individuelle > 30"
+                    class="text-orange-600 dark:text-orange-400 text-xs ml-1 block sm:inline">
+                (> 30m : devrait être Type 2)
+              </span>
+            </p>
+          </div>
+
+          <!-- Critère Type 1/2 -->
+          <div class="space-y-2 sm:col-span-2 lg:col-span-1">
+            <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Critère type</label>
+            <p class="text-surface-600 dark:text-surface-400 text-xs sm:text-sm">
+              {{ getCritereType(intervention?.specifications) }}
+            </p>
+          </div>
+        </div>
+      </template>
+    </Card>
+
+    <!-- Timeline du processus -->
+    <Card class="mb-6">
+      <template #header>
+        <div class="p-3 sm:p-4 border-b border-surface-200 dark:border-surface-700">
+          <h3 class="text-base sm:text-lg font-semibold text-surface-900 dark:text-surface-50">
+            Suivi du processus Enedis
+          </h3>
+        </div>
+      </template>
+
+      <template #content>
+        <ProcessTimeline
+          :suivi-processus="intervention?.suivi_processus"
+          :intervention-id="interventionId"
+          @timeline-updated="loadIntervention"
+        />
       </template>
     </Card>
 
@@ -93,11 +200,34 @@
       />
     </div>
 
+    <!-- Timeline du processus d'intervention -->
+    <Card class="mb-6">
+      <template #header>
+        <div class="p-3 sm:p-4 border-b border-surface-200 dark:border-surface-700">
+          <h3 class="text-base sm:text-lg font-semibold text-surface-900 dark:text-surface-50 flex items-center">
+            <i class="pi pi-sitemap mr-2 text-blue-600"></i>
+            Suivi du processus d'intervention
+          </h3>
+        </div>
+      </template>
+
+      <template #content>
+        <div class="p-4">
+          <TimelineComponent
+            :etapes="timelineSteps"
+            :vertical="true"
+            :show-summary="true"
+            @action="handleTimelineAction"
+          />
+        </div>
+      </template>
+    </Card>
+
     <!-- Historique des sessions -->
     <Card class="mb-6">
       <template #header>
-        <div class="p-4 border-b border-surface-200 dark:border-surface-700">
-          <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-50">
+        <div class="p-3 sm:p-4 border-b border-surface-200 dark:border-surface-700">
+          <h3 class="text-base sm:text-lg font-semibold text-surface-900 dark:text-surface-50">
             Historique des sessions de travail
           </h3>
         </div>
@@ -114,8 +244,8 @@
     <!-- Statistiques et résumé -->
     <Card>
       <template #header>
-        <div class="p-4 border-b border-surface-200 dark:border-surface-700">
-          <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-50">
+        <div class="p-3 sm:p-4 border-b border-surface-200 dark:border-surface-700">
+          <h3 class="text-base sm:text-lg font-semibold text-surface-900 dark:text-surface-50">
             Résumé financier
           </h3>
         </div>
@@ -150,6 +280,7 @@ import { useTimeTracking } from '@/composables/useTimeTracking'
 import PhaseCard from './PhaseCard.vue'
 import SessionHistory from './SessionHistory.vue'
 import InterventionSummary from './InterventionSummary.vue'
+import ProcessTimeline from './ProcessTimeline.vue'
 
 const props = defineProps({
   interventionId: {
@@ -380,6 +511,269 @@ const formatCurrency = (amount) => {
   }).format(amount)
 }
 
+/**
+ * Méthodes pour les spécifications Enedis
+ */
+
+/**
+ * Retourne le label du type réglementaire
+ */
+const getTypeReglementaireLabel = (type) => {
+  switch (type) {
+    case 'type_1': return 'Type 1'
+    case 'type_2': return 'Type 2'
+    default: return 'Non défini'
+  }
+}
+
+/**
+ * Retourne la severity du badge pour le type réglementaire
+ */
+const getTypeReglementaireSeverity = (type) => {
+  switch (type) {
+    case 'type_1': return 'info'
+    case 'type_2': return 'warning'
+    default: return 'secondary'
+  }
+}
+
+/**
+ * Retourne la description du type réglementaire
+ */
+const getTypeReglementaireDescription = (type) => {
+  switch (type) {
+    case 'type_1': return 'DI ≤ 30m - Compteur intérieur'
+    case 'type_2': return 'DI > 30m - Coffret limite propriété'
+    default: return ''
+  }
+}
+
+/**
+ * Génère les étapes de la timeline pour le processus d'intervention
+ */
+const timelineSteps = computed(() => {
+  if (!intervention.value) return []
+
+  const steps = []
+
+  // 1. Réception du dossier
+  steps.push({
+    id: 'reception',
+    titre: 'Réception dossier',
+    description: 'Dossier client reçu et analysé',
+    icon: 'pi pi-file-import',
+    status: intervention.value.date_reception_dossier ? 'completed' : 'pending',
+    date: intervention.value.date_reception_dossier,
+    statut: intervention.value.date_reception_dossier ? 'Terminé' : 'En attente',
+    actions: !intervention.value.date_reception_dossier ? [
+      { label: 'Marquer reçu', icon: 'pi pi-check', type: 'mark-received' }
+    ] : []
+  })
+
+  // 2. Étude technique
+  steps.push({
+    id: 'etude',
+    titre: 'Étude technique',
+    description: 'Étude de faisabilité et dimensionnement',
+    icon: 'pi pi-cog',
+    status: intervention.value.date_etude_technique ? 'completed' :
+            (intervention.value.date_reception_dossier ? 'active' : 'pending'),
+    date: intervention.value.date_etude_technique,
+    statut: intervention.value.date_etude_technique ? 'Terminé' :
+            (intervention.value.date_reception_dossier ? 'En cours' : 'En attente'),
+    duree: '2h',
+    actions: !intervention.value.date_etude_technique && intervention.value.date_reception_dossier ? [
+      { label: 'Planifier étude', icon: 'pi pi-calendar', type: 'schedule-study' }
+    ] : []
+  })
+
+  // 3. Phase terrassement (si applicable)
+  if (hasPhase('terrassement')) {
+    const terrassementData = getPhaseData('terrassement')
+    steps.push({
+      id: 'terrassement',
+      titre: 'Terrassement',
+      description: 'Travaux de terrassement et pose',
+      icon: 'pi pi-wrench',
+      status: terrassementData.statut === 'terminee' ? 'completed' :
+              (terrassementData.statut === 'en_cours' ? 'active' : 'pending'),
+      date: terrassementData.date_debut,
+      statut: getStatutLabel(terrassementData.statut),
+      duree: terrassementData.duree_estimee_heures ? `${terrassementData.duree_estimee_heures}h` : undefined,
+      actions: getPhaseActions('terrassement', terrassementData)
+    })
+  }
+
+  // 4. Phase branchement
+  const branchementData = getPhaseData('branchement')
+  steps.push({
+    id: 'branchement',
+    titre: 'Branchement électrique',
+    description: 'Raccordement et câblage électrique',
+    icon: 'pi pi-bolt',
+    status: branchementData.statut === 'terminee' ? 'completed' :
+            (branchementData.statut === 'en_cours' ? 'active' : 'pending'),
+    date: branchementData.date_debut,
+    statut: getStatutLabel(branchementData.statut),
+    duree: branchementData.duree_estimee_heures ? `${branchementData.duree_estimee_heures}h` : undefined,
+    actions: getPhaseActions('branchement', branchementData)
+  })
+
+  // 5. Contrôle et mise en service
+  steps.push({
+    id: 'controle',
+    titre: 'Contrôle et tests',
+    description: 'Vérifications et tests de conformité',
+    icon: 'pi pi-check-circle',
+    status: intervention.value.date_controle ? 'completed' :
+            (branchementData.statut === 'terminee' ? 'active' : 'pending'),
+    date: intervention.value.date_controle,
+    statut: intervention.value.date_controle ? 'Terminé' :
+            (branchementData.statut === 'terminee' ? 'En cours' : 'En attente'),
+    duree: '30min',
+    actions: !intervention.value.date_controle && branchementData.statut === 'terminee' ? [
+      { label: 'Effectuer contrôle', icon: 'pi pi-search', type: 'start-control' }
+    ] : []
+  })
+
+  // 6. Mise en service
+  steps.push({
+    id: 'mise_en_service',
+    titre: 'Mise en service',
+    description: 'Activation du branchement',
+    icon: 'pi pi-power-off',
+    status: intervention.value.date_mise_en_service ? 'completed' :
+            (intervention.value.date_controle ? 'active' : 'pending'),
+    date: intervention.value.date_mise_en_service,
+    statut: intervention.value.date_mise_en_service ? 'Terminé' :
+            (intervention.value.date_controle ? 'En cours' : 'En attente'),
+    actions: !intervention.value.date_mise_en_service && intervention.value.date_controle ? [
+      { label: 'Mettre en service', icon: 'pi pi-play', type: 'activate-service' }
+    ] : []
+  })
+
+  return steps
+})
+
+/**
+ * Retourne les actions possibles pour une phase
+ */
+const getPhaseActions = (phase, phaseData) => {
+  const actions = []
+
+  if (phaseData.statut === 'en_attente' && canStartPhase(phase)) {
+    actions.push({ label: 'Démarrer', icon: 'pi pi-play', type: `start-${phase}` })
+  }
+
+  if (phaseData.statut === 'en_cours') {
+    actions.push({ label: 'Terminer', icon: 'pi pi-check', type: `complete-${phase}` })
+  }
+
+  if (phaseData.statut === 'terminee') {
+    actions.push({ label: 'Voir détails', icon: 'pi pi-eye', type: `view-${phase}` })
+  }
+
+  return actions
+}
+
+/**
+ * Retourne le label du statut
+ */
+const getStatutLabel = (statut) => {
+  switch (statut) {
+    case 'en_attente': return 'En attente'
+    case 'en_cours': return 'En cours'
+    case 'terminee': return 'Terminé'
+    case 'annulee': return 'Annulé'
+    default: return 'Non défini'
+  }
+}
+
+/**
+ * Gestion des actions de la timeline
+ */
+const handleTimelineAction = (actionType, etape) => {
+  switch (actionType) {
+    case 'mark-received':
+      // Marquer le dossier comme reçu
+      console.log('Marquer dossier reçu')
+      break
+    case 'schedule-study':
+      // Planifier l'étude technique
+      console.log('Planifier étude technique')
+      break
+    case 'start-terrassement':
+      // Démarrer la phase terrassement
+      console.log('Démarrer terrassement')
+      break
+    case 'start-branchement':
+      // Démarrer la phase branchement
+      console.log('Démarrer branchement')
+      break
+    case 'complete-terrassement':
+      // Terminer la phase terrassement
+      console.log('Terminer terrassement')
+      break
+    case 'complete-branchement':
+      // Terminer la phase branchement
+      console.log('Terminer branchement')
+      break
+    case 'start-control':
+      // Démarrer le contrôle
+      console.log('Démarrer contrôle')
+      break
+    case 'activate-service':
+      // Mettre en service
+      console.log('Mettre en service')
+      break
+    default:
+      console.log('Action timeline non définie:', actionType, etape)
+  }
+}
+
+/**
+ * Retourne l'icône pour le mode de pose
+ */
+const getModePoseIcon = (mode) => {
+  switch (mode) {
+    case 'aerien': return 'pi pi-cloud'
+    case 'souterrain': return 'pi pi-arrow-down-right'
+    case 'aerosouterrain': return 'pi pi-arrow-right-arrow-left'
+    case 'souterrain_boite': return 'pi pi-box'
+    case 'di_seule': return 'pi pi-home'
+    default: return 'pi pi-question-circle'
+  }
+}
+
+/**
+ * Retourne le label pour le mode de pose
+ */
+const getModePoseLabel = (mode) => {
+  switch (mode) {
+    case 'aerien': return 'Aérien'
+    case 'souterrain': return 'Souterrain'
+    case 'aerosouterrain': return 'Aérosouterrain'
+    case 'souterrain_boite': return 'Souterrain sur boîte'
+    case 'di_seule': return 'DI seule'
+    default: return 'Non défini'
+  }
+}
+
+/**
+ * Retourne le critère de classification Type 1/2
+ */
+const getCritereType = (specifications) => {
+  if (!specifications) return 'Non défini'
+
+  const di = specifications.longueur_derivation_individuelle || 0
+
+  if (di <= 30) {
+    return `DI = ${di}m ≤ 30m → Type 1`
+  } else {
+    return `DI = ${di}m > 30m → Type 2`
+  }
+}
+
 // Initialisation au montage
 onMounted(async () => {
   await Promise.all([
@@ -400,7 +794,13 @@ onMounted(async () => {
   max-width: 80rem;
   margin-left: auto;
   margin-right: auto;
-  padding: 1rem;
+  padding: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .branchement-electrique {
+    padding: 1rem;
+  }
 }
 
 /* Animation pour les transitions de statut */
@@ -422,8 +822,41 @@ onMounted(async () => {
 }
 
 /* Responsive breakpoints personnalisés */
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .branchement-electrique {
+    padding: 0.25rem;
+  }
+
+  /* Améliorer l'espacement sur mobile */
+  .branchement-electrique :deep(.p-card) {
+    margin-bottom: 0.75rem;
+  }
+
+  .branchement-electrique :deep(.p-card-content) {
+    padding: 0.75rem;
+  }
+
+  .branchement-electrique :deep(.p-card-header) {
+    padding: 0.75rem;
+  }
+}
+
+/* Amélioration de la lisibilité sur petits écrans */
+@media (max-width: 480px) {
+  .branchement-electrique {
+    padding: 0.125rem;
+  }
+
+  /* Réduire encore plus les marges sur très petits écrans */
+  .branchement-electrique :deep(.p-card) {
+    margin-bottom: 0.5rem;
+  }
+
+  .branchement-electrique :deep(.p-card-content) {
+    padding: 0.5rem;
+  }
+
+  .branchement-electrique :deep(.p-card-header) {
     padding: 0.5rem;
   }
 }

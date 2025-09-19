@@ -1,1 +1,0 @@
-import{aX as s,u as o,a_ as r,aT as u}from"./DYlgVOq5.js";const h=s(async i=>{let e,t;const a=o();if(!a.isAuthenticated&&!([e,t]=r(()=>a.fetchUser()),e=await e,t(),e))return u("/login")});export{h as default};

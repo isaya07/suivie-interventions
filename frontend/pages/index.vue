@@ -9,7 +9,6 @@
           Plateforme moderne pour la gestion des interventions techniques. 
           Suivez vos missions, gérez vos équipes et optimisez vos performances.
         </p>
-        
         <div class="space-x-4">
           <NuxtLink
             to="/login"
@@ -17,7 +16,6 @@
           >
             Se connecter
           </NuxtLink>
-          
           <NuxtLink
             to="/dashboard"
             class="inline-flex items-center px-8 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
@@ -26,7 +24,6 @@
           </NuxtLink>
         </div>
       </div>
-      
       <div class="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="text-center">
           <Card>
@@ -41,7 +38,6 @@
             </template>
           </Card>
         </div>
-        
         <div class="text-center">
           <Card>
             <template #content>
@@ -55,7 +51,6 @@
             </template>
           </Card>
         </div>
-        
         <div class="text-center">
           <Card>
             <template #content>
@@ -73,7 +68,6 @@
     </div>
   </div>
 </template>
-
 <script setup>
 definePageMeta({
   layout: false

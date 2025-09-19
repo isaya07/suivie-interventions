@@ -1,13 +1,11 @@
 <template>
   <div>
-    <NuxtPage />
-
-    <!-- PrimeVue Global Components -->
-    <Toast />
-    <ConfirmDialog />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
   </div>
 </template>
 
 <script setup>
-// Nothing needed here, just providing the layout
+// Layout management is now handled by layouts/default.vue
 </script>

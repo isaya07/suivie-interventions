@@ -1,16 +1,11 @@
 <template>
   <div>
-    <AppHeader />
-
-    <main class="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
-      <div class="px-4 py-6 sm:px-0">
         <!-- En-tête -->
         <div class="flex items-center justify-between mb-8">
           <div>
             <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Détails client</h1>
             <p class="text-gray-600 dark:text-gray-400">Informations détaillées du client</p>
           </div>
-
           <NuxtLink
             to="/clients"
             class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
@@ -21,12 +16,10 @@
             Retour à la liste
           </NuxtLink>
         </div>
-
         <!-- Loading -->
         <div v-if="loading" class="flex justify-center py-8">
           <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
         </div>
-
         <!-- Contenu client -->
         <div v-else-if="client" class="space-y-6">
           <!-- Informations principales -->
@@ -58,7 +51,6 @@
                   </div>
                 </div>
               </div>
-
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -66,14 +58,12 @@
                   </label>
                   <p class="text-sm text-gray-900">{{ client.email || 'Non renseigné' }}</p>
                 </div>
-
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">
                     Téléphone
                   </label>
                   <p class="text-sm text-gray-900">{{ client.telephone || 'Non renseigné' }}</p>
                 </div>
-
                 <div class="md:col-span-2">
                   <label class="block text-sm font-medium text-gray-700 mb-1">
                     Adresse
@@ -86,14 +76,12 @@
                   </div>
                   <p v-else class="text-sm text-gray-500">Adresse non renseignée</p>
                 </div>
-
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">
                     Créé le
                   </label>
                   <p class="text-sm text-gray-900">{{ formatDate(client.created_at) }}</p>
                 </div>
-
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">
                     Mis à jour le
@@ -103,7 +91,6 @@
               </div>
             </div>
           </div>
-
           <!-- Coordonnées GPS -->
           <div class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">
@@ -118,7 +105,6 @@
                     </label>
                     <p class="text-sm text-gray-900 font-mono">{{ client.latitude }}</p>
                   </div>
-
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
                       Longitude
@@ -126,7 +112,6 @@
                     <p class="text-sm text-gray-900 font-mono">{{ client.longitude }}</p>
                   </div>
                 </div>
-
                 <!-- Liens vers les cartes -->
                 <div class="flex flex-wrap gap-3 mt-4">
                   <a
@@ -139,7 +124,6 @@
                     </svg>
                     Voir sur Google Maps
                   </a>
-
                   <a
                     :href="wazeUrl"
                     target="_blank"
@@ -149,7 +133,6 @@
                   </a>
                 </div>
               </div>
-
               <div v-else class="text-center py-8 text-gray-500">
                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
@@ -160,7 +143,6 @@
               </div>
             </div>
           </div>
-
           <!-- Notes -->
           <div v-if="client.notes" class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">
@@ -170,7 +152,6 @@
               <div class="text-sm text-gray-900 whitespace-pre-wrap">{{ client.notes }}</div>
             </div>
           </div>
-
           <!-- Actions -->
           <div class="flex justify-end space-x-4">
             <NuxtLink
@@ -179,7 +160,6 @@
             >
               Retour
             </NuxtLink>
-
             <button
               @click="editClient"
               class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
@@ -188,7 +168,6 @@
             </button>
           </div>
         </div>
-
         <!-- Erreur -->
         <div v-else class="text-center py-8">
           <div class="text-red-600 mb-4">
@@ -202,33 +181,25 @@
             Retour à la liste
           </NuxtLink>
         </div>
-      </div>
-    </main>
   </div>
 </template>
-
 <script setup>
 definePageMeta({
   middleware: ['auth']
 })
-
 const route = useRoute()
 const router = useRouter()
 const { fetchClient, loading } = useClients()
-
 const clientId = route.params.id
 const client = ref(null)
-
 const googleMapsUrl = computed(() => {
   if (!client.value?.latitude || !client.value?.longitude) return '#'
   return `https://www.google.com/maps/search/?api=1&query=${client.value.latitude},${client.value.longitude}`
 })
-
 const wazeUrl = computed(() => {
   if (!client.value?.latitude || !client.value?.longitude) return '#'
   return `https://waze.com/ul?ll=${client.value.latitude}%2C${client.value.longitude}&navigate=yes`
 })
-
 const formatDate = (dateString) => {
   if (!dateString) return 'Non définie'
   const date = new Date(dateString)
@@ -240,11 +211,9 @@ const formatDate = (dateString) => {
     minute: '2-digit'
   })
 }
-
 const editClient = () => {
   router.push(`/clients/${clientId}/edit`)
 }
-
 onMounted(async () => {
   try {
     const result = await fetchClient(clientId)

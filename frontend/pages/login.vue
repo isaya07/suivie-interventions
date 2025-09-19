@@ -14,7 +14,6 @@
           </p>
         </div>
       </template>
-
       <template #content>
         <form @submit.prevent="handleLogin" class="space-y-6 p-6">
           <div class="space-y-4">
@@ -31,7 +30,6 @@
                 :class="{ 'p-invalid': error }"
               />
             </div>
-
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
                 Mot de passe
@@ -47,7 +45,6 @@
               />
             </div>
           </div>
-
           <Button
             type="submit"
             :loading="loading"
@@ -55,7 +52,6 @@
             class="w-full p-button-lg"
             :disabled="loading"
           />
-
           <Message
             v-if="error"
             severity="error"
@@ -65,7 +61,6 @@
           </Message>
         </form>
       </template>
-
       <template #footer>
         <div class="text-center text-xs text-gray-500 pb-4">
           © {{ new Date().getFullYear() }} Système de gestion des interventions
@@ -74,37 +69,29 @@
     </Card>
   </div>
 </template>
-
 <script setup>
 definePageMeta({
   layout: false,
   middleware: (to, from) => {
     const authStore = useAuthStore();
-
     if (authStore.isAuthenticated) {
       return navigateTo("/dashboard");
     }
   },
 });
-
 const authStore = useAuthStore();
 const router = useRouter();
-
 const loading = ref(false);
 const error = ref("");
-
 const form = ref({
   username: "",
   password: "",
 });
-
 const handleLogin = async () => {
   loading.value = true;
   error.value = "";
-
   try {
     const result = await authStore.login(form.value);
-
     if (result.success) {
       await router.push("/dashboard");
     } else {

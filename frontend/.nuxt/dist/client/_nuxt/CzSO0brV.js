@@ -1,1 +1,0 @@
-import{a1 as n,a2 as s,a3 as r,a4 as u,a5 as o}from"./DYlgVOq5.js";function i(e){const t=e||s();return t?.ssrContext?.head||t?.runWithContext(()=>{if(r())return u(o)})}function x(e,t={}){const a=i(t.nuxt);if(a)return n(e,{head:a,...t})}export{x as u};

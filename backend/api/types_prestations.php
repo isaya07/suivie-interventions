@@ -66,6 +66,8 @@ try {
             'has_terrassement' => (bool)$row['has_terrassement'],
             'duree_branchement_heures' => (float)$row['duree_branchement_heures'],
             'duree_terrassement_heures' => (float)$row['duree_terrassement_heures'],
+            'type_reglementaire' => $row['type_reglementaire'] ?? 'type_1',
+            'mode_pose' => $row['mode_pose'] ?? 'souterrain',
             'date_creation' => $row['date_creation'] ?? null
         ];
 

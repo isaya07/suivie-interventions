@@ -1,16 +1,13 @@
 <template>
   <div>
-    <AppHeader />
+    <div>
+    <!-- En-tête -->
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Mon Profil</h1>
+      <p class="text-gray-600 dark:text-gray-400">Gérer vos informations personnelles</p>
+    </div>
 
-    <main class="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
-      <div class="px-4 py-6 sm:px-0">
-        <!-- En-tête -->
-        <div class="mb-8">
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Mon Profil</h1>
-          <p class="text-gray-600 dark:text-gray-400">Gérer vos informations personnelles</p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <!-- Informations personnelles -->
           <div class="lg:col-span-2">
             <Card>
@@ -39,7 +36,6 @@
                     >
                   </div>
                 </div>
-
                 <div>
                   <label class="block text-sm font-medium text-gray-700">Email</label>
                   <input
@@ -49,7 +45,6 @@
                     required
                   >
                 </div>
-
                 <div>
                   <label class="block text-sm font-medium text-gray-700">Téléphone</label>
                   <input
@@ -58,7 +53,6 @@
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   >
                 </div>
-
                 <div v-if="user?.role === 'technicien'">
                   <label class="block text-sm font-medium text-gray-700">Spécialité</label>
                   <input
@@ -68,7 +62,6 @@
                     placeholder="Ex: Électricité, Plomberie, Informatique..."
                   >
                 </div>
-
                 <div class="flex justify-end">
                   <button
                     type="submit"
@@ -83,7 +76,6 @@
               </template>
             </Card>
           </div>
-
           <!-- Informations du compte -->
           <div>
             <Card>
@@ -110,7 +102,6 @@
                 </div>
               </template>
             </Card>
-
             <!-- Changer le mot de passe -->
             <Card class="mt-6">
               <template #content>
@@ -151,7 +142,6 @@
             </Card>
           </div>
         </div>
-
         <!-- Messages -->
         <div v-if="message" class="fixed bottom-4 right-4 max-w-sm">
           <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded"
@@ -160,22 +150,17 @@
           </div>
         </div>
       </div>
-    </main>
   </div>
 </template>
-
 <script setup>
 definePageMeta({
   middleware: 'auth'
 })
-
 const { user } = useAuth()
 const { updateUser } = useUsers()
-
 const loading = ref(false)
 const passwordLoading = ref(false)
 const message = ref(null)
-
 // Formulaire principal
 const form = ref({
   prenom: '',
@@ -184,13 +169,11 @@ const form = ref({
   telephone: '',
   specialite: ''
 })
-
 // Formulaire mot de passe
 const passwordForm = ref({
   newPassword: '',
   confirmPassword: ''
 })
-
 // Initialiser le formulaire avec les données utilisateur
 onMounted(() => {
   if (user.value) {
@@ -204,7 +187,6 @@ onMounted(() => {
     }
   }
 })
-
 const updateProfile = async () => {
   loading.value = true
   try {
@@ -220,13 +202,11 @@ const updateProfile = async () => {
     loading.value = false
   }
 }
-
 const changePassword = async () => {
   if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
     showMessage('Les mots de passe ne correspondent pas', 'error')
     return
   }
-
   passwordLoading.value = true
   try {
     // TODO: Implémenter l'endpoint de changement de mot de passe
@@ -237,14 +217,12 @@ const changePassword = async () => {
     passwordLoading.value = false
   }
 }
-
 const showMessage = (text, type = 'success') => {
   message.value = { text, type }
   setTimeout(() => {
     message.value = null
   }, 5000)
 }
-
 const getRoleClass = (role) => {
   const classes = {
     admin: 'bg-red-100 text-red-800',
@@ -254,7 +232,6 @@ const getRoleClass = (role) => {
   }
   return classes[role] || 'bg-gray-100 text-gray-800'
 }
-
 const getRoleText = (role) => {
   const roles = {
     admin: 'Administrateur',
@@ -264,7 +241,6 @@ const getRoleText = (role) => {
   }
   return roles[role] || role
 }
-
 const formatDate = (dateString) => {
   if (!dateString) return ''
   return new Date(dateString).toLocaleDateString('fr-FR', {

@@ -34,27 +34,30 @@ import { captureRawStackTrace, parseRawStackTrace } from 'file://C:/wamp64/www/s
 import BaseStyle from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primevue/core/base/style/index.mjs';
 import BaseComponentStyle from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primevue/core/basecomponent/style/index.mjs';
 import { style } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/datepicker/index.mjs';
-import { style as style$1 } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/inputtext/index.mjs';
-import { style as style$2 } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/multiselect/index.mjs';
-import { style as style$3 } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/password/index.mjs';
-import { style as style$4 } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/select/index.mjs';
-import { style as style$5 } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/textarea/index.mjs';
-import { style as style$6 } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/button/index.mjs';
-import { style as style$7 } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/datatable/index.mjs';
-import { style as style$8 } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/card/index.mjs';
-import { style as style$9 } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/confirmdialog/index.mjs';
-import { style as style$a } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/dialog/index.mjs';
-import { style as style$b } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/fileupload/index.mjs';
-import { style as style$c } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/breadcrumb/index.mjs';
-import { style as style$d } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/megamenu/index.mjs';
-import { style as style$e } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/message/index.mjs';
-import { style as style$f } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/toast/index.mjs';
-import { style as style$g } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/avatar/index.mjs';
-import { style as style$h } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/badge/index.mjs';
+import { style as style$1 } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/inputnumber/index.mjs';
+import { style as style$2 } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/inputtext/index.mjs';
+import { style as style$3 } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/multiselect/index.mjs';
+import { style as style$4 } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/password/index.mjs';
+import { style as style$5 } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/select/index.mjs';
+import { style as style$6 } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/slider/index.mjs';
+import { style as style$7 } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/textarea/index.mjs';
+import { style as style$8 } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/button/index.mjs';
+import { style as style$9 } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/datatable/index.mjs';
+import { style as style$a } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/card/index.mjs';
+import { style as style$b } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/confirmdialog/index.mjs';
+import { style as style$c } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/dialog/index.mjs';
+import { style as style$d } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/fileupload/index.mjs';
+import { style as style$e } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/breadcrumb/index.mjs';
+import { style as style$f } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/megamenu/index.mjs';
+import { style as style$g } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/panelmenu/index.mjs';
+import { style as style$h } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/message/index.mjs';
+import { style as style$i } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/toast/index.mjs';
+import { style as style$j } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/avatar/index.mjs';
+import { style as style$k } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/badge/index.mjs';
 import { isEmpty, isNotEmpty } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/utils/dist/object/index.mjs';
-import { style as style$i } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/progressbar/index.mjs';
-import { style as style$j } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/progressspinner/index.mjs';
-import { style as style$k } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/tooltip/index.mjs';
+import { style as style$l } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/progressbar/index.mjs';
+import { style as style$m } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/progressspinner/index.mjs';
+import { style as style$n } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styles/dist/tooltip/index.mjs';
 import { Theme } from 'file://C:/wamp64/www/suivie-interventions/frontend/node_modules/@primeuix/styled/dist/index.mjs';
 import { promises } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -5984,6 +5987,15 @@ const _inlineRuntimeConfig = {
           "mode": "all"
         },
         {
+          "name": "InputNumber",
+          "as": "InputNumber",
+          "from": "primevue/inputnumber",
+          "export": "default",
+          "filePath": "primevue/inputnumber",
+          "global": true,
+          "mode": "all"
+        },
+        {
           "name": "InputText",
           "as": "InputText",
           "from": "primevue/inputtext",
@@ -6016,6 +6028,15 @@ const _inlineRuntimeConfig = {
           "from": "primevue/select",
           "export": "default",
           "filePath": "primevue/select",
+          "global": true,
+          "mode": "all"
+        },
+        {
+          "name": "Slider",
+          "as": "Slider",
+          "from": "primevue/slider",
+          "export": "default",
+          "filePath": "primevue/slider",
           "global": true,
           "mode": "all"
         },
@@ -6113,6 +6134,15 @@ const _inlineRuntimeConfig = {
           "mode": "all"
         },
         {
+          "name": "PanelMenu",
+          "as": "PanelMenu",
+          "from": "primevue/panelmenu",
+          "export": "default",
+          "filePath": "primevue/panelmenu",
+          "global": true,
+          "mode": "all"
+        },
+        {
           "name": "Message",
           "as": "Message",
           "from": "primevue/message",
@@ -6204,13 +6234,6 @@ const _inlineRuntimeConfig = {
           "from": "primevue/usedialog"
         }
       ],
-      "config": [
-        {
-          "name": "PrimeVue",
-          "as": "PrimeVue",
-          "from": "primevue/config"
-        }
-      ],
       "services": [
         {
           "name": "ConfirmationService",
@@ -6221,6 +6244,13 @@ const _inlineRuntimeConfig = {
           "name": "ToastService",
           "as": "ToastService",
           "from": "primevue/toastservice"
+        }
+      ],
+      "config": [
+        {
+          "name": "PrimeVue",
+          "as": "PrimeVue",
+          "from": "primevue/config"
         }
       ],
       "styles": [
@@ -6245,6 +6275,11 @@ const _inlineRuntimeConfig = {
           "from": "primevue/dropdown/style"
         },
         {
+          "name": "InputNumberStyle",
+          "as": "InputNumberStyle",
+          "from": "primevue/inputnumber/style"
+        },
+        {
           "name": "InputTextStyle",
           "as": "InputTextStyle",
           "from": "primevue/inputtext/style"
@@ -6263,6 +6298,11 @@ const _inlineRuntimeConfig = {
           "name": "SelectStyle",
           "as": "SelectStyle",
           "from": "primevue/select/style"
+        },
+        {
+          "name": "SliderStyle",
+          "as": "SliderStyle",
+          "from": "primevue/slider/style"
         },
         {
           "name": "TextareaStyle",
@@ -6313,6 +6353,11 @@ const _inlineRuntimeConfig = {
           "name": "MegaMenuStyle",
           "as": "MegaMenuStyle",
           "from": "primevue/megamenu/style"
+        },
+        {
+          "name": "PanelMenuStyle",
+          "as": "PanelMenuStyle",
+          "from": "primevue/panelmenu/style"
         },
         {
           "name": "MessageStyle",
@@ -6902,7 +6947,7 @@ function publicAssetsURL(...path) {
   return path.length ? joinRelativeURL(publicBase, ...path) : publicBase;
 }
 
-var inlineStyles$6 = {
+var inlineStyles$7 = {
   root: function root(_ref) {
     var props = _ref.props;
     return {
@@ -6910,7 +6955,7 @@ var inlineStyles$6 = {
     };
   }
 };
-var classes$k = {
+var classes$n = {
   root: function root(_ref2) {
     var instance = _ref2.instance,
       state = _ref2.state;
@@ -7006,15 +7051,52 @@ var classes$k = {
 var DatePickerStyle = BaseStyle.extend({
   name: 'datepicker',
   style: style,
-  classes: classes$k,
-  inlineStyles: inlineStyles$6
+  classes: classes$n,
+  inlineStyles: inlineStyles$7
 });
 
 var DropdownStyle = BaseStyle.extend({
   name: 'dropdown'
 });
 
-var classes$j = {
+var classes$m = {
+  root: function root(_ref) {
+    var instance = _ref.instance,
+      props = _ref.props;
+    return ['p-inputnumber p-component p-inputwrapper', {
+      'p-invalid': instance.$invalid,
+      'p-inputwrapper-filled': instance.$filled || props.allowEmpty === false,
+      'p-inputwrapper-focus': instance.focused,
+      'p-inputnumber-stacked': props.showButtons && props.buttonLayout === 'stacked',
+      'p-inputnumber-horizontal': props.showButtons && props.buttonLayout === 'horizontal',
+      'p-inputnumber-vertical': props.showButtons && props.buttonLayout === 'vertical',
+      'p-inputnumber-fluid': instance.$fluid
+    }];
+  },
+  pcInputText: 'p-inputnumber-input',
+  buttonGroup: 'p-inputnumber-button-group',
+  incrementButton: function incrementButton(_ref2) {
+    var instance = _ref2.instance,
+      props = _ref2.props;
+    return ['p-inputnumber-button p-inputnumber-increment-button', {
+      'p-disabled': props.showButtons && props.max !== null && instance.maxBoundry()
+    }];
+  },
+  decrementButton: function decrementButton(_ref3) {
+    var instance = _ref3.instance,
+      props = _ref3.props;
+    return ['p-inputnumber-button p-inputnumber-decrement-button', {
+      'p-disabled': props.showButtons && props.min !== null && instance.minBoundry()
+    }];
+  }
+};
+var InputNumberStyle = BaseStyle.extend({
+  name: 'inputnumber',
+  style: style$1,
+  classes: classes$m
+});
+
+var classes$l = {
   root: function root(_ref) {
     var instance = _ref.instance,
       props = _ref.props;
@@ -7030,11 +7112,11 @@ var classes$j = {
 };
 var InputTextStyle = BaseStyle.extend({
   name: 'inputtext',
-  style: style$1,
-  classes: classes$j
+  style: style$2,
+  classes: classes$l
 });
 
-var inlineStyles$5 = {
+var inlineStyles$6 = {
   root: function root(_ref) {
     var props = _ref.props;
     return {
@@ -7042,7 +7124,7 @@ var inlineStyles$5 = {
     };
   }
 };
-var classes$i = {
+var classes$k = {
   root: function root(_ref2) {
     var instance = _ref2.instance,
       props = _ref2.props;
@@ -7099,12 +7181,12 @@ var classes$i = {
 };
 var MultiSelectStyle = BaseStyle.extend({
   name: 'multiselect',
-  style: style$2,
-  classes: classes$i,
-  inlineStyles: inlineStyles$5
+  style: style$3,
+  classes: classes$k,
+  inlineStyles: inlineStyles$6
 });
 
-var inlineStyles$4 = {
+var inlineStyles$5 = {
   root: function root(_ref) {
     var props = _ref.props;
     return {
@@ -7112,7 +7194,7 @@ var inlineStyles$4 = {
     };
   }
 };
-var classes$h = {
+var classes$j = {
   root: function root(_ref2) {
     var instance = _ref2.instance;
     return ['p-password p-component p-inputwrapper', {
@@ -7135,12 +7217,12 @@ var classes$h = {
 };
 var PasswordStyle = BaseStyle.extend({
   name: 'password',
-  style: style$3,
-  classes: classes$h,
-  inlineStyles: inlineStyles$4
+  style: style$4,
+  classes: classes$j,
+  inlineStyles: inlineStyles$5
 });
 
-var classes$g = {
+var classes$i = {
   root: function root(_ref) {
     var instance = _ref.instance,
       props = _ref.props,
@@ -7196,11 +7278,40 @@ var classes$g = {
 };
 var SelectStyle = BaseStyle.extend({
   name: 'select',
-  style: style$4,
-  classes: classes$g
+  style: style$5,
+  classes: classes$i
 });
 
-var classes$f = {
+var inlineStyles$4 = {
+  handle: {
+    position: 'absolute'
+  },
+  range: {
+    position: 'absolute'
+  }
+};
+var classes$h = {
+  root: function root(_ref) {
+    var instance = _ref.instance,
+      props = _ref.props;
+    return ['p-slider p-component', {
+      'p-disabled': props.disabled,
+      'p-invalid': instance.$invalid,
+      'p-slider-horizontal': props.orientation === 'horizontal',
+      'p-slider-vertical': props.orientation === 'vertical'
+    }];
+  },
+  range: 'p-slider-range',
+  handle: 'p-slider-handle'
+};
+var SliderStyle = BaseStyle.extend({
+  name: 'slider',
+  style: style$6,
+  classes: classes$h,
+  inlineStyles: inlineStyles$4
+});
+
+var classes$g = {
   root: function root(_ref) {
     var instance = _ref.instance,
       props = _ref.props;
@@ -7217,15 +7328,15 @@ var classes$f = {
 };
 var TextareaStyle = BaseStyle.extend({
   name: 'textarea',
-  style: style$5,
-  classes: classes$f
+  style: style$7,
+  classes: classes$g
 });
 
 function _typeof$1(o) { "@babel/helpers - typeof"; return _typeof$1 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof$1(o); }
 function _defineProperty$1(e, r, t) { return (r = _toPropertyKey$1(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e; }
 function _toPropertyKey$1(t) { var i = _toPrimitive$1(t, "string"); return "symbol" == _typeof$1(i) ? i : i + ""; }
 function _toPrimitive$1(t, r) { if ("object" != _typeof$1(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r); if ("object" != _typeof$1(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-var classes$e = {
+var classes$f = {
   root: function root(_ref) {
     var instance = _ref.instance,
       props = _ref.props;
@@ -7245,15 +7356,15 @@ var classes$e = {
 };
 var ButtonStyle = BaseStyle.extend({
   name: 'button',
-  style: style$6,
-  classes: classes$e
+  style: style$8,
+  classes: classes$f
 });
 
 var ColumnStyle = BaseStyle.extend({
   name: 'column'
 });
 
-var classes$d = {
+var classes$e = {
   root: function root(_ref) {
     var props = _ref.props;
     return ['p-datatable p-component', {
@@ -7408,12 +7519,12 @@ var inlineStyles$3 = {
 };
 var DataTableStyle = BaseStyle.extend({
   name: 'datatable',
-  style: style$7,
-  classes: classes$d,
+  style: style$9,
+  classes: classes$e,
   inlineStyles: inlineStyles$3
 });
 
-var classes$c = {
+var classes$d = {
   root: 'p-card p-component',
   header: 'p-card-header',
   body: 'p-card-body',
@@ -7425,11 +7536,11 @@ var classes$c = {
 };
 var CardStyle = BaseStyle.extend({
   name: 'card',
-  style: style$8,
-  classes: classes$c
+  style: style$a,
+  classes: classes$d
 });
 
-var classes$b = {
+var classes$c = {
   root: 'p-confirmdialog',
   icon: 'p-confirmdialog-icon',
   message: 'p-confirmdialog-message',
@@ -7438,8 +7549,8 @@ var classes$b = {
 };
 var ConfirmDialogStyle = BaseStyle.extend({
   name: 'confirmdialog',
-  style: style$9,
-  classes: classes$b
+  style: style$b,
+  classes: classes$c
 });
 
 /* Position */
@@ -7465,7 +7576,7 @@ var inlineStyles$2 = {
     pointerEvents: 'auto'
   }
 };
-var classes$a = {
+var classes$b = {
   mask: function mask(_ref2) {
     var props = _ref2.props;
     var positions = ['left', 'right', 'top', 'topleft', 'topright', 'bottom', 'bottomleft', 'bottomright'];
@@ -7493,12 +7604,12 @@ var classes$a = {
 };
 var DialogStyle = BaseStyle.extend({
   name: 'dialog',
-  style: style$a,
-  classes: classes$a,
+  style: style$c,
+  classes: classes$b,
   inlineStyles: inlineStyles$2
 });
 
-var classes$9 = {
+var classes$a = {
   root: function root(_ref) {
     var props = _ref.props;
     return ["p-fileupload p-fileupload-".concat(props.mode, " p-component")];
@@ -7521,11 +7632,11 @@ var classes$9 = {
 };
 var FileUploadStyle = BaseStyle.extend({
   name: 'fileupload',
-  style: style$b,
-  classes: classes$9
+  style: style$d,
+  classes: classes$a
 });
 
-var classes$8 = {
+var classes$9 = {
   root: 'p-breadcrumb p-component',
   list: 'p-breadcrumb-list',
   homeItem: 'p-breadcrumb-home-item',
@@ -7543,8 +7654,8 @@ var classes$8 = {
 };
 var BreadcrumbStyle = BaseStyle.extend({
   name: 'breadcrumb',
-  style: style$c,
-  classes: classes$8
+  style: style$e,
+  classes: classes$9
 });
 
 var inlineStyles$1 = {
@@ -7556,7 +7667,7 @@ var inlineStyles$1 = {
     };
   }
 };
-var classes$7 = {
+var classes$8 = {
   root: function root(_ref2) {
     var instance = _ref2.instance;
     return ['p-megamenu p-component', {
@@ -7624,9 +7735,49 @@ var classes$7 = {
 };
 var MegaMenuStyle = BaseStyle.extend({
   name: 'megamenu',
-  style: style$d,
-  classes: classes$7,
+  style: style$f,
+  classes: classes$8,
   inlineStyles: inlineStyles$1
+});
+
+var classes$7 = {
+  root: 'p-panelmenu p-component',
+  panel: 'p-panelmenu-panel',
+  header: function header(_ref) {
+    var instance = _ref.instance,
+      item = _ref.item;
+    return ['p-panelmenu-header', {
+      'p-panelmenu-header-active': instance.isItemActive(item) && !!item.items,
+      'p-disabled': instance.isItemDisabled(item)
+    }];
+  },
+  headerContent: 'p-panelmenu-header-content',
+  headerLink: 'p-panelmenu-header-link',
+  headerIcon: 'p-panelmenu-header-icon',
+  headerLabel: 'p-panelmenu-header-label',
+  contentContainer: 'p-panelmenu-content-container',
+  content: 'p-panelmenu-content',
+  rootList: 'p-panelmenu-root-list',
+  item: function item(_ref2) {
+    var instance = _ref2.instance,
+      processedItem = _ref2.processedItem;
+    return ['p-panelmenu-item', {
+      'p-focus': instance.isItemFocused(processedItem),
+      'p-disabled': instance.isItemDisabled(processedItem)
+    }];
+  },
+  itemContent: 'p-panelmenu-item-content',
+  itemLink: 'p-panelmenu-item-link',
+  itemIcon: 'p-panelmenu-item-icon',
+  itemLabel: 'p-panelmenu-item-label',
+  submenuIcon: 'p-panelmenu-submenu-icon',
+  submenu: 'p-panelmenu-submenu',
+  separator: 'p-menuitem-separator'
+};
+var PanelMenuStyle = BaseStyle.extend({
+  name: 'panelmenu',
+  style: style$g,
+  classes: classes$7
 });
 
 var classes$6 = {
@@ -7647,7 +7798,7 @@ var classes$6 = {
 };
 var MessageStyle = BaseStyle.extend({
   name: 'message',
-  style: style$e,
+  style: style$h,
   classes: classes$6
 });
 
@@ -7698,7 +7849,7 @@ var classes$5 = {
 };
 var ToastStyle = BaseStyle.extend({
   name: 'toast',
-  style: style$f,
+  style: style$i,
   classes: classes$5,
   inlineStyles: inlineStyles
 });
@@ -7718,7 +7869,7 @@ var classes$4 = {
 };
 var AvatarStyle = BaseStyle.extend({
   name: 'avatar',
-  style: style$g,
+  style: style$j,
   classes: classes$4
 });
 
@@ -7743,7 +7894,7 @@ var classes$3 = {
 };
 var BadgeStyle = BaseStyle.extend({
   name: 'badge',
-  style: style$h,
+  style: style$k,
   classes: classes$3
 });
 
@@ -7760,7 +7911,7 @@ var classes$2 = {
 };
 var ProgressBarStyle = BaseStyle.extend({
   name: 'progressbar',
-  style: style$i,
+  style: style$l,
   classes: classes$2
 });
 
@@ -7771,7 +7922,7 @@ var classes$1 = {
 };
 var ProgressSpinnerStyle = BaseStyle.extend({
   name: 'progressspinner',
-  style: style$j,
+  style: style$m,
   classes: classes$1
 });
 
@@ -7782,7 +7933,7 @@ var classes = {
 };
 var TooltipStyle = BaseStyle.extend({
   name: 'tooltip-directive',
-  style: style$k,
+  style: style$n,
   classes: classes
 });
 
@@ -7796,7 +7947,7 @@ const styleProps = {
 };
 const styles$2 = [
     ,
-    BaseStyle && BaseStyle.getStyleSheet ? BaseStyle.getStyleSheet(undefined, styleProps) : '',BaseComponentStyle && BaseComponentStyle.getStyleSheet ? BaseComponentStyle.getStyleSheet(undefined, styleProps) : '',DatePickerStyle && DatePickerStyle.getStyleSheet ? DatePickerStyle.getStyleSheet(undefined, styleProps) : '',DropdownStyle && DropdownStyle.getStyleSheet ? DropdownStyle.getStyleSheet(undefined, styleProps) : '',InputTextStyle && InputTextStyle.getStyleSheet ? InputTextStyle.getStyleSheet(undefined, styleProps) : '',MultiSelectStyle && MultiSelectStyle.getStyleSheet ? MultiSelectStyle.getStyleSheet(undefined, styleProps) : '',PasswordStyle && PasswordStyle.getStyleSheet ? PasswordStyle.getStyleSheet(undefined, styleProps) : '',SelectStyle && SelectStyle.getStyleSheet ? SelectStyle.getStyleSheet(undefined, styleProps) : '',TextareaStyle && TextareaStyle.getStyleSheet ? TextareaStyle.getStyleSheet(undefined, styleProps) : '',ButtonStyle && ButtonStyle.getStyleSheet ? ButtonStyle.getStyleSheet(undefined, styleProps) : '',ColumnStyle && ColumnStyle.getStyleSheet ? ColumnStyle.getStyleSheet(undefined, styleProps) : '',DataTableStyle && DataTableStyle.getStyleSheet ? DataTableStyle.getStyleSheet(undefined, styleProps) : '',CardStyle && CardStyle.getStyleSheet ? CardStyle.getStyleSheet(undefined, styleProps) : '',ConfirmDialogStyle && ConfirmDialogStyle.getStyleSheet ? ConfirmDialogStyle.getStyleSheet(undefined, styleProps) : '',DialogStyle && DialogStyle.getStyleSheet ? DialogStyle.getStyleSheet(undefined, styleProps) : '',FileUploadStyle && FileUploadStyle.getStyleSheet ? FileUploadStyle.getStyleSheet(undefined, styleProps) : '',BreadcrumbStyle && BreadcrumbStyle.getStyleSheet ? BreadcrumbStyle.getStyleSheet(undefined, styleProps) : '',MegaMenuStyle && MegaMenuStyle.getStyleSheet ? MegaMenuStyle.getStyleSheet(undefined, styleProps) : '',MessageStyle && MessageStyle.getStyleSheet ? MessageStyle.getStyleSheet(undefined, styleProps) : '',ToastStyle && ToastStyle.getStyleSheet ? ToastStyle.getStyleSheet(undefined, styleProps) : '',AvatarStyle && AvatarStyle.getStyleSheet ? AvatarStyle.getStyleSheet(undefined, styleProps) : '',BadgeStyle && BadgeStyle.getStyleSheet ? BadgeStyle.getStyleSheet(undefined, styleProps) : '',ProgressBarStyle && ProgressBarStyle.getStyleSheet ? ProgressBarStyle.getStyleSheet(undefined, styleProps) : '',ProgressSpinnerStyle && ProgressSpinnerStyle.getStyleSheet ? ProgressSpinnerStyle.getStyleSheet(undefined, styleProps) : '',TooltipStyle && TooltipStyle.getStyleSheet ? TooltipStyle.getStyleSheet(undefined, styleProps) : ''
+    BaseStyle && BaseStyle.getStyleSheet ? BaseStyle.getStyleSheet(undefined, styleProps) : '',BaseComponentStyle && BaseComponentStyle.getStyleSheet ? BaseComponentStyle.getStyleSheet(undefined, styleProps) : '',DatePickerStyle && DatePickerStyle.getStyleSheet ? DatePickerStyle.getStyleSheet(undefined, styleProps) : '',DropdownStyle && DropdownStyle.getStyleSheet ? DropdownStyle.getStyleSheet(undefined, styleProps) : '',InputNumberStyle && InputNumberStyle.getStyleSheet ? InputNumberStyle.getStyleSheet(undefined, styleProps) : '',InputTextStyle && InputTextStyle.getStyleSheet ? InputTextStyle.getStyleSheet(undefined, styleProps) : '',MultiSelectStyle && MultiSelectStyle.getStyleSheet ? MultiSelectStyle.getStyleSheet(undefined, styleProps) : '',PasswordStyle && PasswordStyle.getStyleSheet ? PasswordStyle.getStyleSheet(undefined, styleProps) : '',SelectStyle && SelectStyle.getStyleSheet ? SelectStyle.getStyleSheet(undefined, styleProps) : '',SliderStyle && SliderStyle.getStyleSheet ? SliderStyle.getStyleSheet(undefined, styleProps) : '',TextareaStyle && TextareaStyle.getStyleSheet ? TextareaStyle.getStyleSheet(undefined, styleProps) : '',ButtonStyle && ButtonStyle.getStyleSheet ? ButtonStyle.getStyleSheet(undefined, styleProps) : '',ColumnStyle && ColumnStyle.getStyleSheet ? ColumnStyle.getStyleSheet(undefined, styleProps) : '',DataTableStyle && DataTableStyle.getStyleSheet ? DataTableStyle.getStyleSheet(undefined, styleProps) : '',CardStyle && CardStyle.getStyleSheet ? CardStyle.getStyleSheet(undefined, styleProps) : '',ConfirmDialogStyle && ConfirmDialogStyle.getStyleSheet ? ConfirmDialogStyle.getStyleSheet(undefined, styleProps) : '',DialogStyle && DialogStyle.getStyleSheet ? DialogStyle.getStyleSheet(undefined, styleProps) : '',FileUploadStyle && FileUploadStyle.getStyleSheet ? FileUploadStyle.getStyleSheet(undefined, styleProps) : '',BreadcrumbStyle && BreadcrumbStyle.getStyleSheet ? BreadcrumbStyle.getStyleSheet(undefined, styleProps) : '',MegaMenuStyle && MegaMenuStyle.getStyleSheet ? MegaMenuStyle.getStyleSheet(undefined, styleProps) : '',PanelMenuStyle && PanelMenuStyle.getStyleSheet ? PanelMenuStyle.getStyleSheet(undefined, styleProps) : '',MessageStyle && MessageStyle.getStyleSheet ? MessageStyle.getStyleSheet(undefined, styleProps) : '',ToastStyle && ToastStyle.getStyleSheet ? ToastStyle.getStyleSheet(undefined, styleProps) : '',AvatarStyle && AvatarStyle.getStyleSheet ? AvatarStyle.getStyleSheet(undefined, styleProps) : '',BadgeStyle && BadgeStyle.getStyleSheet ? BadgeStyle.getStyleSheet(undefined, styleProps) : '',ProgressBarStyle && ProgressBarStyle.getStyleSheet ? ProgressBarStyle.getStyleSheet(undefined, styleProps) : '',ProgressSpinnerStyle && ProgressSpinnerStyle.getStyleSheet ? ProgressSpinnerStyle.getStyleSheet(undefined, styleProps) : '',TooltipStyle && TooltipStyle.getStyleSheet ? TooltipStyle.getStyleSheet(undefined, styleProps) : ''
 ].join('');
 
 Theme.setTheme(options?.theme);
@@ -7804,7 +7955,7 @@ Theme.setTheme(options?.theme);
 const themes = 
 [
     BaseStyle && BaseStyle.getCommonThemeStyleSheet ? BaseStyle.getCommonThemeStyleSheet(undefined, styleProps) : '',
-    BaseStyle && BaseStyle.getThemeStyleSheet ? BaseStyle.getThemeStyleSheet(undefined, styleProps) : '',BaseComponentStyle && BaseComponentStyle.getThemeStyleSheet ? BaseComponentStyle.getThemeStyleSheet(undefined, styleProps) : '',DatePickerStyle && DatePickerStyle.getThemeStyleSheet ? DatePickerStyle.getThemeStyleSheet(undefined, styleProps) : '',DropdownStyle && DropdownStyle.getThemeStyleSheet ? DropdownStyle.getThemeStyleSheet(undefined, styleProps) : '',InputTextStyle && InputTextStyle.getThemeStyleSheet ? InputTextStyle.getThemeStyleSheet(undefined, styleProps) : '',MultiSelectStyle && MultiSelectStyle.getThemeStyleSheet ? MultiSelectStyle.getThemeStyleSheet(undefined, styleProps) : '',PasswordStyle && PasswordStyle.getThemeStyleSheet ? PasswordStyle.getThemeStyleSheet(undefined, styleProps) : '',SelectStyle && SelectStyle.getThemeStyleSheet ? SelectStyle.getThemeStyleSheet(undefined, styleProps) : '',TextareaStyle && TextareaStyle.getThemeStyleSheet ? TextareaStyle.getThemeStyleSheet(undefined, styleProps) : '',ButtonStyle && ButtonStyle.getThemeStyleSheet ? ButtonStyle.getThemeStyleSheet(undefined, styleProps) : '',ColumnStyle && ColumnStyle.getThemeStyleSheet ? ColumnStyle.getThemeStyleSheet(undefined, styleProps) : '',DataTableStyle && DataTableStyle.getThemeStyleSheet ? DataTableStyle.getThemeStyleSheet(undefined, styleProps) : '',CardStyle && CardStyle.getThemeStyleSheet ? CardStyle.getThemeStyleSheet(undefined, styleProps) : '',ConfirmDialogStyle && ConfirmDialogStyle.getThemeStyleSheet ? ConfirmDialogStyle.getThemeStyleSheet(undefined, styleProps) : '',DialogStyle && DialogStyle.getThemeStyleSheet ? DialogStyle.getThemeStyleSheet(undefined, styleProps) : '',FileUploadStyle && FileUploadStyle.getThemeStyleSheet ? FileUploadStyle.getThemeStyleSheet(undefined, styleProps) : '',BreadcrumbStyle && BreadcrumbStyle.getThemeStyleSheet ? BreadcrumbStyle.getThemeStyleSheet(undefined, styleProps) : '',MegaMenuStyle && MegaMenuStyle.getThemeStyleSheet ? MegaMenuStyle.getThemeStyleSheet(undefined, styleProps) : '',MessageStyle && MessageStyle.getThemeStyleSheet ? MessageStyle.getThemeStyleSheet(undefined, styleProps) : '',ToastStyle && ToastStyle.getThemeStyleSheet ? ToastStyle.getThemeStyleSheet(undefined, styleProps) : '',AvatarStyle && AvatarStyle.getThemeStyleSheet ? AvatarStyle.getThemeStyleSheet(undefined, styleProps) : '',BadgeStyle && BadgeStyle.getThemeStyleSheet ? BadgeStyle.getThemeStyleSheet(undefined, styleProps) : '',ProgressBarStyle && ProgressBarStyle.getThemeStyleSheet ? ProgressBarStyle.getThemeStyleSheet(undefined, styleProps) : '',ProgressSpinnerStyle && ProgressSpinnerStyle.getThemeStyleSheet ? ProgressSpinnerStyle.getThemeStyleSheet(undefined, styleProps) : '',TooltipStyle && TooltipStyle.getThemeStyleSheet ? TooltipStyle.getThemeStyleSheet(undefined, styleProps) : ''
+    BaseStyle && BaseStyle.getThemeStyleSheet ? BaseStyle.getThemeStyleSheet(undefined, styleProps) : '',BaseComponentStyle && BaseComponentStyle.getThemeStyleSheet ? BaseComponentStyle.getThemeStyleSheet(undefined, styleProps) : '',DatePickerStyle && DatePickerStyle.getThemeStyleSheet ? DatePickerStyle.getThemeStyleSheet(undefined, styleProps) : '',DropdownStyle && DropdownStyle.getThemeStyleSheet ? DropdownStyle.getThemeStyleSheet(undefined, styleProps) : '',InputNumberStyle && InputNumberStyle.getThemeStyleSheet ? InputNumberStyle.getThemeStyleSheet(undefined, styleProps) : '',InputTextStyle && InputTextStyle.getThemeStyleSheet ? InputTextStyle.getThemeStyleSheet(undefined, styleProps) : '',MultiSelectStyle && MultiSelectStyle.getThemeStyleSheet ? MultiSelectStyle.getThemeStyleSheet(undefined, styleProps) : '',PasswordStyle && PasswordStyle.getThemeStyleSheet ? PasswordStyle.getThemeStyleSheet(undefined, styleProps) : '',SelectStyle && SelectStyle.getThemeStyleSheet ? SelectStyle.getThemeStyleSheet(undefined, styleProps) : '',SliderStyle && SliderStyle.getThemeStyleSheet ? SliderStyle.getThemeStyleSheet(undefined, styleProps) : '',TextareaStyle && TextareaStyle.getThemeStyleSheet ? TextareaStyle.getThemeStyleSheet(undefined, styleProps) : '',ButtonStyle && ButtonStyle.getThemeStyleSheet ? ButtonStyle.getThemeStyleSheet(undefined, styleProps) : '',ColumnStyle && ColumnStyle.getThemeStyleSheet ? ColumnStyle.getThemeStyleSheet(undefined, styleProps) : '',DataTableStyle && DataTableStyle.getThemeStyleSheet ? DataTableStyle.getThemeStyleSheet(undefined, styleProps) : '',CardStyle && CardStyle.getThemeStyleSheet ? CardStyle.getThemeStyleSheet(undefined, styleProps) : '',ConfirmDialogStyle && ConfirmDialogStyle.getThemeStyleSheet ? ConfirmDialogStyle.getThemeStyleSheet(undefined, styleProps) : '',DialogStyle && DialogStyle.getThemeStyleSheet ? DialogStyle.getThemeStyleSheet(undefined, styleProps) : '',FileUploadStyle && FileUploadStyle.getThemeStyleSheet ? FileUploadStyle.getThemeStyleSheet(undefined, styleProps) : '',BreadcrumbStyle && BreadcrumbStyle.getThemeStyleSheet ? BreadcrumbStyle.getThemeStyleSheet(undefined, styleProps) : '',MegaMenuStyle && MegaMenuStyle.getThemeStyleSheet ? MegaMenuStyle.getThemeStyleSheet(undefined, styleProps) : '',PanelMenuStyle && PanelMenuStyle.getThemeStyleSheet ? PanelMenuStyle.getThemeStyleSheet(undefined, styleProps) : '',MessageStyle && MessageStyle.getThemeStyleSheet ? MessageStyle.getThemeStyleSheet(undefined, styleProps) : '',ToastStyle && ToastStyle.getThemeStyleSheet ? ToastStyle.getThemeStyleSheet(undefined, styleProps) : '',AvatarStyle && AvatarStyle.getThemeStyleSheet ? AvatarStyle.getThemeStyleSheet(undefined, styleProps) : '',BadgeStyle && BadgeStyle.getThemeStyleSheet ? BadgeStyle.getThemeStyleSheet(undefined, styleProps) : '',ProgressBarStyle && ProgressBarStyle.getThemeStyleSheet ? ProgressBarStyle.getThemeStyleSheet(undefined, styleProps) : '',ProgressSpinnerStyle && ProgressSpinnerStyle.getThemeStyleSheet ? ProgressSpinnerStyle.getThemeStyleSheet(undefined, styleProps) : '',TooltipStyle && TooltipStyle.getThemeStyleSheet ? TooltipStyle.getThemeStyleSheet(undefined, styleProps) : ''
 ].join('');
 
 const defineNitroPlugin = (def) => def;

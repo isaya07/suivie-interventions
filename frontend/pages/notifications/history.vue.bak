@@ -1,0 +1,586 @@
+<template>
+  <div>
+    <AppHeader />
+
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div class="px-4 py-6 sm:px-0">
+        <!-- En-tête -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+          <div>
+            <h1 class="text-3xl font-bold text-surface-900 dark:text-surface-50 mb-2">
+              Historique des Notifications
+            </h1>
+            <p class="text-surface-600 dark:text-surface-400">
+              Historique complet de toutes les notifications reçues
+            </p>
+          </div>
+          <div class="flex gap-3 mt-4 sm:mt-0">
+            <Button
+              label="Nettoyer l'historique"
+              icon="pi pi-trash"
+              severity="danger"
+              outlined
+              @click="confirmCleanHistory"
+            />
+            <Button
+              label="Exporter"
+              icon="pi pi-download"
+              severity="secondary"
+              @click="exportHistory"
+            />
+          </div>
+        </div>
+
+        <!-- Filtres -->
+        <Card class="mb-6">
+          <template #content>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <!-- Filtre par type -->
+              <div>
+                <label class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2 block">
+                  Type de notification
+                </label>
+                <MultiSelect
+                  v-model="filtres.types"
+                  :options="typesOptions"
+                  option-label="label"
+                  option-value="value"
+                  placeholder="Tous les types"
+                  class="w-full"
+                  @change="appliquerFiltres"
+                />
+              </div>
+
+              <!-- Filtre par priorité -->
+              <div>
+                <label class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2 block">
+                  Priorité
+                </label>
+                <MultiSelect
+                  v-model="filtres.priorites"
+                  :options="prioriteOptions"
+                  option-label="label"
+                  option-value="value"
+                  placeholder="Toutes les priorités"
+                  class="w-full"
+                  @change="appliquerFiltres"
+                />
+              </div>
+
+              <!-- Filtre par statut -->
+              <div>
+                <label class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2 block">
+                  Statut
+                </label>
+                <Dropdown
+                  v-model="filtres.statut"
+                  :options="statutOptions"
+                  option-label="label"
+                  option-value="value"
+                  placeholder="Tous"
+                  class="w-full"
+                  @change="appliquerFiltres"
+                />
+              </div>
+
+              <!-- Filtre par période -->
+              <div>
+                <label class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2 block">
+                  Période
+                </label>
+                <Dropdown
+                  v-model="filtres.periode"
+                  :options="periodeOptions"
+                  option-label="label"
+                  option-value="value"
+                  placeholder="Toutes"
+                  class="w-full"
+                  @change="appliquerFiltres"
+                />
+              </div>
+            </div>
+
+            <!-- Actions rapides -->
+            <div class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-surface-200 dark:border-surface-700">
+              <Button
+                label="Réinitialiser filtres"
+                icon="pi pi-filter-slash"
+                severity="secondary"
+                size="small"
+                @click="reinitialiserFiltres"
+              />
+              <Badge
+                :value="`${notificationsFiltrees.length} résultats`"
+                severity="info"
+              />
+            </div>
+          </template>
+        </Card>
+
+        <!-- Liste des notifications -->
+        <Card>
+          <template #content>
+            <DataTable
+              :value="notificationsFiltrees"
+              :paginator="true"
+              :rows="20"
+              :rows-per-page-options="[10, 20, 50]"
+              paginator-template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+              current-page-report-template="{first} à {last} sur {totalRecords} notifications"
+              :sort-field="'dateCreation'"
+              :sort-order="-1"
+              responsive-layout="scroll"
+              striped-rows
+              :empty-message="emptyMessage"
+              class="w-full"
+            >
+              <!-- Colonne Type/Priorité -->
+              <Column header="Type" class="min-w-[120px]">
+                <template #body="{ data }">
+                  <div class="flex items-center gap-2">
+                    <i :class="getNotificationIcon(data.type)" class="text-lg"></i>
+                    <div>
+                      <div class="text-sm font-medium text-surface-900 dark:text-surface-50">
+                        {{ getTypeLabel(data.type) }}
+                      </div>
+                      <Badge
+                        :value="data.priorite"
+                        :severity="getPrioiteSeverity(data.priorite)"
+                        size="small"
+                      />
+                    </div>
+                  </div>
+                </template>
+              </Column>
+
+              <!-- Colonne Titre/Message -->
+              <Column header="Notification" class="min-w-[300px]">
+                <template #body="{ data }">
+                  <div>
+                    <div class="text-sm font-medium text-surface-900 dark:text-surface-50 mb-1">
+                      {{ data.titre }}
+                    </div>
+                    <div class="text-xs text-surface-600 dark:text-surface-400">
+                      {{ data.message }}
+                    </div>
+                  </div>
+                </template>
+              </Column>
+
+              <!-- Colonne Date -->
+              <Column header="Date" sortable field="dateCreation" class="min-w-[150px]">
+                <template #body="{ data }">
+                  <div class="text-sm">
+                    <div class="font-medium text-surface-900 dark:text-surface-50">
+                      {{ formatDate(data.dateCreation) }}
+                    </div>
+                    <div class="text-xs text-surface-600 dark:text-surface-400">
+                      {{ formatTime(data.dateCreation) }}
+                    </div>
+                  </div>
+                </template>
+              </Column>
+
+              <!-- Colonne Statut -->
+              <Column header="Statut" class="min-w-[100px]">
+                <template #body="{ data }">
+                  <div class="flex items-center gap-2">
+                    <i
+                      :class="data.lue ? 'pi pi-check-circle text-green-500' : 'pi pi-circle text-gray-400'"
+                      class="text-sm"
+                    ></i>
+                    <span class="text-xs" :class="data.lue ? 'text-surface-600' : 'font-medium text-surface-900'">
+                      {{ data.lue ? 'Lue' : 'Non lue' }}
+                    </span>
+                  </div>
+                </template>
+              </Column>
+
+              <!-- Colonne Actions -->
+              <Column header="Actions" class="min-w-[120px]">
+                <template #body="{ data }">
+                  <div class="flex gap-1">
+                    <Button
+                      v-if="data.interventionId"
+                      icon="pi pi-eye"
+                      severity="secondary"
+                      size="small"
+                      v-tooltip="'Voir intervention'"
+                      @click="voirIntervention(data.interventionId)"
+                    />
+                    <Button
+                      v-if="!data.lue"
+                      icon="pi pi-check"
+                      severity="success"
+                      size="small"
+                      v-tooltip="'Marquer comme lue'"
+                      @click="marquerLue(data)"
+                    />
+                    <Button
+                      icon="pi pi-trash"
+                      severity="danger"
+                      size="small"
+                      v-tooltip="'Supprimer'"
+                      @click="supprimerNotification(data)"
+                    />
+                  </div>
+                </template>
+              </Column>
+
+              <!-- Template pour état vide -->
+              <template #empty>
+                <div class="text-center p-8">
+                  <i class="pi pi-bell-slash text-4xl text-surface-400 dark:text-surface-600 mb-4"></i>
+                  <h3 class="text-lg font-medium text-surface-700 dark:text-surface-300 mb-2">
+                    Aucune notification
+                  </h3>
+                  <p class="text-surface-600 dark:text-surface-400">
+                    {{ emptyMessage }}
+                  </p>
+                </div>
+              </template>
+            </DataTable>
+          </template>
+        </Card>
+      </div>
+    </main>
+
+    <!-- Dialog de confirmation -->
+    <Dialog
+      v-model:visible="showConfirmDialog"
+      header="Confirmer la suppression"
+      :modal="true"
+      class="w-full max-w-md"
+    >
+      <p class="text-surface-700 dark:text-surface-300">
+        Êtes-vous sûr de vouloir nettoyer l'historique des notifications ?
+        Cette action est irréversible.
+      </p>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <Button label="Annuler" text @click="showConfirmDialog = false" />
+          <Button label="Confirmer" severity="danger" @click="cleanHistory" />
+        </div>
+      </template>
+    </Dialog>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useToast } from 'primevue/usetoast'
+
+// Configuration de la page
+definePageMeta({
+  title: 'Historique des Notifications',
+  middleware: 'auth',
+  layout: 'default'
+})
+
+const toast = useToast()
+
+// État réactif
+const showConfirmDialog = ref(false)
+const notifications = ref([])
+
+// Filtres
+const filtres = ref({
+  types: [],
+  priorites: [],
+  statut: '',
+  periode: ''
+})
+
+// Options des filtres
+const typesOptions = [
+  { label: 'Délais', value: 'delai' },
+  { label: 'Retards', value: 'retard' },
+  { label: 'Incohérences', value: 'incoherence' },
+  { label: 'Ressources', value: 'ressources' },
+  { label: 'Maintenance', value: 'maintenance' }
+]
+
+const prioriteOptions = [
+  { label: 'Critique', value: 'critique' },
+  { label: 'Haute', value: 'haute' },
+  { label: 'Moyenne', value: 'moyenne' },
+  { label: 'Basse', value: 'basse' }
+]
+
+const statutOptions = [
+  { label: 'Toutes', value: '' },
+  { label: 'Lues', value: 'lue' },
+  { label: 'Non lues', value: 'non_lue' }
+]
+
+const periodeOptions = [
+  { label: 'Toutes', value: '' },
+  { label: 'Aujourd\'hui', value: 'today' },
+  { label: 'Cette semaine', value: 'week' },
+  { label: 'Ce mois', value: 'month' },
+  { label: 'Ce trimestre', value: 'quarter' }
+]
+
+// Computed
+const notificationsFiltrees = computed(() => {
+  let filtered = [...notifications.value]
+
+  // Filtre par types
+  if (filtres.value.types.length > 0) {
+    filtered = filtered.filter(n => filtres.value.types.includes(n.type))
+  }
+
+  // Filtre par priorités
+  if (filtres.value.priorites.length > 0) {
+    filtered = filtered.filter(n => filtres.value.priorites.includes(n.priorite))
+  }
+
+  // Filtre par statut
+  if (filtres.value.statut) {
+    filtered = filtered.filter(n => {
+      if (filtres.value.statut === 'lue') return n.lue
+      if (filtres.value.statut === 'non_lue') return !n.lue
+      return true
+    })
+  }
+
+  // Filtre par période
+  if (filtres.value.periode) {
+    const now = new Date()
+    filtered = filtered.filter(n => {
+      const notifDate = new Date(n.dateCreation)
+
+      switch (filtres.value.periode) {
+        case 'today':
+          return notifDate.toDateString() === now.toDateString()
+        case 'week':
+          const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+          return notifDate >= weekAgo
+        case 'month':
+          return notifDate.getMonth() === now.getMonth() &&
+                 notifDate.getFullYear() === now.getFullYear()
+        case 'quarter':
+          const currentQuarter = Math.floor(now.getMonth() / 3)
+          const notifQuarter = Math.floor(notifDate.getMonth() / 3)
+          return currentQuarter === notifQuarter &&
+                 notifDate.getFullYear() === now.getFullYear()
+        default:
+          return true
+      }
+    })
+  }
+
+  return filtered.sort((a, b) => new Date(b.dateCreation) - new Date(a.dateCreation))
+})
+
+const emptyMessage = computed(() => {
+  const hasFilters = filtres.value.types.length || filtres.value.priorites.length ||
+                    filtres.value.statut || filtres.value.periode
+
+  if (hasFilters) {
+    return 'Aucune notification ne correspond aux filtres sélectionnés'
+  }
+  return 'Aucune notification dans l\'historique'
+})
+
+// Méthodes
+const getNotificationIcon = (type) => {
+  const icons = {
+    delai: 'pi pi-clock text-orange-500',
+    retard: 'pi pi-exclamation-triangle text-red-500',
+    incoherence: 'pi pi-flag text-purple-500',
+    ressources: 'pi pi-users text-blue-500',
+    maintenance: 'pi pi-wrench text-gray-500'
+  }
+  return icons[type] || 'pi pi-info-circle text-gray-500'
+}
+
+const getTypeLabel = (type) => {
+  const labels = {
+    delai: 'Délai',
+    retard: 'Retard',
+    incoherence: 'Incohérence',
+    ressources: 'Ressources',
+    maintenance: 'Maintenance'
+  }
+  return labels[type] || type
+}
+
+const getPrioiteSeverity = (priorite) => {
+  switch (priorite) {
+    case 'critique': return 'danger'
+    case 'haute': return 'warning'
+    case 'moyenne': return 'info'
+    case 'basse': return 'secondary'
+    default: return 'secondary'
+  }
+}
+
+const formatDate = (dateString) => {
+  return new Date(dateString).toLocaleDateString('fr-FR')
+}
+
+const formatTime = (dateString) => {
+  return new Date(dateString).toLocaleTimeString('fr-FR', {
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
+const appliquerFiltres = () => {
+  // Les filtres sont appliqués automatiquement via computed
+}
+
+const reinitialiserFiltres = () => {
+  filtres.value = {
+    types: [],
+    priorites: [],
+    statut: '',
+    periode: ''
+  }
+}
+
+const voirIntervention = (interventionId) => {
+  navigateTo(`/interventions/electrique/${interventionId}`)
+}
+
+const marquerLue = (notification) => {
+  notification.lue = true
+  toast.add({
+    severity: 'success',
+    summary: 'Notification marquée',
+    detail: 'La notification a été marquée comme lue',
+    life: 2000
+  })
+}
+
+const supprimerNotification = (notification) => {
+  const index = notifications.value.findIndex(n => n.id === notification.id)
+  if (index > -1) {
+    notifications.value.splice(index, 1)
+    toast.add({
+      severity: 'success',
+      summary: 'Notification supprimée',
+      detail: 'La notification a été supprimée',
+      life: 2000
+    })
+  }
+}
+
+const confirmCleanHistory = () => {
+  showConfirmDialog.value = true
+}
+
+const cleanHistory = () => {
+  notifications.value = []
+  showConfirmDialog.value = false
+  toast.add({
+    severity: 'success',
+    summary: 'Historique nettoyé',
+    detail: 'L\'historique des notifications a été vidé',
+    life: 3000
+  })
+}
+
+const exportHistory = () => {
+  const data = notificationsFiltrees.value.map(n => ({
+    Type: getTypeLabel(n.type),
+    Priorité: n.priorite,
+    Titre: n.titre,
+    Message: n.message,
+    Date: formatDate(n.dateCreation),
+    Heure: formatTime(n.dateCreation),
+    Statut: n.lue ? 'Lue' : 'Non lue'
+  }))
+
+  const csv = [
+    Object.keys(data[0]).join(';'),
+    ...data.map(row => Object.values(row).map(val => `"${val}"`).join(';'))
+  ].join('\n')
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+  const link = document.createElement('a')
+  const url = URL.createObjectURL(blob)
+  link.setAttribute('href', url)
+  link.setAttribute('download', `notifications_${Date.now()}.csv`)
+  link.style.visibility = 'hidden'
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+
+  toast.add({
+    severity: 'success',
+    summary: 'Export réussi',
+    detail: 'L\'historique a été exporté en CSV',
+    life: 3000
+  })
+}
+
+// Simulation de données d'historique
+const loadHistoryData = () => {
+  notifications.value = [
+    {
+      id: 1,
+      type: 'retard',
+      priorite: 'critique',
+      titre: 'Retard critique - BR-2024-001',
+      message: 'Branchement Dupont dépasse 35 jours, client mécontent',
+      dateCreation: new Date(Date.now() - 3600000),
+      lue: false,
+      interventionId: 1
+    },
+    {
+      id: 2,
+      type: 'delai',
+      priorite: 'moyenne',
+      titre: 'Délai limite approche',
+      message: '3 branchements approchent de la limite des 21 jours',
+      dateCreation: new Date(Date.now() - 7200000),
+      lue: true
+    },
+    {
+      id: 3,
+      type: 'incoherence',
+      priorite: 'moyenne',
+      titre: 'Incohérence Type/DI détectée',
+      message: 'BR-2024-003 classé Type 1 mais DI = 35m',
+      dateCreation: new Date(Date.now() - 10800000),
+      lue: true,
+      interventionId: 3
+    },
+    {
+      id: 4,
+      type: 'ressources',
+      priorite: 'haute',
+      titre: 'Surcharge prévue',
+      message: 'Recommandation: 2 techniciens supplémentaires nécessaires',
+      dateCreation: new Date(Date.now() - 86400000),
+      lue: false
+    },
+    {
+      id: 5,
+      type: 'maintenance',
+      priorite: 'basse',
+      titre: 'Maintenance programmée',
+      message: 'Maintenance du système prévue dimanche 22h-02h',
+      dateCreation: new Date(Date.now() - 172800000),
+      lue: true
+    }
+  ]
+}
+
+onMounted(() => {
+  loadHistoryData()
+})
+</script>
+
+<style scoped>
+/* Styles personnalisés pour l'historique */
+:deep(.p-datatable .p-datatable-tbody tr:hover) {
+  background-color: rgb(249 250 251);
+}
+
+:deep(.dark .p-datatable .p-datatable-tbody tr:hover) {
+  background-color: rgb(31 41 55);
+}
+</style>

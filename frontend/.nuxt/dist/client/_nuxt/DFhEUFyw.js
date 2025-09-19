@@ -1,1 +1,0 @@
-import{u as s,A as e,aZ as u,j as o}from"./DYlgVOq5.js";const r=()=>{const t=s();return u()?o(()=>{t.init()}):t.init(),{user:e(()=>t.user),isAuthenticated:e(()=>t.isAuthenticated),login:t.login,logout:t.logout,fetchUser:t.fetchUser}};export{r as u};

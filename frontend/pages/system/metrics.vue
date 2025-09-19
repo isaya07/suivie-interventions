@@ -1,0 +1,262 @@
+<template>
+  <div>
+      <!-- En-tête -->
+      <div class="mb-6">
+        <h1 class="text-3xl font-bold text-surface-900 dark:text-surface-50 mb-2">
+          Métriques Système
+        </h1>
+        <p class="text-surface-600 dark:text-surface-400">
+          Surveillance et métriques détaillées du système
+        </p>
+      </div>
+      <!-- Vue d'ensemble -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <Card>
+          <template #content>
+            <div class="text-center">
+              <div class="text-3xl font-bold text-blue-600 mb-2">{{ metrics.interventions }}</div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">Interventions totales</div>
+            </div>
+          </template>
+        </Card>
+        <Card>
+          <template #content>
+            <div class="text-center">
+              <div class="text-3xl font-bold text-green-600 mb-2">{{ metrics.users }}</div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">Utilisateurs actifs</div>
+            </div>
+          </template>
+        </Card>
+        <Card>
+          <template #content>
+            <div class="text-center">
+              <div class="text-3xl font-bold text-orange-600 mb-2">{{ metrics.sessions }}</div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">Sessions en cours</div>
+            </div>
+          </template>
+        </Card>
+        <Card>
+          <template #content>
+            <div class="text-center">
+              <div class="text-3xl font-bold text-purple-600 mb-2">{{ metrics.notifications }}</div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">Notifications/jour</div>
+            </div>
+          </template>
+        </Card>
+      </div>
+      <!-- Graphiques des performances -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <!-- Évolution des interventions -->
+        <Card>
+          <template #title>
+            <div class="flex items-center">
+              <i class="pi pi-chart-line text-blue-500 mr-2"></i>
+              Évolution des Interventions
+            </div>
+          </template>
+          <template #content>
+            <div class="h-64 flex items-center justify-center bg-gray-50 dark:bg-gray-700 rounded">
+              <div class="text-center">
+                <i class="pi pi-chart-line text-4xl text-gray-400 mb-2"></i>
+                <p class="text-gray-600 dark:text-gray-400">Graphique des tendances</p>
+                <p class="text-sm text-gray-500">+{{ metrics.growth }}% ce mois</p>
+              </div>
+            </div>
+          </template>
+        </Card>
+        <!-- Répartition par statut -->
+        <Card>
+          <template #title>
+            <div class="flex items-center">
+              <i class="pi pi-chart-pie text-green-500 mr-2"></i>
+              Répartition par Statut
+            </div>
+          </template>
+          <template #content>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                  <span class="text-sm">En attente</span>
+                </div>
+                <span class="text-sm font-medium">{{ statusMetrics.enAttente }}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-3 h-3 bg-orange-500 rounded-full mr-2"></div>
+                  <span class="text-sm">En cours</span>
+                </div>
+                <span class="text-sm font-medium">{{ statusMetrics.enCours }}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                  <span class="text-sm">Terminées</span>
+                </div>
+                <span class="text-sm font-medium">{{ statusMetrics.terminees }}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                  <span class="text-sm">En retard</span>
+                </div>
+                <span class="text-sm font-medium">{{ statusMetrics.retard }}</span>
+              </div>
+            </div>
+          </template>
+        </Card>
+      </div>
+      <!-- Métriques système détaillées -->
+      <Card>
+        <template #title>
+          <div class="flex items-center">
+            <i class="pi pi-server text-purple-500 mr-2"></i>
+            Métriques Système Détaillées
+          </div>
+        </template>
+        <template #content>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="space-y-4">
+              <h4 class="font-semibold text-gray-900 dark:text-gray-100">Performance</h4>
+              <div class="space-y-2">
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-600">Temps réponse API</span>
+                  <span class="text-sm font-medium">{{ systemMetrics.apiResponseTime }}ms</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-600">Taux succès</span>
+                  <span class="text-sm font-medium text-green-600">{{ systemMetrics.successRate }}%</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-600">Uptime</span>
+                  <span class="text-sm font-medium">{{ systemMetrics.uptime }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="space-y-4">
+              <h4 class="font-semibold text-gray-900 dark:text-gray-100">Ressources</h4>
+              <div class="space-y-2">
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-600">CPU Usage</span>
+                  <span class="text-sm font-medium">{{ systemMetrics.cpuUsage }}%</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-600">Memory Usage</span>
+                  <span class="text-sm font-medium">{{ systemMetrics.memoryUsage }}%</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-600">Disk Usage</span>
+                  <span class="text-sm font-medium">{{ systemMetrics.diskUsage }}%</span>
+                </div>
+              </div>
+            </div>
+            <div class="space-y-4">
+              <h4 class="font-semibold text-gray-900 dark:text-gray-100">Base de Données</h4>
+              <div class="space-y-2">
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-600">Connexions actives</span>
+                  <span class="text-sm font-medium">{{ systemMetrics.dbConnections }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-600">Requêtes/min</span>
+                  <span class="text-sm font-medium">{{ systemMetrics.dbQueries }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-600">Taille DB</span>
+                  <span class="text-sm font-medium">{{ systemMetrics.dbSize }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </Card>
+      <!-- Actions -->
+      <div class="mt-6 flex gap-4">
+        <Button
+          label="Actualiser métriques"
+          icon="pi pi-refresh"
+          @click="refreshMetrics"
+          :loading="loading"
+        />
+        <Button
+          label="Exporter rapport"
+          icon="pi pi-download"
+          severity="secondary"
+          @click="exportReport"
+        />
+      </div>
+  </div>
+</template>
+<script setup>
+// Métadonnées de la page
+definePageMeta({
+  title: 'Métriques Système',
+  requiresAuth: true,
+  adminRequired: true
+})
+// État réactif
+const loading = ref(false)
+// Métriques simulées (en production, ces données viendraient d'une API)
+const metrics = ref({
+  interventions: 142,
+  users: 12,
+  sessions: 3,
+  notifications: 28,
+  growth: 15
+})
+const statusMetrics = ref({
+  enAttente: 23,
+  enCours: 45,
+  terminees: 67,
+  retard: 7
+})
+const systemMetrics = ref({
+  apiResponseTime: 156,
+  successRate: 99.2,
+  uptime: '15j 7h 23m',
+  cpuUsage: 42,
+  memoryUsage: 67,
+  diskUsage: 28,
+  dbConnections: 8,
+  dbQueries: 245,
+  dbSize: '2.3 GB'
+})
+// Méthodes
+const refreshMetrics = async () => {
+  loading.value = true
+  try {
+    // Simulation de rechargement des métriques
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    // Simulation de variations dans les métriques
+    metrics.value.interventions += Math.floor(Math.random() * 3)
+    metrics.value.sessions = Math.floor(Math.random() * 5) + 1
+    systemMetrics.value.cpuUsage = Math.floor(Math.random() * 20) + 30
+    systemMetrics.value.memoryUsage = Math.floor(Math.random() * 30) + 50
+  } finally {
+    loading.value = false
+  }
+}
+const exportReport = () => {
+  // Simulation d'export de rapport
+  const data = {
+    timestamp: new Date().toISOString(),
+    metrics: metrics.value,
+    statusMetrics: statusMetrics.value,
+    systemMetrics: systemMetrics.value
+  }
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `system-metrics-${new Date().toISOString().split('T')[0]}.json`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+// Actualisation automatique toutes les minutes
+onMounted(() => {
+  const interval = setInterval(refreshMetrics, 60000)
+  onUnmounted(() => {
+    clearInterval(interval)
+  })
+})
+</script>

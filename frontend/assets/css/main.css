@@ -3,4 +3,4 @@
 @import "primeicons/primeicons.css";
 
 /* Configuration du mode sombre pour PrimeVue */
-@variant dark (&:where(.my-app-dark, .my-app-dark *));
+@custom-variant dark (&:where(.my-app-dark, .my-app-dark *));

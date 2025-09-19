@@ -9,55 +9,8 @@ export default defineNuxtConfig({
 
   // Configuration Vite pour le build et le développement
   vite: {
-    // Plugin Tailwind CSS intégré via Vite avec configuration explicite
-    plugins: [
-      tailwindcss({
-        content: [
-          "./components/**/*.{js,vue,ts}",
-          "./layouts/**/*.vue",
-          "./pages/**/*.vue",
-          "./plugins/**/*.{js,ts}",
-          "./composables/**/*.{js,ts}",
-          "./app.vue",
-          "./error.vue"
-        ],
-        theme: {
-          extend: {
-            colors: {
-              // Couleurs Surface pour PrimeVue
-              surface: {
-                0: '#ffffff',
-                50: '#f8fafc',
-                100: '#f1f5f9',
-                200: '#e2e8f0',
-                300: '#cbd5e1',
-                400: '#94a3b8',
-                500: '#64748b',
-                600: '#475569',
-                700: '#334155',
-                800: '#1e293b',
-                900: '#0f172a',
-                950: '#020617'
-              },
-              // Couleurs Primary
-              primary: {
-                50: '#eff6ff',
-                100: '#dbeafe',
-                200: '#bfdbfe',
-                300: '#93c5fd',
-                400: '#60a5fa',
-                500: '#3b82f6',
-                600: '#2563eb',
-                700: '#1d4ed8',
-                800: '#1e40af',
-                900: '#1e3a8a',
-                950: '#172554'
-              }
-            }
-          }
-        }
-      })
-    ],
+    // Plugin Tailwind CSS intégré via Vite
+    plugins: [tailwindcss()],
   },
 
   // Modules Nuxt utilisés dans l'application
@@ -86,8 +39,12 @@ export default defineNuxtConfig({
         'Button', 'DataTable', 'Column', 'Card', 'Select', 'InputText', 'Password',
         'MultiSelect', 'Avatar', 'Badge', 'MegaMenu', 'ProgressSpinner', 'ProgressBar',
         'DatePicker', 'Message', 'Toast', 'ConfirmDialog', 'Dialog', 'FileUpload',
-        'Dropdown', 'Textarea', 'Breadcrumb'
+        'Dropdown', 'Textarea', 'Breadcrumb', 'InputNumber', 'Slider', 'PanelMenu'
       ]
+    },
+    // Services PrimeVue à inclure
+    services: {
+      include: ['ToastService']
     },
     // Directives PrimeVue à inclure (ex: v-tooltip)
     directives: {

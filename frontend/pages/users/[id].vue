@@ -1,16 +1,13 @@
 <template>
   <div>
-    <AppHeader />
-
-    <main class="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
-      <div class="px-4 py-6 sm:px-0">
-        <!-- En-tête -->
+    <div>
+    <div>
+      <!-- En-tête -->
         <div class="flex items-center justify-between mb-8">
           <div>
             <h1 class="text-2xl font-bold text-gray-900">Détails utilisateur</h1>
             <p class="text-gray-600">Informations détaillées de l'utilisateur</p>
           </div>
-
           <NuxtLink
             to="/users"
             class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
@@ -21,12 +18,10 @@
             Retour à la liste
           </NuxtLink>
         </div>
-
         <!-- Loading -->
         <div v-if="loading" class="flex justify-center py-8">
           <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
         </div>
-
         <!-- Contenu utilisateur -->
         <div v-else-if="user" class="space-y-6">
           <!-- Informations principales -->
@@ -60,7 +55,6 @@
                     </div>
                   </div>
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -68,21 +62,18 @@
                     </label>
                     <p class="text-sm text-gray-900">{{ user.username }}</p>
                   </div>
-
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
                       Téléphone
                     </label>
                     <p class="text-sm text-gray-900">{{ user.telephone || 'Non renseigné' }}</p>
                   </div>
-
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
                       Spécialité
                     </label>
                     <p class="text-sm text-gray-900">{{ user.specialite || 'Non renseignée' }}</p>
                   </div>
-
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
                       Statut
@@ -94,14 +85,12 @@
                       {{ user.is_active ? 'Actif' : 'Inactif' }}
                     </span>
                   </div>
-
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
                       Créé le
                     </label>
                     <p class="text-sm text-gray-900">{{ formatDate(user.created_at) }}</p>
                   </div>
-
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
                       Dernière connexion
@@ -114,7 +103,6 @@
               </div>
             </template>
           </Card>
-
           <!-- Interventions de l'utilisateur (si technicien) -->
           <Card v-if="user.role === 'technicien'">
             <template #content>
@@ -131,7 +119,6 @@
               </div>
             </template>
           </Card>
-
           <!-- Actions -->
           <div class="flex justify-end space-x-4">
             <NuxtLink
@@ -140,7 +127,6 @@
             >
               Retour
             </NuxtLink>
-
             <button
               @click="editUser"
               class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
@@ -149,7 +135,6 @@
             </button>
           </div>
         </div>
-
         <!-- Erreur -->
         <div v-else class="text-center py-8">
           <div class="text-red-600 mb-4">
@@ -164,23 +149,19 @@
           </NuxtLink>
         </div>
       </div>
-    </main>
+    </div>
   </div>
 </template>
-
 <script setup>
 definePageMeta({
   middleware: ['auth', 'admin']
 })
-
 const route = useRoute()
 const router = useRouter()
 const { fetchUser } = useUsers()
-
 const userId = route.params.id
 const loading = ref(true)
 const user = ref(null)
-
 const getRoleClasses = (role) => {
   return {
     admin: 'bg-purple-100 text-purple-800',
@@ -189,7 +170,6 @@ const getRoleClasses = (role) => {
     client: 'bg-gray-100 text-gray-800'
   }[role] || 'bg-gray-100 text-gray-800'
 }
-
 const getRoleText = (role) => {
   return {
     admin: 'Administrateur',
@@ -198,7 +178,6 @@ const getRoleText = (role) => {
     client: 'Client'
   }[role] || 'Inconnu'
 }
-
 const getTypeClasses = (type) => {
   return {
     cableur: 'bg-indigo-100 text-indigo-800',
@@ -206,7 +185,6 @@ const getTypeClasses = (type) => {
     autre: 'bg-gray-100 text-gray-800'
   }[type] || 'bg-gray-100 text-gray-800'
 }
-
 const getTypeText = (type) => {
   return {
     cableur: 'Câbleur',
@@ -214,7 +192,6 @@ const getTypeText = (type) => {
     autre: 'Autre'
   }[type] || 'Autre'
 }
-
 const formatDate = (dateString) => {
   if (!dateString) return 'Non définie'
   const date = new Date(dateString)
@@ -226,18 +203,15 @@ const formatDate = (dateString) => {
     minute: '2-digit'
   })
 }
-
 const editUser = () => {
   // Rediriger vers la page d'édition ou ouvrir un modal
   router.push(`/users/${userId}/edit`)
 }
-
 onMounted(async () => {
   try {
     // Pour l'instant, on simule la récupération d'un utilisateur
     // car le composable useUsers n'a pas de méthode fetchUser individuelle
     const { users, fetchUsers } = useUsers()
-
     await fetchUsers()
     user.value = users.value.find(u => u.id == userId)
   } catch (error) {

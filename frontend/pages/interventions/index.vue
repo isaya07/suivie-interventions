@@ -1,16 +1,13 @@
 <template>
   <div>
-    <AppHeader />
-
-    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-      <div class="px-4 py-6 sm:px-0">
-        <!-- En-tête -->
+    <div>
+    <div>
+      <!-- En-tête -->
         <div class="flex justify-between items-center mb-6">
           <div>
             <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Interventions</h1>
             <p class="text-gray-600 dark:text-gray-400">Gérez toutes vos interventions techniques</p>
           </div>
-
           <Button
             label="Nouvelle intervention"
             icon="pi pi-plus"
@@ -18,7 +15,6 @@
             class="p-button-primary"
           />
         </div>
-
         <!-- Filtres rapides -->
         <Card class="mb-6">
           <template #content>
@@ -34,7 +30,6 @@
                   icon="pi pi-search"
                 />
               </div>
-
               <div class="min-w-48">
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                   Statut
@@ -49,7 +44,6 @@
                   display="chip"
                 />
               </div>
-
               <div class="min-w-48">
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                   Priorité
@@ -63,7 +57,6 @@
                   class="w-full"
                 />
               </div>
-
               <div class="min-w-48">
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                   Technicien
@@ -80,14 +73,12 @@
             </div>
           </template>
         </Card>
-
         <!-- Liste des interventions -->
         <Card>
           <template #content>
             <div v-if="loading" class="flex justify-center py-8">
               <ProgressSpinner style="width: 50px; height: 50px" strokeWidth="4" />
             </div>
-
             <div v-else>
               <DataTable
                 :value="filteredInterventionsComputed"
@@ -109,7 +100,6 @@
                     </div>
                   </template>
                 </Column>
-
                 <Column field="titre" header="Intervention" :sortable="true">
                   <template #body="{ data }">
                     <div>
@@ -118,7 +108,6 @@
                     </div>
                   </template>
                 </Column>
-
                 <Column header="Client" :sortable="true" sortField="client_nom">
                   <template #body="{ data }">
                     <div class="flex items-center">
@@ -135,7 +124,6 @@
                     </div>
                   </template>
                 </Column>
-
                 <Column header="Technicien" :sortable="true" sortField="technicien_nom">
                   <template #body="{ data }">
                     <div class="flex items-center">
@@ -152,7 +140,6 @@
                     </div>
                   </template>
                 </Column>
-
                 <Column header="Statut" :sortable="true" sortField="statut">
                   <template #body="{ data }">
                     <Badge
@@ -162,7 +149,6 @@
                     />
                   </template>
                 </Column>
-
                 <Column header="Priorité" :sortable="true" sortField="priorite">
                   <template #body="{ data }">
                     <Badge
@@ -172,7 +158,6 @@
                     />
                   </template>
                 </Column>
-
                 <Column header="Dates" :sortable="true" sortField="date_creation">
                   <template #body="{ data }">
                     <div class="text-sm">
@@ -187,7 +172,6 @@
                     </div>
                   </template>
                 </Column>
-
                 <Column header="Actions" :sortable="false" style="width: 150px">
                   <template #body="{ data }">
                     <div class="flex space-x-1">
@@ -217,7 +201,6 @@
                     </div>
                   </template>
                 </Column>
-
                 <template #empty>
                   <div class="text-center py-8">
                     <i class="pi pi-wrench text-gray-400 text-4xl mb-4"></i>
@@ -235,30 +218,25 @@
           </template>
         </Card>
       </div>
-    </main>
-
+    </div>
     <!-- Confirmation de finalisation -->
     <ConfirmDialog />
   </div>
 </template>
-
 <script setup>
 // Configuration de la page - nécessite une authentification
 definePageMeta({
   middleware: 'auth'
 })
-
 // Import des services Nuxt et composables
 const { $confirm, $toast } = useNuxtApp();
 const { filteredInterventions, fetchInterventions, updateIntervention, loading } = useInterventions();
 const { techniciens, fetchTechniciens } = useUsers();
-
 // État local pour les filtres de recherche et tri
 const searchTerm = ref('');        // Terme de recherche textuelle
 const statusFilter = ref([]);      // Filtres de statut (multiple selection)
 const priorityFilter = ref('');    // Filtre de priorité (single selection)
 const technicienFilter = ref('');  // Filtre par technicien assigné
-
 // Configuration des options pour les filtres dropdown
 const statusOptions = [
   { label: 'En attente', value: 'En attente' },
@@ -267,21 +245,18 @@ const statusOptions = [
   { label: 'Terminée', value: 'Terminée' },
   { label: 'Annulée', value: 'Annulée' }
 ];
-
 const priorityOptions = [
   { label: 'Basse', value: 'basse' },
   { label: 'Normale', value: 'normale' },
   { label: 'Haute', value: 'haute' },
   { label: 'Urgente', value: 'urgente' }
 ];
-
 /**
  * Computed pour filtrer les interventions selon les critères sélectionnés
  * Applique les filtres de recherche, statut, priorité et technicien de manière cumulative
  */
 const filteredInterventionsComputed = computed(() => {
   let filtered = filteredInterventions.value;
-
   // Filtrage par terme de recherche (titre, description, client, technicien)
   if (searchTerm.value) {
     const term = searchTerm.value.toLowerCase();
@@ -293,31 +268,26 @@ const filteredInterventionsComputed = computed(() => {
         intervention.technicien_nom?.toLowerCase().includes(term)
     );
   }
-
   // Filtrage par statut (sélection multiple)
   if (statusFilter.value && statusFilter.value.length > 0) {
     filtered = filtered.filter(intervention =>
       statusFilter.value.includes(intervention.statut)
     );
   }
-
   // Filtrage par priorité (sélection unique)
   if (priorityFilter.value) {
     filtered = filtered.filter(intervention =>
       intervention.priorite === priorityFilter.value
     );
   }
-
   // Filtrage par technicien assigné
   if (technicienFilter.value) {
     filtered = filtered.filter(intervention =>
       intervention.technicien_id == technicienFilter.value
     );
   }
-
   return filtered;
 });
-
 /**
  * Détermine la couleur/severité du badge de statut pour PrimeVue
  * @param {string} statut - Statut de l'intervention
@@ -333,7 +303,6 @@ const getStatusSeverity = (statut) => {
     'Urgente': 'danger'
   }[statut] || 'secondary';
 };
-
 /**
  * Détermine la couleur/severité du badge de priorité pour PrimeVue
  * @param {string} priorite - Niveau de priorité
@@ -347,7 +316,6 @@ const getPrioritySeverity = (priorite) => {
     'urgente': 'danger'
   }[priorite] || 'secondary';
 };
-
 /**
  * Formate une date ISO en format français localisé
  * @param {string} dateString - Date au format ISO
@@ -362,7 +330,6 @@ const formatDate = (dateString) => {
     year: 'numeric'
   });
 };
-
 /**
  * Détermine si une intervention peut être marquée comme terminée
  * @param {Object} intervention - Objet intervention
@@ -371,7 +338,6 @@ const formatDate = (dateString) => {
 const canComplete = (intervention) => {
   return intervention.statut === 'En cours';
 };
-
 const completeInterventionConfirm = (intervention) => {
   $confirm.require({
     message: `Êtes-vous sûr de vouloir terminer l'intervention "${intervention.titre}" ?`,
@@ -397,7 +363,6 @@ const completeInterventionConfirm = (intervention) => {
     }
   });
 };
-
 const handleComplete = async (interventionId) => {
   try {
     return await updateIntervention({
@@ -410,10 +375,8 @@ const handleComplete = async (interventionId) => {
     return { success: false, message: 'Erreur lors de la finalisation' };
   }
 };
-
 // Override filteredInterventions to use our computed version
 const filteredInterventionsToUse = filteredInterventionsComputed;
-
 onMounted(() => {
   fetchInterventions();
   fetchTechniciens();

@@ -72,6 +72,21 @@ export const useAuthStore = defineStore("auth", () => {
     }
   };
 
+  // Vérifier les permissions basées sur le rôle
+  const hasPermission = (role) => {
+    if (!user.value) return false;
+
+    const userRole = user.value.role;
+    const roleHierarchy = {
+      'admin': ['admin', 'manager', 'technicien', 'client'],
+      'manager': ['manager', 'technicien', 'client'],
+      'technicien': ['technicien', 'client'],
+      'client': ['client']
+    };
+
+    return roleHierarchy[userRole]?.includes(role) || false;
+  };
+
   return {
     user: readonly(user),
     isAuthenticated,
@@ -79,5 +94,6 @@ export const useAuthStore = defineStore("auth", () => {
     logout,
     fetchUser,
     init,
+    hasPermission,
   };
 });

@@ -30,5 +30,6 @@ export const useAuth = () => {
     login: authStore.login,       // Connexion utilisateur
     logout: authStore.logout,     // Déconnexion utilisateur
     fetchUser: authStore.fetchUser, // Récupération des données utilisateur
+    hasPermission: authStore.hasPermission, // Vérification des permissions
   };
 };

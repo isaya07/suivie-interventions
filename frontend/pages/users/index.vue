@@ -1,16 +1,13 @@
 <template>
   <div>
-    <AppHeader />
-
-    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-      <div class="px-4 py-6 sm:px-0">
-        <!-- En-tête -->
+    <div>
+    <div>
+      <!-- En-tête -->
         <div class="flex justify-between items-center mb-6">
           <div>
             <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Utilisateurs</h1>
             <p class="text-gray-600 dark:text-gray-400">Gérez les utilisateurs et techniciens</p>
           </div>
-
           <Button
             label="Nouvel utilisateur"
             icon="pi pi-plus"
@@ -18,7 +15,6 @@
             class="p-button-primary"
           />
         </div>
-
         <!-- Filtres rapides -->
         <Card class="mb-6">
           <template #content>
@@ -34,7 +30,6 @@
                   icon="pi pi-search"
                 />
               </div>
-
               <div class="min-w-48">
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                   Rôle
@@ -49,7 +44,6 @@
                   @change="applyFilters"
                 />
               </div>
-
               <div class="min-w-48">
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                   Type technicien
@@ -68,14 +62,12 @@
             </div>
           </template>
         </Card>
-
         <!-- Liste des utilisateurs -->
         <Card>
           <template #content>
             <div v-if="loading" class="flex justify-center py-8">
               <ProgressSpinner style="width: 50px; height: 50px" strokeWidth="4" />
             </div>
-
             <div v-else>
               <DataTable
                 :value="filteredUsers"
@@ -106,7 +98,6 @@
                     </div>
                   </template>
                 </Column>
-
                 <Column header="Rôle" :sortable="true" sortField="role">
                   <template #body="{ data }">
                     <div class="flex flex-col space-y-1">
@@ -124,7 +115,6 @@
                     </div>
                   </template>
                 </Column>
-
                 <Column header="Contact" :sortable="false">
                   <template #body="{ data }">
                     <div>
@@ -133,7 +123,6 @@
                     </div>
                   </template>
                 </Column>
-
                 <Column header="Statut" :sortable="true" sortField="is_active">
                   <template #body="{ data }">
                     <Badge
@@ -143,7 +132,6 @@
                     />
                   </template>
                 </Column>
-
                 <Column header="Actions" :sortable="false" style="width: 150px">
                   <template #body="{ data }">
                     <div class="flex space-x-1">
@@ -173,7 +161,6 @@
                     </div>
                   </template>
                 </Column>
-
                 <template #empty>
                   <div class="text-center py-8">
                     <i class="pi pi-users text-gray-400 text-4xl mb-4"></i>
@@ -186,8 +173,7 @@
           </template>
         </Card>
       </div>
-    </main>
-
+    </div>
     <!-- Modal de création/édition -->
     <Dialog
       v-model:visible="showCreateModal"
@@ -203,7 +189,6 @@
         @cancel="showCreateModal = false"
       />
     </Dialog>
-
     <Dialog
       v-model:visible="showEditModal"
       :modal="true"
@@ -218,54 +203,44 @@
         @cancel="showEditModal = false"
       />
     </Dialog>
-
     <!-- Confirmation de suppression -->
     <ConfirmDialog />
   </div>
 </template>
-
 <script setup>
 definePageMeta({
   middleware: ["auth", "admin"],
 });
-
 const { $confirm, $toast } = useNuxtApp();
 const { user: currentUser } = useAuth();
 const { users, fetchUsers, createUser, updateUser, loading } = useUsers();
-
 const showCreateModal = ref(false);
 const showEditModal = ref(false);
 const selectedUser = ref(null);
 const roleFilter = ref("");
 const typeFilter = ref("");
 const searchTerm = ref("");
-
 const roleOptions = [
   { label: 'Administrateurs', value: 'admin' },
   { label: 'Techniciens', value: 'technicien' },
   { label: 'Managers', value: 'manager' },
   { label: 'Clients', value: 'client' }
 ];
-
 const typeOptions = [
   { label: 'Câbleurs', value: 'cableur' },
   { label: 'Terrassiers', value: 'terrassier' },
   { label: 'Autres', value: 'autre' }
 ];
-
 const filteredUsers = computed(() => {
   let filtered = users.value;
-
   // Filtrer par rôle
   if (roleFilter.value) {
     filtered = filtered.filter((user) => user.role === roleFilter.value);
   }
-
   // Filtrer par type de technicien
   if (typeFilter.value && roleFilter.value === 'technicien') {
     filtered = filtered.filter((user) => user.type_technicien === typeFilter.value);
   }
-
   // Filtrer par terme de recherche
   if (searchTerm.value) {
     const term = searchTerm.value.toLowerCase();
@@ -275,10 +250,8 @@ const filteredUsers = computed(() => {
         user.email?.toLowerCase().includes(term)
     );
   }
-
   return filtered;
 });
-
 const getRoleText = (role) => {
   return (
     {
@@ -289,7 +262,6 @@ const getRoleText = (role) => {
     }[role] || "Inconnu"
   );
 };
-
 const getRoleSeverity = (role) => {
   return (
     {
@@ -300,7 +272,6 @@ const getRoleSeverity = (role) => {
     }[role] || "secondary"
   );
 };
-
 const getTypeText = (type) => {
   return (
     {
@@ -310,7 +281,6 @@ const getTypeText = (type) => {
     }[type] || "Autre"
   );
 };
-
 const getTypeSeverity = (type) => {
   return (
     {
@@ -320,20 +290,16 @@ const getTypeSeverity = (type) => {
     }[type] || "secondary"
   );
 };
-
 const formatDate = (dateString) => {
   if (!dateString) return 'Non définie';
   return new Date(dateString).toLocaleDateString("fr-FR");
 };
-
 const editUser = (user) => {
   selectedUser.value = user;
   showEditModal.value = true;
 };
-
 const toggleUserStatusConfirm = async (user) => {
   const action = user.is_active ? "désactiver" : "activer";
-
   $confirm.require({
     message: `Êtes-vous sûr de vouloir ${action} l'utilisateur "${user.nom}" ?`,
     header: 'Confirmation de modification',
@@ -343,7 +309,6 @@ const toggleUserStatusConfirm = async (user) => {
         id: user.id,
         actif: !user.is_active,
       });
-
       if (result.success) {
         $toast.add({
           severity: 'success',
@@ -363,16 +328,13 @@ const toggleUserStatusConfirm = async (user) => {
     }
   });
 };
-
 const handleUserSubmit = async (userData) => {
   let result;
-
   if (showCreateModal.value) {
     result = await createUser(userData);
   } else {
     result = await updateUser(userData);
   }
-
   if (result.success) {
     closeModals();
     $toast.add({
@@ -391,13 +353,11 @@ const handleUserSubmit = async (userData) => {
     });
   }
 };
-
 const closeModals = () => {
   showCreateModal.value = false;
   showEditModal.value = false;
   selectedUser.value = null;
 };
-
 const applyFilters = () => {
   // Réinitialiser le filtre de type si on ne filtre plus sur les techniciens
   if (roleFilter.value !== 'technicien') {
@@ -405,7 +365,6 @@ const applyFilters = () => {
   }
   // Les filtres sont automatiquement appliqués via le computed
 };
-
 onMounted(() => {
   fetchUsers();
 });

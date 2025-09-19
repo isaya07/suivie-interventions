@@ -16,7 +16,13 @@ export default defineNuxtPlugin(() => {
       }
     },
 
-    onResponseError({ response }) {
+    onResponseError({ response, error }) {
+      // Gestion des erreurs de connexion réseau
+      if (!response) {
+        console.warn('Erreur de connexion réseau:', error?.message || 'Impossible de contacter le serveur');
+        return;
+      }
+
       if (response.status === 401) {
         // Token expiré, nettoyer et rediriger
         const token = useCookie("auth-token");
