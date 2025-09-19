@@ -1,0 +1,1710 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "version": "v2",
+    "title": "API Branchement"
+  },
+  "host": "gw.ext.prod-sandbox.api.enedis.fr",
+  "basePath": "/electric_connection/v2",
+  "tags": [
+    {
+      "name": "Delivery"
+    },
+    {
+      "name": "Attachment detail"
+    },
+    {
+      "name": "Attachment"
+    },
+    {
+      "name": "PA Contact"
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/delivery": {
+      "get": {
+        "tags": [
+          "Delivery"
+        ],
+        "produces": [
+          "text/html; charset=UTF-8; subtype=denodo-8.0",
+          "application/xml; charset=UTF-8; subtype=denodo-8.0",
+          "application/json; charset=UTF-8; subtype=denodo-8.0"
+        ],
+        "parameters": [
+          {
+            "name": "company_id",
+            "in": "query",
+            "description": "ID de l'entreprise prestataire (Virtual DataPort type: text)",
+            "required": true,
+            "type": "string",
+            "pattern": "([0-9A-Za-z/-])+"
+          },
+          {
+            "name": "case_id",
+            "in": "query",
+            "description": "Référence Affaire (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "case_type",
+            "in": "query",
+            "description": "Nature Affaire (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "connection_technology",
+            "in": "query",
+            "description": "Technique de branchement (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "town",
+            "in": "query",
+            "description": "Commune (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "entity_id",
+            "in": "query",
+            "description": "Identifiant de la DR (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "delivery_id",
+            "in": "query",
+            "description": "N° Prestation (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string",
+            "pattern": "([0-9A-Za-z/])+"
+          },
+          {
+            "name": "delivery_status",
+            "in": "query",
+            "description": "Etat prestation (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "delivery_type",
+            "in": "query",
+            "description": "Type prestation (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "contract_id",
+            "in": "query",
+            "description": "N° Contrat (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "j0_date_r",
+            "in": "query",
+            "description": "Date de la demande J0 - réalisée (Virtual DataPort type: localdate, format: yyyy-MM-dd)",
+            "required": false,
+            "pattern": "([0-9-])+",
+            "type": "string",
+            "x-example": "2017-01-25"
+          },
+          {
+            "name": "jl_date_r",
+            "in": "query",
+            "description": "Date limite de la prestation JL - réalisée (Virtual DataPort type: localdate, format: yyyy-MM-dd)",
+            "required": false,
+            "pattern": "([0-9-])+",
+            "type": "string",
+            "x-example": "2017-01-25"
+          },
+          {
+            "name": "j7_date_p",
+            "in": "query",
+            "description": "Date des travaux de branchement - prévue (Virtual DataPort type: localdate, format: yyyy-MM-dd)",
+            "required": false,
+            "pattern": "([0-9-])+",
+            "type": "string",
+            "x-example": "2017-01-25"
+          },
+          {
+            "name": "j7_date_r",
+            "in": "query",
+            "description": "Date des travaux de branchement - réalisée (Virtual DataPort type: localdate, format: yyyy-MM-dd)",
+            "required": false,
+            "pattern": "([0-9-])+",
+            "type": "string",
+            "x-example": "2017-01-25"
+          },
+          {
+            "name": "j8_date_r",
+            "in": "query",
+            "description": "Date de l'attachement des travaux - réalisée (Virtual DataPort type: localdate, format: yyyy-MM-dd)",
+            "required": false,
+            "pattern": "([0-9-])+",
+            "type": "string",
+            "x-example": "2017-01-25"
+          },
+          {
+            "name": "j9_date_r",
+            "in": "query",
+            "description": "Date de la validation de l'attachement - réalisée (Virtual DataPort type: localdate, format: yyyy-MM-dd)",
+            "required": false,
+            "pattern": "([0-9-])+",
+            "type": "string",
+            "x-example": "2017-01-25"
+          },
+          {
+            "$ref": "#/parameters/count_parameter"
+          },
+          {
+            "$ref": "#/parameters/expand_parameter"
+          },
+          {
+            "$ref": "#/parameters/filter_parameter"
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Defines the output format of the query",
+            "required": false,
+            "type": "string",
+            "default": "JSON",
+            "enum": [
+              "HTML",
+              "XML",
+              "JSON"
+            ]
+          },
+          {
+            "$ref": "#/parameters/group_by_parameter"
+          },
+          {
+            "$ref": "#/parameters/having_parameter"
+          },
+          {
+            "$ref": "#/parameters/jsoncallback_parameter"
+          },
+          {
+            "$ref": "#/parameters/noescape_html_parameter"
+          },
+          {
+            "$ref": "#/parameters/order_by_parameter"
+          },
+          {
+            "$ref": "#/parameters/select_parameter"
+          },
+          {
+            "$ref": "#/parameters/start_index_parameter"
+          },
+          {
+            "$ref": "#/parameters/user_agent_header_parameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/api_brcht_pposrprestation_response_def"
+            }
+          },
+          "204": {
+            "description": "No results were returned"
+          },
+          "400": {
+            "description": "Mauvais format",
+            "schema": {
+              "type": "object",
+              "required": [
+                "error",
+                "error_description"
+              ],
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "bad_request",
+                  "description": "Le code identifiant l'erreur",
+                  "enum": [
+                    "bad_request"
+                  ]
+                },
+                "error_description": {
+                  "type": "string",
+                  "example": "string",
+                  "description": "Le message expliquant l'erreur"
+                }
+              },
+              "title": "WrongFormatException"
+            }
+          },
+          "500": {
+            "description": "Erreur Serveur",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Code de l’erreur retourné par le système.",
+                  "example": "technical_error"
+                },
+                "error_description": {
+                  "type": "string",
+                  "description": "Description de l’erreur correspondant au code.",
+                  "example": "technical error, please try again later"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/attachment_detail": {
+      "get": {
+        "tags": [
+          "Attachment detail"
+        ],
+        "produces": [
+          "text/html; charset=UTF-8; subtype=denodo-8.0",
+          "application/xml; charset=UTF-8; subtype=denodo-8.0",
+          "application/json; charset=UTF-8; subtype=denodo-8.0"
+        ],
+        "parameters": [
+          {
+            "name": "company_id",
+            "in": "query",
+            "description": "ID de l'entreprise prestataire (Virtual DataPort type: text)",
+            "required": true,
+            "type": "string",
+            "pattern": "([0-9A-Za-z/-])+"
+          },
+          {
+            "name": "attachment_id",
+            "in": "query",
+            "description": "N° d'attachement (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string",
+            "pattern": "([0-9A-Za-z/-])+"
+          },
+          {
+            "name": "attachment_submission_date",
+            "in": "query",
+            "description": "Virtual DataPort type: timestamp, format: yyyy-MM-dd HH:mm:ss.SSS",
+            "required": false,
+            "pattern": "([0-9A-Za-z:-])+",
+            "type": "string",
+            "x-example": "2017-01-25T12:55:45.123"
+          },
+          {
+            "name": "attachment_validation_date",
+            "in": "query",
+            "description": "Virtual DataPort type: timestamp, format: yyyy-MM-dd HH:mm:ss.SSS",
+            "required": false,
+            "pattern": "([0-9A-Za-z:-])+",
+            "type": "string",
+            "x-example": "2017-01-25T12:55:45.123"
+          },
+          {
+            "name": "contract_id",
+            "in": "query",
+            "description": "Virtual DataPort type: text",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "attachment_status",
+            "in": "query",
+            "description": "Virtual DataPort type: text",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "attachment_type",
+            "in": "query",
+            "description": "Virtual DataPort type: int",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "$ref": "#/parameters/count_parameter"
+          },
+          {
+            "$ref": "#/parameters/expand_parameter"
+          },
+          {
+            "$ref": "#/parameters/filter_parameter"
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Defines the output format of the query",
+            "required": false,
+            "type": "string",
+            "default": "JSON",
+            "enum": [
+              "HTML",
+              "XML",
+              "JSON"
+            ]
+          },
+          {
+            "$ref": "#/parameters/group_by_parameter"
+          },
+          {
+            "$ref": "#/parameters/having_parameter"
+          },
+          {
+            "$ref": "#/parameters/jsoncallback_parameter"
+          },
+          {
+            "$ref": "#/parameters/noescape_html_parameter"
+          },
+          {
+            "$ref": "#/parameters/order_by_parameter"
+          },
+          {
+            "$ref": "#/parameters/select_parameter"
+          },
+          {
+            "$ref": "#/parameters/start_index_parameter"
+          },
+          {
+            "$ref": "#/parameters/user_agent_header_parameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/api_brcht_detail_attachement_response_def"
+            }
+          },
+          "204": {
+            "description": "No results were returned"
+          },
+          "400": {
+            "description": "Mauvais format",
+            "schema": {
+              "type": "object",
+              "required": [
+                "error",
+                "error_description"
+              ],
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "bad_request",
+                  "description": "Le code identifiant l'erreur",
+                  "enum": [
+                    "bad_request"
+                  ]
+                },
+                "error_description": {
+                  "type": "string",
+                  "example": "string",
+                  "description": "Le message expliquant l'erreur"
+                }
+              },
+              "title": "WrongFormatException"
+            }
+          },
+          "500": {
+            "description": "Erreur Serveur",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Code de l’erreur retourné par le système.",
+                  "example": "technical_error"
+                },
+                "error_description": {
+                  "type": "string",
+                  "description": "Description de l’erreur correspondant au code.",
+                  "example": "technical error, please try again later"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/attachment": {
+      "get": {
+        "tags": [
+          "Attachment"
+        ],
+        "produces": [
+          "text/html; charset=UTF-8; subtype=denodo-8.0",
+          "application/xml; charset=UTF-8; subtype=denodo-8.0",
+          "application/json; charset=UTF-8; subtype=denodo-8.0"
+        ],
+        "parameters": [
+          {
+            "name": "company_id",
+            "in": "query",
+            "description": "ID de l'entreprise prestataire (Virtual DataPort type: text)",
+            "required": true,
+            "type": "string",
+            "pattern": "([0-9A-Za-z/-])+"
+          },
+          {
+            "name": "case_id",
+            "in": "query",
+            "description": "Référence Affaire (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "delivery_id",
+            "in": "query",
+            "description": "N° Prestation (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string",
+            "pattern": "([0-9A-Za-z/-])+"
+          },
+          {
+            "name": "delivery_status",
+            "in": "query",
+            "description": "Etat prestation (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "delivery_type",
+            "in": "query",
+            "description": "Type prestation (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "attachment_status",
+            "in": "query",
+            "description": "Etat attachement (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "attachment_type",
+            "in": "query",
+            "description": "Type d'attachement (Virtual DataPort type: int)",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "contract_id",
+            "in": "query",
+            "description": "N° contrat (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "FSS_id",
+            "in": "query",
+            "description": "N° FSS (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "attachment_submission_date",
+            "in": "query",
+            "description": "Date soumission attachement (Virtual DataPort type: timestamp, format: yyyy-MM-dd HH:mm:ss.SSS)",
+            "required": false,
+            "type": "string",
+            "pattern": "([0-9A-Za-z:-])+",
+            "x-example": "2017-01-25T12:55:45.123"
+          },
+          {
+            "name": "attachment_validation_date",
+            "in": "query",
+            "description": "Date validation attachement (Virtual DataPort type: timestamp, format: yyyy-MM-dd HH:mm:ss.SSS)",
+            "required": false,
+            "type": "string",
+            "pattern": "([0-9A-Za-z:-])+",
+            "x-example": "2017-01-25T12:55:45.123"
+          },
+          {
+            "$ref": "#/parameters/count_parameter"
+          },
+          {
+            "$ref": "#/parameters/expand_parameter"
+          },
+          {
+            "$ref": "#/parameters/filter_parameter"
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Defines the output format of the query",
+            "required": false,
+            "type": "string",
+            "default": "JSON",
+            "enum": [
+              "HTML",
+              "XML",
+              "JSON"
+            ]
+          },
+          {
+            "$ref": "#/parameters/group_by_parameter"
+          },
+          {
+            "$ref": "#/parameters/having_parameter"
+          },
+          {
+            "$ref": "#/parameters/jsoncallback_parameter"
+          },
+          {
+            "$ref": "#/parameters/noescape_html_parameter"
+          },
+          {
+            "$ref": "#/parameters/order_by_parameter"
+          },
+          {
+            "$ref": "#/parameters/select_parameter"
+          },
+          {
+            "$ref": "#/parameters/start_index_parameter"
+          },
+          {
+            "$ref": "#/parameters/user_agent_header_parameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/api_brcht_pposrattachement_response_def"
+            }
+          },
+          "204": {
+            "description": "No results were returned"
+          },
+          "400": {
+            "description": "Mauvais format",
+            "schema": {
+              "type": "object",
+              "required": [
+                "error",
+                "error_description"
+              ],
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "bad_request",
+                  "description": "Le code identifiant l'erreur",
+                  "enum": [
+                    "bad_request"
+                  ]
+                },
+                "error_description": {
+                  "type": "string",
+                  "example": "string",
+                  "description": "Le message expliquant l'erreur"
+                }
+              },
+              "title": "WrongFormatException"
+            }
+          },
+          "500": {
+            "description": "Erreur Serveur",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Code de l’erreur retourné par le système.",
+                  "example": "technical_error"
+                },
+                "error_description": {
+                  "type": "string",
+                  "description": "Description de l’erreur correspondant au code.",
+                  "example": "technical error, please try again later"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pacontact": {
+      "get": {
+        "tags": [
+          "PA Contact"
+        ],
+        "produces": [
+          "text/html; charset=UTF-8; subtype=denodo-8.0",
+          "application/xml; charset=UTF-8; subtype=denodo-8.0",
+          "application/json; charset=UTF-8; subtype=denodo-8.0"
+        ],
+        "parameters": [
+          {
+            "name": "company_id",
+            "in": "query",
+            "description": "ID de l'entreprise prestataire (Virtual DataPort type: text)",
+            "required": true,
+            "type": "string",
+            "pattern": "([0-9A-Za-z/-])+"
+          },
+          {
+            "name": "case_id",
+            "in": "query",
+            "description": "Référence Affaire (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "delivery_id",
+            "in": "query",
+            "description": "N° Prestation (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string",
+            "pattern": "([0-9A-Za-z/-])+"
+          },
+          {
+            "name": "contract_id",
+            "in": "query",
+            "description": "N° Contrat (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pa_type",
+            "in": "query",
+            "description": "Type (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pa_answer_code_status",
+            "in": "query",
+            "description": "Code du statut de la réponse (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pa_mailing_date",
+            "in": "query",
+            "description": "Date d'envoi (Virtual DataPort type: timestamp, format: yyyy-MM-dd HH:mm:ss.SSS)",
+            "required": false,
+            "type": "string",
+            "pattern": "([0-9A-Za-z:.-])+",
+            "x-example": "2017-01-25T12:55:45.123"
+          },
+          {
+            "name": "delivery_status",
+            "in": "query",
+            "description": "Virtual DataPort type: text",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pa_object",
+            "in": "query",
+            "description": "Objet (Virtual DataPort type: text)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pa_release_date",
+            "in": "query",
+            "description": "Date d'acquittement (Virtual DataPort type: timestamp, format: yyyy-MM-dd HH:mm:ss.SSS)",
+            "required": false,
+            "pattern": "([0-9A-Za-z:.-])+",
+            "type": "string",
+            "x-example": "2017-01-25T12:55:45.123"
+          },
+          {
+            "$ref": "#/parameters/count_parameter"
+          },
+          {
+            "$ref": "#/parameters/expand_parameter"
+          },
+          {
+            "$ref": "#/parameters/filter_parameter"
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Defines the output format of the query",
+            "required": false,
+            "type": "string",
+            "default": "JSON",
+            "enum": [
+              "HTML",
+              "XML",
+              "JSON"
+            ]
+          },
+          {
+            "$ref": "#/parameters/group_by_parameter"
+          },
+          {
+            "$ref": "#/parameters/having_parameter"
+          },
+          {
+            "$ref": "#/parameters/jsoncallback_parameter"
+          },
+          {
+            "$ref": "#/parameters/noescape_html_parameter"
+          },
+          {
+            "$ref": "#/parameters/order_by_parameter"
+          },
+          {
+            "$ref": "#/parameters/select_parameter"
+          },
+          {
+            "$ref": "#/parameters/start_index_parameter"
+          },
+          {
+            "$ref": "#/parameters/user_agent_header_parameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/api_brcht_pacontact_response_def"
+            }
+          },
+          "204": {
+            "description": "No results were returned"
+          },
+          "400": {
+            "description": "Mauvais format",
+            "schema": {
+              "type": "object",
+              "required": [
+                "error",
+                "error_description"
+              ],
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "bad_request",
+                  "description": "Le code identifiant l'erreur",
+                  "enum": [
+                    "bad_request"
+                  ]
+                },
+                "error_description": {
+                  "type": "string",
+                  "example": "string",
+                  "description": "Le message expliquant l'erreur"
+                }
+              },
+              "title": "WrongFormatException"
+            }
+          },
+          "500": {
+            "description": "Erreur Serveur",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Code de l’erreur retourné par le système.",
+                  "example": "technical_error"
+                },
+                "error_description": {
+                  "type": "string",
+                  "description": "Description de l’erreur correspondant au code.",
+                  "example": "technical error, please try again later"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "links_def": {
+      "required": [
+        "href",
+        "rel"
+      ],
+      "properties": {
+        "rel": {
+          "type": "string",
+          "xml": {
+            "attribute": true
+          }
+        },
+        "href": {
+          "type": "string",
+          "xml": {
+            "attribute": true
+          }
+        },
+        "title": {
+          "type": "string",
+          "xml": {
+            "attribute": true
+          }
+        },
+        "type": {
+          "type": "string",
+          "xml": {
+            "attribute": true
+          },
+          "description": "MIME type of a blob"
+        }
+      },
+      "xml": {
+        "name": "link",
+        "namespace": "http://www.w3.org/2005/Atom"
+      }
+    },
+    "errors_def": {
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "xml": {
+            "attribute": true
+          }
+        },
+        "message": {
+          "type": "string",
+          "xml": {
+            "attribute": true
+          }
+        },
+        "dataSource": {
+          "type": "string",
+          "xml": {
+            "attribute": true
+          }
+        },
+        "httpStatusCode": {
+          "type": "integer",
+          "format": "int32",
+          "xml": {
+            "attribute": true
+          }
+        },
+        "httpErrorReturnedBySource": {
+          "type": "string",
+          "xml": {
+            "attribute": true
+          }
+        }
+      },
+      "xml": {
+        "name": "error"
+      }
+    },
+    "info_def": {
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "xml": {
+            "attribute": true
+          }
+        },
+        "message": {
+          "type": "string",
+          "xml": {
+            "attribute": true
+          }
+        }
+      },
+      "xml": {
+        "name": "info"
+      }
+    },
+    "api_brcht_pposrprestation_element_def": {
+      "properties": {
+        "case_id": {
+          "type": "string",
+          "description": "Référence Affaire (Virtual DataPort type: text)"
+        },
+        "case_label": {
+          "type": "string",
+          "description": "Libellé Affaire (Virtual DataPort type: text)"
+        },
+        "case_address": {
+          "type": "string",
+          "description": "Adresse Affaire (Virtual DataPort type: text)"
+        },
+        "case_type_id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Identifiant du nature de l'affaire (Virtual DataPort type: int)"
+        },
+        "connection_technology": {
+          "type": "string",
+          "description": "Technique de branchement (Virtual DataPort type: text)"
+        },
+        "insee_code": {
+          "type": "string",
+          "description": "Code INSEE (Virtual DataPort type: text)"
+        },
+        "town": {
+          "type": "string",
+          "description": "Commune (Virtual DataPort type: text)"
+        },
+        "entity": {
+          "type": "string",
+          "description": "DR (Virtual DataPort type: text)"
+        },
+        "entity_id": {
+          "type": "string",
+          "description": "Identifiant de la DR (Virtual DataPort type: text)"
+        },
+        "delivery_id": {
+          "type": "string",
+          "description": "N° Prestation (Virtual DataPort type: text)"
+        },
+        "delivery_status": {
+          "type": "string",
+          "description": "Etat prestation (Virtual DataPort type: text)"
+        },
+        "refusal_type": {
+          "type": "string",
+          "description": "Type de refus (Virtual DataPort type: text)"
+        },
+        "delivery_type": {
+          "type": "string",
+          "description": "Type prestation (Virtual DataPort type: text)"
+        },
+        "contract_id": {
+          "type": "string",
+          "description": "N° Contrat (Virtual DataPort type: text)"
+        },
+        "public_area_length": {
+          "type": "number",
+          "description": "Longueur en domaine public (Virtual DataPort type: decimal)"
+        },
+        "substation_id": {
+          "type": "string",
+          "description": "Code GDO du poste HTA/BT (Virtual DataPort type: text)"
+        },
+        "substation_name": {
+          "type": "string",
+          "description": "DCP (Virtual DataPort type: text)"
+        },
+        "dipole_id": {
+          "type": "string",
+          "description": "Virtual DataPort type: text"
+        },
+        "name": {
+          "type": "string",
+          "description": "Virtual DataPort type: text"
+        },
+        "fixed_number": {
+          "type": "string",
+          "description": "DCP (Virtual DataPort type: text)"
+        },
+        "mobile_number": {
+          "type": "string",
+          "description": "DCP (Virtual DataPort type: text)"
+        },
+        "usage_point_id": {
+          "type": "string",
+          "description": "PDL (Virtual DataPort type: text)"
+        },
+        "creation_date": {
+          "type": "string",
+          "example": "2017-01-25T12:55:45.123",
+          "description": "Date de création (Virtual DataPort type: timestamp, format: yyyy-MM-dd HH:mm:ss.SSS)"
+        },
+        "customer_agreement_date": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date d'accord client (D3) (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "submission_date": {
+          "type": "string",
+          "example": "2017-01-25T12:55:45.123",
+          "description": "Date soumission prestation (Virtual DataPort type: timestamp, format: yyyy-MM-dd HH:mm:ss.SSS)"
+        },
+        "j0_date_r": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date de la demande J0 - réalisée (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "jl_date_r": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date limite de la prestation JL - réalisée (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "j1_date_r": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date d'acceptation J1 de la demande - réalisée (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "j2_date_r": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date contact client J2 - réalisée (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "j3_date_p": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date de l'étude réalisée - prévue (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "j3_date_r": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date de l'étude réalisée - réalisée (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "j4_date_p": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date de l'attachement de l'étude / ouverture pour travaux - prévue (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "j4_date_r": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date de l'attachement de l'étude / ouverture pour travaux - réalisée (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "j5_date_p": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date de validation de la demande - prévue (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "j5_date_r": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date de validation de la demande - réalisée (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "j6_date_p": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date de réfection définitive - prévue (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "j6_date_r": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date de réfection définitive - réalisée (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "j7_date_p": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date des travaux de branchement - prévue (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "time_slot": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Virtual DataPort type: int"
+        },
+        "j7_date_r": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date des travaux de branchement - réalisée (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "j71_date_r": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date dérivation individuelle - réalisée (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "j72_date_r": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date liaison réseau - réalisée (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "j8_date_r": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date de l'attachement des travaux - réalisée (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "j9_date_r": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date de la validation de l'attachement - réalisée (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "latitude": {
+          "type": "string",
+          "description": "latitude (Virtual DataPort type: text)"
+        },
+        "longitude": {
+          "type": "string",
+          "description": "longitude (Virtual DataPort type: text)"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/links_def"
+          }
+        }
+      },
+      "description": "Extended schema of view api_brcht_pposrprestation",
+      "xml": {
+        "name": "api_brcht_pposrprestation",
+        "namespace": "http://www.denodo.com/restful/data_access/views/api_brcht_pposrprestation"
+      }
+    },
+    "api_brcht_pposrprestation_response_def": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "xml": {
+            "attribute": true
+          },
+          "description": "Virtual DataPort view name"
+        },
+        "description": {
+          "type": "string",
+          "xml": {
+            "attribute": true
+          },
+          "description": "Virtual DataPort view description"
+        },
+        "elements": {
+          "type": "array",
+          "description": "Results returned by the query",
+          "items": {
+            "$ref": "#/definitions/api_brcht_pposrprestation_element_def"
+          }
+        },
+        "links": {
+          "type": "array",
+          "description": "Links available for the current element (e.g. pagination links)",
+          "items": {
+            "$ref": "#/definitions/links_def"
+          }
+        },
+        "__errors__": {
+          "type": "array",
+          "xml": {
+            "name": "__errors__",
+            "wrapped": true
+          },
+          "items": {
+            "$ref": "#/definitions/errors_def"
+          }
+        },
+        "__info__": {
+          "type": "array",
+          "xml": {
+            "name": "__info__",
+            "wrapped": true
+          },
+          "items": {
+            "$ref": "#/definitions/info_def"
+          }
+        }
+      },
+      "xml": {
+        "name": "view",
+        "namespace": "http://www.denodo.com/restful"
+      }
+    },
+    "api_brcht_detail_attachement_element_def": {
+      "properties": {
+        "attachment_detail_id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "ID du détail d'attachement (Virtual DataPort type: int)"
+        },
+        "attachment_id": {
+          "type": "string",
+          "description": "N° d'attachement (Virtual DataPort type: text)"
+        },
+        "initial_attachment": {
+          "type": "number",
+          "description": "Attachement initial (Virtual DataPort type: decimal)"
+        },
+        "contradictory_attachment": {
+          "type": "number",
+          "description": "Attachement contradictoire (Virtual DataPort type: decimal)"
+        },
+        "final_attachment": {
+          "type": "number",
+          "description": "Attachement définitif (Virtual DataPort type: decimal)"
+        },
+        "used_serial": {
+          "type": "string",
+          "description": "Série utilisée (Virtual DataPort type: text)"
+        },
+        "article_id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Articles (Virtual DataPort type: int)"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/links_def"
+          }
+        }
+      },
+      "description": "Extended schema of view api_brcht_detail_attachement",
+      "xml": {
+        "name": "api_brcht_detail_attachement",
+        "namespace": "http://www.denodo.com/restful/data_access/views/api_brcht_detail_attachement"
+      }
+    },
+    "api_brcht_detail_attachement_response_def": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "xml": {
+            "attribute": true
+          },
+          "description": "Virtual DataPort view name"
+        },
+        "description": {
+          "type": "string",
+          "xml": {
+            "attribute": true
+          },
+          "description": "Virtual DataPort view description"
+        },
+        "elements": {
+          "type": "array",
+          "description": "Results returned by the query",
+          "items": {
+            "$ref": "#/definitions/api_brcht_detail_attachement_element_def"
+          }
+        },
+        "links": {
+          "type": "array",
+          "description": "Links available for the current element (e.g. pagination links)",
+          "items": {
+            "$ref": "#/definitions/links_def"
+          }
+        },
+        "__errors__": {
+          "type": "array",
+          "xml": {
+            "name": "__errors__",
+            "wrapped": true
+          },
+          "items": {
+            "$ref": "#/definitions/errors_def"
+          }
+        },
+        "__info__": {
+          "type": "array",
+          "xml": {
+            "name": "__info__",
+            "wrapped": true
+          },
+          "items": {
+            "$ref": "#/definitions/info_def"
+          }
+        }
+      },
+      "xml": {
+        "name": "view",
+        "namespace": "http://www.denodo.com/restful"
+      }
+    },
+    "api_brcht_pposrattachement_element_def": {
+      "properties": {
+        "case_id": {
+          "type": "string",
+          "description": "Référence Affaire (Virtual DataPort type: text)"
+        },
+        "delivery_id": {
+          "type": "string",
+          "description": "N° Prestation (Virtual DataPort type: text)"
+        },
+        "attachment_id": {
+          "type": "string",
+          "description": "N° d'attachement (Virtual DataPort type: text)"
+        },
+        "attachment_status": {
+          "type": "string",
+          "description": "Etat attachement (Virtual DataPort type: text)"
+        },
+        "attachment_type": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Type d'attachement (Virtual DataPort type: int)"
+        },
+        "total_weight": {
+          "type": "number",
+          "description": "Poids total (Virtual DataPort type: decimal)"
+        },
+        "point_cost": {
+          "type": "number",
+          "description": "Prix du point (Virtual DataPort type: decimal)"
+        },
+        "attachment_value": {
+          "type": "number",
+          "description": "Valorisation attachement(euros) (Virtual DataPort type: decimal)"
+        },
+        "PGI_id": {
+          "type": "string",
+          "description": "code PGI (Virtual DataPort type: text)"
+        },
+        "PGI_validator": {
+          "type": "string",
+          "description": "Valideur PGI (Virtual DataPort type: text)"
+        },
+        "PGI_validation_date": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date validation PGI (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "PGI_value": {
+          "type": "number",
+          "description": "Valorisation PGI (Virtual DataPort type: decimal)"
+        },
+        "FSS_id": {
+          "type": "string",
+          "description": "N° FSS (Virtual DataPort type: text)"
+        },
+        "FSS_validator": {
+          "type": "string",
+          "description": "Valideur FSS (Virtual DataPort type: text)"
+        },
+        "FSS_validation_date": {
+          "type": "string",
+          "example": "2017-01-25",
+          "description": "Date validation FSS (Virtual DataPort type: localdate, format: yyyy-MM-dd)"
+        },
+        "attachment_submission_date": {
+          "type": "string",
+          "example": "2017-01-25T12:55:45.123",
+          "description": "Date soumission attachement (Virtual DataPort type: timestamp, format: yyyy-MM-dd HH:mm:ss.SSS)"
+        },
+        "attachment_submission_author": {
+          "type": "string",
+          "description": "Auteur de la soumission (Virtual DataPort type: text)"
+        },
+        "attachment_validation_date": {
+          "type": "string",
+          "example": "2017-01-25T12:55:45.123",
+          "description": "Date validation attachement (Virtual DataPort type: timestamp, format: yyyy-MM-dd HH:mm:ss.SSS)"
+        },
+        "attachment_author": {
+          "type": "string",
+          "description": "Auteur de l'attachement (Virtual DataPort type: text)"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/links_def"
+          }
+        }
+      },
+      "description": "Extended schema of view api_brcht_pposrattachement",
+      "xml": {
+        "name": "api_brcht_pposrattachement",
+        "namespace": "http://www.denodo.com/restful/data_access/views/api_brcht_pposrattachement"
+      }
+    },
+    "api_brcht_pposrattachement_response_def": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "xml": {
+            "attribute": true
+          },
+          "description": "Virtual DataPort view name"
+        },
+        "description": {
+          "type": "string",
+          "xml": {
+            "attribute": true
+          },
+          "description": "Virtual DataPort view description"
+        },
+        "elements": {
+          "type": "array",
+          "description": "Results returned by the query",
+          "items": {
+            "$ref": "#/definitions/api_brcht_pposrattachement_element_def"
+          }
+        },
+        "links": {
+          "type": "array",
+          "description": "Links available for the current element (e.g. pagination links)",
+          "items": {
+            "$ref": "#/definitions/links_def"
+          }
+        },
+        "__errors__": {
+          "type": "array",
+          "xml": {
+            "name": "__errors__",
+            "wrapped": true
+          },
+          "items": {
+            "$ref": "#/definitions/errors_def"
+          }
+        },
+        "__info__": {
+          "type": "array",
+          "xml": {
+            "name": "__info__",
+            "wrapped": true
+          },
+          "items": {
+            "$ref": "#/definitions/info_def"
+          }
+        }
+      },
+      "xml": {
+        "name": "view",
+        "namespace": "http://www.denodo.com/restful"
+      }
+    },
+    "api_brcht_pacontact_element_def": {
+      "properties": {
+        "case_id": {
+          "type": "string",
+          "description": "Référence Affaire (Virtual DataPort type: text)"
+        },
+        "delivery_id": {
+          "type": "string",
+          "description": "N° Prestation (Virtual DataPort type: text)"
+        },
+        "pa_id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Identifiant (Virtual DataPort type: int)"
+        },
+        "pa_type_id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Identifiant du type (Virtual DataPort type: int)"
+        },
+        "pa_answer_code_status": {
+          "type": "string",
+          "description": "Code du statut de la réponse (Virtual DataPort type: text)"
+        },
+        "pa_mailing_date": {
+          "type": "string",
+          "example": "2017-01-25T12:55:45.123",
+          "description": "Date d'envoi (Virtual DataPort type: timestamp, format: yyyy-MM-dd HH:mm:ss.SSS)"
+        },
+        "pa_release_date": {
+          "type": "string",
+          "example": "2017-01-25T12:55:45.123",
+          "description": "Date d'acquittement (Virtual DataPort type: timestamp, format: yyyy-MM-dd HH:mm:ss.SSS)"
+        },
+        "pa_object": {
+          "type": "string",
+          "description": "Objet (Virtual DataPort type: text)"
+        },
+        "pa_problem": {
+          "type": "string",
+          "description": "Problème (Virtual DataPort type: text)"
+        },
+        "pa_proposed_solution": {
+          "type": "string",
+          "description": "Solution proposée (Virtual DataPort type: text)"
+        },
+        "pa_reason": {
+          "type": "string",
+          "description": "Motif  (Virtual DataPort type: text)"
+        },
+        "issuer_name": {
+          "type": "string",
+          "description": "Emetteur (Virtual DataPort type: text)"
+        },
+        "release_author": {
+          "type": "string",
+          "description": "Auteur de l'acquittement (Virtual DataPort type: text)"
+        },
+        "recipient_name": {
+          "type": "string",
+          "description": "Destinataire (Virtual DataPort type: text)"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/links_def"
+          }
+        }
+      },
+      "description": "Extended schema of view api_brcht_pacontact",
+      "xml": {
+        "name": "api_brcht_pacontact",
+        "namespace": "http://www.denodo.com/restful/data_access/views/api_brcht_pacontact"
+      }
+    },
+    "api_brcht_pacontact_response_def": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "xml": {
+            "attribute": true
+          },
+          "description": "Virtual DataPort view name"
+        },
+        "description": {
+          "type": "string",
+          "xml": {
+            "attribute": true
+          },
+          "description": "Virtual DataPort view description"
+        },
+        "elements": {
+          "type": "array",
+          "description": "Results returned by the query",
+          "items": {
+            "$ref": "#/definitions/api_brcht_pacontact_element_def"
+          }
+        },
+        "links": {
+          "type": "array",
+          "description": "Links available for the current element (e.g. pagination links)",
+          "items": {
+            "$ref": "#/definitions/links_def"
+          }
+        },
+        "__errors__": {
+          "type": "array",
+          "xml": {
+            "name": "__errors__",
+            "wrapped": true
+          },
+          "items": {
+            "$ref": "#/definitions/errors_def"
+          }
+        },
+        "__info__": {
+          "type": "array",
+          "xml": {
+            "name": "__info__",
+            "wrapped": true
+          },
+          "items": {
+            "$ref": "#/definitions/info_def"
+          }
+        }
+      },
+      "xml": {
+        "name": "view",
+        "namespace": "http://www.denodo.com/restful"
+      }
+    }
+  },
+  "parameters": {
+    "count_parameter": {
+      "name": "count",
+      "in": "query",
+      "description": "Used for pagination in view resources",
+      "required": false,
+      "type": "integer"
+    },
+    "select_parameter": {
+      "name": "select",
+      "in": "query",
+      "description": "Comma-separated list of fields to be returned in the result",
+      "required": false,
+      "type": "array",
+      "pattern": "([0-9A-Za-z,_])+",
+      "items": {
+        "type": "string"
+      },
+      "collectionFormat": "csv"
+    },
+    "start_index_parameter": {
+      "name": "start_index",
+      "in": "query",
+      "description": "Used for pagination in view resources",
+      "required": false,
+      "type": "integer"
+    },
+    "noescape_html_parameter": {
+      "name": "noescapehtml",
+      "in": "query",
+      "description": "List of comma-separated fields whose values will not be HTML escaped.",
+      "required": false,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "collectionFormat": "csv"
+    },
+    "user_agent_header_parameter": {
+      "name": "user-agent",
+      "in": "header",
+      "description": "By including this header, communication between the web service and the Virtual DataPort will be configured with this value.",
+      "required": false,
+      "type": "string"
+    },
+    "filter_parameter": {
+      "name": "filter",
+      "in": "query",
+      "description": "Filters the rows of a view using any condition. Any expression that can appear in the WHERE clause of a VQL query can be used.",
+      "required": false,
+      "type": "string",
+      "pattern": "([0-9A-Za-z-.,'_/!=:<>()%])+"
+    },
+    "jsoncallback_parameter": {
+      "name": "jsoncallback",
+      "in": "query",
+      "description": "The JSON representation can return the data of a view prefixed with the name of a function. This is called JSON with padding or JSONP. That way, when a browser receives the response, it receives a script rather than data.",
+      "required": false,
+      "type": "string"
+    },
+    "reduced_format_parameter": {
+      "name": "format",
+      "in": "query",
+      "description": "Defines the output format of the query",
+      "required": false,
+      "type": "string",
+      "default": "XML",
+      "enum": [
+        "XML",
+        "JSON"
+      ]
+    },
+    "having_parameter": {
+      "name": "having",
+      "in": "query",
+      "description": "Comma-separated list of fields to add to the HAVING clause of the query",
+      "required": false,
+      "type": "array",
+      "pattern": "([0-9A-Za-z,_])+",
+      "items": {
+        "type": "string"
+      },
+      "collectionFormat": "csv"
+    },
+    "expand_parameter": {
+      "name": "expand",
+      "in": "query",
+      "description": "Roles to expand in the query",
+      "required": false,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "collectionFormat": "csv"
+    },
+    "order_by_parameter": {
+      "name": "orderby",
+      "in": "query",
+      "description": "Sorts the results by one or more fields. It is a comma-separated list of fields, each one followed by the modifier ASC (for ascending order) and DESC (for descending order).",
+      "required": false,
+      "type": "array",
+      "pattern": "([0-9A-Za-z,_])+",
+      "items": {
+        "type": "string"
+      },
+      "collectionFormat": "csv"
+    },
+    "group_by_parameter": {
+      "name": "groupby",
+      "in": "query",
+      "description": "Comma-separated list of fields to group by with",
+      "required": false,
+      "type": "array",
+      "pattern": "([0-9A-Za-z,_])+",
+      "items": {
+        "type": "string"
+      },
+      "collectionFormat": "csv"
+    }
+  }
+}
